@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TryCatch75 - Ultimate Student Command Center</title>
+    <link rel="stylesheet" href="style.css?v=2.1">
+    <!-- Google Fonts for premium modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons for clean vector glyphs -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="theme-cyber">
+    <div class="ambient-glow"></div>
+
+    <!-- ==========================================
+       PREMIUM SCHOLAR LOGIN GATEWAY SCREEN
+    ========================================== -->
+    <div class="login-gateway-container" id="login-screen">
+        <!-- Gateway Header Bar -->
+        <header class="gateway-header">
+            <span class="gateway-logo">TryCatch75</span>
+            <button class="gateway-help-btn" id="btn-login-help" title="System Help">
+                <i data-lucide="help-circle"></i>
+            </button>
+        </header>
+
+        <!-- Gateway Central Login Card -->
+        <div class="login-scholar-card animate-reveal">
+            <!-- Sign In View Panel -->
+            <div id="panel-signin-view" class="auth-panel-slide active">
+                <h1 class="auth-main-title">Welcome back,<br>Scholar</h1>
+                <p class="auth-sub-title">Sign in to manage your academic compliance.</p>
+
+                <form id="login-form" class="auth-form-fields">
+                    <!-- Student ID / Email Input -->
+                    <div class="calc-input-group">
+                        <label class="auth-field-label">Student ID or Email</label>
+                        <div class="auth-input-wrapper">
+                            <i data-lucide="user" class="auth-input-icon"></i>
+                            <input type="text" id="login-username" class="auth-form-input" placeholder="e.g. 2024-ST-001" required autocomplete="username">
+                        </div>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="calc-input-group">
+                        <div class="auth-label-row">
+                            <label class="auth-field-label">Password</label>
+                            <button type="button" class="auth-link-text" id="btn-forgot-password">Forgot password?</button>
+                        </div>
+                        <div class="auth-input-wrapper">
+                            <i data-lucide="lock" class="auth-input-icon"></i>
+                            <input type="password" id="login-password" class="auth-form-input" placeholder="••••••••" required autocomplete="current-password">
+                            <button type="button" class="auth-eye-toggle" id="btn-toggle-password-view">
+                                <i data-lucide="eye" id="password-eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stay Logged In Custom Checkbox -->
+                    <div class="auth-checkbox-row">
+                        <label class="custom-checkbox-container">
+                            <input type="checkbox" id="login-stay-logged" checked>
+                            <span class="checkbox-mark"></span>
+                            <span class="checkbox-label-text">Stay logged in</span>
+                        </label>
+                    </div>
+
+                    <!-- Solid Purple Sign In Button -->
+                    <button type="submit" class="btn-primary auth-submit-btn">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="auth-switch-footer">
+                    <span>New to TryCatch? <button class="auth-link-text bold" id="btn-show-request-access">Request Access</button></span>
+                </div>
+            </div>
+
+            <!-- Request Access (Registration) View Panel -->
+            <div id="panel-register-view" class="auth-panel-slide">
+                <h1 class="auth-main-title">Request<br>Access</h1>
+                <p class="auth-sub-title">Initialize your isolated scholar cockpit profile.</p>
+
+                <form id="register-form" class="auth-form-fields">
+                    <!-- Create Username Input -->
+                    <div class="calc-input-group">
+                        <label class="auth-field-label">Select Student ID or Username</label>
+                        <div class="auth-input-wrapper">
+                            <i data-lucide="user-plus" class="auth-input-icon"></i>
+                            <input type="text" id="register-username" class="auth-form-input" placeholder="e.g. 2024-ST-001" required autocomplete="username">
+                        </div>
+                    </div>
+
+                    <!-- Create Password Input -->
+                    <div class="calc-input-group">
+                        <label class="auth-field-label">Create Password</label>
+                        <div class="auth-input-wrapper">
+                            <i data-lucide="lock" class="auth-input-icon"></i>
+                            <input type="password" id="register-password" class="auth-form-input" placeholder="Create a strong password" required autocomplete="new-password">
+                            <button type="button" class="auth-eye-toggle" id="btn-toggle-register-pass">
+                                <i data-lucide="eye" id="register-eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Request Access Button -->
+                    <button type="submit" class="btn-primary auth-submit-btn">
+                        Initialize Cockpit
+                    </button>
+                </form>
+
+                <div class="auth-switch-footer">
+                    <span>Already registered? <button class="auth-link-text bold" id="btn-show-signin">Sign In</button></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gateway Footer Bar -->
+        <footer class="gateway-footer">
+            <span class="footer-logo">TryCatch75</span>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Contact Support</a>
+            </div>
+            <span class="footer-copyright">© 2024 TryCatch75. All rights reserved.</span>
+        </footer>
+    </div>
+
+    <!-- ==========================================
+       MAIN APPNIGATION INTERFACE
+    ========================================== -->
+    <div class="app-container" id="app-workspace" style="display: none;">
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-logo">
+                    <i data-lucide="zap"></i>
+                </span>
+                <span class="brand-text">TryCatch<span class="brand-accent">75</span></span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-tab active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-tab" data-tab="calculator">
+                    <i data-lucide="calculator"></i>
+                    <span>Bunk Calculator</span>
+                </button>
+                <button class="nav-tab" data-tab="subjects">
+                    <i data-lucide="book-open"></i>
+                    <span>Subjects Manager</span>
+                </button>
+                <button class="nav-tab" data-tab="timetable">
+                    <i data-lucide="calendar"></i>
+                    <span>Timetable</span>
+                </button>
+                <button class="nav-tab" data-tab="profile">
+                    <i data-lucide="user"></i>
+                    <span>Profile & Settings</span>
+                </button>
+            </nav>
+
+            <!-- SIDEBAR STREAK WIDGET -->
+            <div class="sidebar-footer">
+                <div class="streak-widget">
+                    <div class="streak-icon">
+                        <i data-lucide="flame" class="glow-fire"></i>
+                    </div>
+                    <div class="streak-details">
+                        <div class="streak-title" id="side-streak-count">14 Day Streak</div>
+                        <div class="streak-subtitle" id="side-safety-label">SAFE ZONE: 82%</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-wrapper">
+            <!-- TOP HEADER -->
+            <header class="top-header">
+                <div class="header-search">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" placeholder="Type Ctrl + K for Command Palette..." class="search-input" id="global-search-input">
+                    <span class="shortcut-badge">Ctrl K</span>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Notification Bell -->
+                    <div class="action-btn-container" id="notif-btn-container">
+                        <button class="header-action-btn" id="notification-bell">
+                            <i data-lucide="bell"></i>
+                            <span class="notification-dot active"></span>
+                        </button>
+                        <!-- Notifications Panel -->
+                        <div class="dropdown-panel" id="notifications-panel">
+                            <div class="panel-header">
+                                <h3>Notifications</h3>
+                                <button class="clear-all-btn" id="clear-notifications">Clear All</button>
+                            </div>
+                            <div class="panel-list" id="notifications-list">
+                                <!-- Appended dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Avatar Info -->
+                    <div class="user-profile-badge">
+                        <div class="avatar-container">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Student" alt="Avatar" class="avatar-img" id="header-avatar">
+                            <span class="status-indicator online"></span>
+                        </div>
+                        <div class="user-text-details">
+                            <span class="user-badge-name" id="header-user-name">Scholar</span>
+                            <span class="user-badge-role" id="header-user-role">Student</span>
+                        </div>
+                    </div>
+
+                    <!-- Sign Out Header Button -->
+                    <button class="header-action-btn" id="btn-header-signout" title="Sign Out">
+                        <i data-lucide="log-out"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- VIEWS CONTAINER -->
+            <main class="content-body">
+                
+                <!-- 1. DASHBOARD VIEW -->
+                <div class="view-content active" id="view-dashboard">
+                    <div class="dashboard-grid">
+                        
+                        <!-- COLUMN 1: Command Center Gauge -->
+                        <div class="dashboard-card command-center-card">
+                            <div class="card-header">
+                                <span class="card-title">ATTENDANCE COMMAND CENTER</span>
+                                <i data-lucide="radar" class="header-icon"></i>
+                            </div>
+                            <div class="gauge-section">
+                                <div class="circular-progress-container">
+                                    <svg class="radial-gauge" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="42" class="gauge-bg"></circle>
+                                        <circle cx="50" cy="50" r="42" class="gauge-bar" id="overall-gauge-bar"></circle>
+                                    </svg>
+                                    <div class="gauge-info">
+                                        <span class="gauge-percentage" id="overall-percentage-value">82%</span>
+                                        <span class="gauge-label">CURRENT</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="command-footer">
+                                <div class="command-subcard status-box safe-state" id="dashboard-status-box">
+                                    <span class="box-label">Status</span>
+                                    <span class="box-value" id="dashboard-status-value">
+                                        <i data-lucide="check-circle" class="box-icon"></i> SAFE
+                                    </span>
+                                </div>
+                                <div class="command-subcard capacity-box" id="dashboard-capacity-box">
+                                    <span class="box-label">Bunk Capacity</span>
+                                    <span class="box-value font-mono text-glow-green" id="dashboard-bunk-capacity">12 Classes</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COLUMN 2: Bunk Simulator -->
+                        <div class="dashboard-card bunk-simulator-card">
+                            <div class="card-header">
+                                <span class="card-title">BUNK SIMULATOR</span>
+                                <i data-lucide="sliders-horizontal" class="header-icon"></i>
+                            </div>
+                            <div class="simulator-body">
+                                <p class="simulator-intro">"Simulate missing classes to predict your safe zone."</p>
+                                
+                                <div class="slider-container">
+                                    <div class="slider-labels">
+                                        <span class="slider-label">Absences to add</span>
+                                        <span class="slider-value" id="simulator-slider-value">+0</span>
+                                    </div>
+                                    <input type="range" min="0" max="15" value="0" class="neon-slider" id="simulator-slider">
+                                    <div class="slider-ticks">
+                                        <span>+0</span>
+                                        <span>+5</span>
+                                        <span>+10</span>
+                                        <span>+15</span>
+                                    </div>
+                                </div>
+
+                                <div class="projected-card">
+                                    <span class="projected-label">Projected Result</span>
+                                    <span class="projected-value safe-state" id="projected-result-value">82.0% <span class="badge-tag">SAFE</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COLUMN 3: Active Focus Pomodoro -->
+                        <div class="dashboard-card active-focus-card">
+                            <div class="card-header">
+                                <span class="card-title">ACTIVE FOCUS</span>
+                                <i data-lucide="timer" class="header-icon"></i>
+                            </div>
+                            <div class="focus-body">
+                                <div class="timer-gauge-container">
+                                    <svg class="timer-gauge" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="44" class="timer-bg"></circle>
+                                        <circle cx="50" cy="50" r="44" class="timer-bar" id="focus-timer-bar"></circle>
+                                    </svg>
+                                    <div class="timer-text" id="focus-timer-clock">25:00</div>
+                                </div>
+                                
+                                <div class="focus-settings">
+                                    <div class="subject-select-wrapper">
+                                        <label for="focus-subject-select">Focus Subject</label>
+                                        <select id="focus-subject-select" class="premium-select">
+                                            <!-- Dynamically populated -->
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="streak-badge-row">
+                                    <div class="streak-inline-badge">
+                                        <i data-lucide="sparkles"></i>
+                                        <span id="focus-zen-streak">ZEN STREAK: 52 MIN</span>
+                                    </div>
+                                </div>
+
+                                <button class="btn-focus-action" id="focus-toggle-btn">Start Session</button>
+                            </div>
+                        </div>
+
+                        <!-- ROW 2: Student profile details banner -->
+                        <div class="dashboard-card profile-banner-card">
+                            <div class="student-meta">
+                                <div class="student-avatar-big">
+                                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Student" alt="Student" id="banner-avatar">
+                                    <span class="rank-ring"></span>
+                                </div>
+                                <div class="student-name-details">
+                                    <h2 id="banner-user-name">Scholar</h2>
+                                    <p id="banner-user-role">Student</p>
+                                </div>
+                            </div>
+                            <div class="student-metrics-row">
+                                <div class="banner-stat-col">
+                                    <span class="stat-label">Academic Goal</span>
+                                    <span class="stat-val goal-text" id="banner-goal-val">Maintain 80%+</span>
+                                </div>
+                                <div class="banner-stat-col">
+                                    <span class="stat-label">Daily Streak</span>
+                                    <span class="stat-val streak-text" id="banner-streak-val">14 Days</span>
+                                </div>
+                                <div class="banner-stat-col">
+                                    <span class="stat-label">Tasks Done</span>
+                                    <span class="stat-val" id="banner-tasks-val">08/12</span>
+                                </div>
+                                <div class="banner-stat-col">
+                                    <span class="stat-label">Focus Score</span>
+                                    <span class="stat-val elite-text" id="banner-focus-score">Elite</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ROW 3: Subject cards (Dynamic column span) -->
+                        <div class="subjects-container-col">
+                            <div class="card-section-header">
+                                <h3>YOUR SUBJECTS</h3>
+                                <button class="quick-add-subject-btn" id="btn-dashboard-add-subject">
+                                    <i data-lucide="plus-circle"></i> Add Subject
+                                </button>
+                            </div>
+                            <div class="subjects-flex-row" id="dashboard-subject-cards">
+                                <!-- Cards dynamically created by JS -->
+                            </div>
+                        </div>
+
+                        <!-- ROW 3 column 2: Recent logs & tasks list -->
+                        <div class="dashboard-card recent-sessions-card">
+                            <div class="recent-sessions-header">
+                                <span class="card-title">RECENT SESSIONS</span>
+                                <div class="recent-actions">
+                                    <button class="history-action-btn" id="btn-view-history">
+                                        <i data-lucide="history"></i> History
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="sessions-list" id="recent-logs-list">
+                                <!-- Log items appended dynamically -->
+                            </div>
+
+                            <div class="sessions-footer">
+                                <button class="btn-text-link" id="btn-full-history">View Full History</button>
+                            </div>
+
+                            <!-- Dynamic floating attendance quick adder -->
+                            <button class="fab-quick-log" id="btn-fab-log" title="Log Quick Attendance">
+                                <i data-lucide="plus"></i>
+                            </button>
+                        </div>
+
+                        <!-- ROW 4: Todo Checklist and Smart Insights -->
+                        <div class="dashboard-card checklist-card">
+                            <div class="card-header">
+                                <span class="card-title">TODO CHECKLIST</span>
+                                <i data-lucide="check-square" class="header-icon"></i>
+                            </div>
+                            <div class="checklist-wrapper">
+                                <div class="task-add-row">
+                                    <input type="text" placeholder="Add study task (e.g. Review Heap sort)..." class="task-input" id="todo-new-task-input">
+                                    <select class="task-subject-select" id="todo-task-subject-select">
+                                        <!-- Dynamically generated -->
+                                    </select>
+                                    <button class="task-add-btn" id="todo-add-task-btn">
+                                        <i data-lucide="plus"></i>
+                                    </button>
+                                </div>
+                                <div class="todo-list-items" id="todo-list-container">
+                                    <!-- Dynamic elements -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card smart-insights-card">
+                            <div class="card-header">
+                                <span class="card-title">SMART ANALYTICS & INSIGHTS</span>
+                                <i data-lucide="brain-circuit" class="header-icon"></i>
+                            </div>
+                            <div class="insights-body" id="dashboard-insights-list">
+                                <!-- Dynamic insights generation based on attendance rates -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 2. BUNK CALCULATOR VIEW -->
+                <div class="view-content" id="view-calculator">
+                    <div class="view-header-title">
+                        <h2>Bunk Target Planner</h2>
+                        <p>Calculate attendance ratios, forecast required consecutive sessions, and check safe bunk margins.</p>
+                    </div>
+
+                    <div class="calculator-grid">
+                        <div class="calculator-card glass-panel">
+                            <h3>Theoretical Calculator</h3>
+                            <p class="section-desc">Run quick tests independent of your saved subjects.</p>
+                            <div class="calc-form">
+                                <div class="calc-input-group">
+                                    <label>Total Classes Conducted</label>
+                                    <input type="number" id="calc-conducted" class="form-input" placeholder="e.g. 50" min="1">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Classes You Attended</label>
+                                    <input type="number" id="calc-attended" class="form-input" placeholder="e.g. 40" min="0">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Desired Target Percentage (%)</label>
+                                    <input type="number" id="calc-target" class="form-input" placeholder="e.g. 75" value="75" min="1" max="100">
+                                </div>
+                                <button class="btn-primary calc-submit-btn" id="btn-run-calculator">
+                                    <i data-lucide="calculator"></i> Calculate Target Details
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calculator-card glass-panel result-panel">
+                            <h3>Planning Report</h3>
+                            <div id="calc-report-content" class="report-content">
+                                <div class="empty-report-state">
+                                    <i data-lucide="calculator" class="calc-big-icon"></i>
+                                    <p>Enter details on the left and run calculations to see your detailed plan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SUBJECTS MANAGER VIEW -->
+                <div class="view-content" id="view-subjects">
+                    <div class="view-header-title">
+                        <h2>Subject Database Manager</h2>
+                        <p>Configure course metrics, add/remove subjects, edit syllabus, and adjust target parameters.</p>
+                    </div>
+
+                    <div class="manager-layout">
+                        <!-- Add Subject Form -->
+                        <div class="manager-form-card glass-panel">
+                            <h3 id="subject-form-title">Create New Subject</h3>
+                            <form id="subject-manager-form" class="manager-form">
+                                <input type="hidden" id="edit-subject-id" value="">
+                                
+                                <div class="calc-input-group">
+                                    <label>Subject Name</label>
+                                    <input type="text" id="subject-name" class="form-input" placeholder="e.g. Data Structures" required>
+                                </div>
+
+                                <div class="calc-input-group">
+                                    <label>Subject Icon Glyph</label>
+                                    <div class="icon-selector-grid">
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="code" checked><i data-lucide="code"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="terminal"><i data-lucide="terminal"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="brain"><i data-lucide="brain"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="laptop"><i data-lucide="laptop"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="book-open"><i data-lucide="book-open"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="cpu"><i data-lucide="cpu"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="database"><i data-lucide="database"></i></label>
+                                        <label class="icon-option"><input type="radio" name="subject-icon" value="globe"><i data-lucide="globe"></i></label>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-2">
+                                    <div class="calc-input-group">
+                                        <label>Conducted</label>
+                                        <input type="number" id="subject-conducted" class="form-input" min="0" value="0" required>
+                                    </div>
+                                    <div class="calc-input-group">
+                                        <label>Attended</label>
+                                        <input type="number" id="subject-attended" class="form-input" min="0" value="0" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row-2">
+                                    <div class="calc-input-group">
+                                        <label>Target (%)</label>
+                                        <input type="number" id="subject-target" class="form-input" min="50" max="100" value="80" required>
+                                    </div>
+                                    <div class="calc-input-group">
+                                        <label>Syllabus Completed (%)</label>
+                                        <input type="number" id="subject-syllabus" class="form-input" min="0" max="100" value="0">
+                                    </div>
+                                </div>
+
+                                <div class="calc-input-group">
+                                    <label>Upcoming Midterm/Exam Date (Optional)</label>
+                                    <input type="date" id="subject-exam" class="form-input">
+                                </div>
+
+                                <div class="form-action-buttons">
+                                    <button type="submit" class="btn-primary" id="subject-form-submit-btn">
+                                        <i data-lucide="plus"></i> Add Course
+                                    </button>
+                                    <button type="button" class="btn-secondary" id="subject-form-reset-btn" style="display:none;">
+                                        Cancel Edit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Subjects Listing & Detailed Analytics -->
+                        <div class="manager-list-section">
+                            <div class="card-section-header">
+                                <h3>Course Databases</h3>
+                            </div>
+                            <div class="manager-courses-list" id="manager-courses-grid">
+                                <!-- Dynamic subjects cards showing detailed data entries -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. TIMETABLE SCHEDULER VIEW -->
+                <div class="view-content" id="view-timetable">
+                    <div class="view-header-title">
+                        <h2>Weekly Timetable & Schedule</h2>
+                        <p>Plan your recurring weekly classes and log attendance with a single click as they occur.</p>
+                    </div>
+
+                    <div class="timetable-layout">
+                        <div class="timetable-controls glass-panel">
+                            <h3>Add Scheduled Class Slot</h3>
+                            <form id="timetable-slot-form" class="manager-form">
+                                <div class="calc-input-group">
+                                    <label>Day of the Week</label>
+                                    <select id="slot-day" class="form-input" required>
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
+                                    </select>
+                                </div>
+
+                                <div class="calc-input-group">
+                                    <label>Select Subject</label>
+                                    <select id="slot-subject" class="form-input" required>
+                                        <!-- Dynamic subjects -->
+                                    </select>
+                                </div>
+
+                                <div class="form-row-2">
+                                    <div class="calc-input-group">
+                                        <label>Start Time</label>
+                                        <input type="time" id="slot-start" class="form-input" required>
+                                    </div>
+                                    <div class="calc-input-group">
+                                        <label>End Time</label>
+                                        <input type="time" id="slot-end" class="form-input" required>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="plus"></i> Add Slot
+                                </button>
+                            </form>
+
+                            <hr class="setting-divider" style="margin: 20px 0;">
+                            
+                            <!-- Fast Grid Timetable Generator button -->
+                            <button class="btn-primary upload-label" id="btn-trigger-timetable-matrix" style="background: rgba(124, 77, 255, 0.08); border-color: var(--accent-glow); color: var(--accent-glow);">
+                                <i data-lucide="layout-grid"></i> Fast Grid Matrix Builder
+                            </button>
+                        </div>
+
+                        <div class="timetable-display glass-panel">
+                            <div class="day-tabs-row" id="timetable-day-selector">
+                                <button class="day-tab-btn active" data-day="Monday">Mon</button>
+                                <button class="day-tab-btn" data-day="Tuesday">Tue</button>
+                                <button class="day-tab-btn" data-day="Wednesday">Wed</button>
+                                <button class="day-tab-btn" data-day="Thursday">Thu</button>
+                                <button class="day-tab-btn" data-day="Friday">Fri</button>
+                                <button class="day-tab-btn" data-day="Saturday">Sat</button>
+                            </div>
+
+                            <div class="schedule-slots-container" id="timetable-slots-list">
+                                <!-- Dynamic day slots entries -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. PROFILE & SETTINGS VIEW -->
+                <div class="view-content" id="view-profile">
+                    <div class="view-header-title">
+                        <h2>Settings & Customization</h2>
+                        <p>Personalize your experience, toggle audio prompts, configure themes, and import/export cloud backups.</p>
+                    </div>
+
+                    <div class="profile-settings-grid">
+                        <!-- Profile Card Configuration -->
+                        <div class="settings-card glass-panel">
+                            <h3>Edit Student Profile</h3>
+                            <div class="profile-edit-avatar-section">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Student" alt="Avatar" class="profile-settings-avatar" id="settings-avatar-preview">
+                                <div class="avatar-edit-options">
+                                    <label>Bottts Seed Avatar</label>
+                                    <input type="text" id="profile-avatar-seed" class="form-input" value="" placeholder="e.g. Bob, Alex, Sam">
+                                </div>
+                            </div>
+                            <form id="profile-details-form" class="manager-form">
+                                <div class="calc-input-group">
+                                    <label>Student Name</label>
+                                    <input type="text" id="profile-name" class="form-input" value="" required>
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Major / Year / Details</label>
+                                    <input type="text" id="profile-role" class="form-input" value="" required>
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Daily Streak Count (Days)</label>
+                                    <input type="number" id="profile-streak" class="form-input" value="14" min="0">
+                                </div>
+                                <div class="calc-input-group">
+                                    <label>Academic Minimum Goal (%)</label>
+                                    <input type="number" id="profile-goal" class="form-input" value="80" min="50" max="100">
+                                </div>
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i> Save Profile Details
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Accent Theme Selection & Sound Controls -->
+                        <div class="settings-card glass-panel">
+                            <h3>Aesthetic Themes & System</h3>
+                            <div class="theme-selector-wrapper">
+                                <label class="setting-block-label">Select Visual Accent Theme</label>
+                                <div class="theme-option-presets">
+                                    <button class="theme-preset-btn active" data-theme="cyber" id="theme-btn-cyber">
+                                        <span class="theme-indicator-circle cyber-dots"></span>
+                                        <span class="theme-preset-name">Cyber Glow</span>
+                                    </button>
+                                    <button class="theme-preset-btn" data-theme="crimson" id="theme-btn-crimson">
+                                        <span class="theme-indicator-circle crimson-dots"></span>
+                                        <span class="theme-preset-name">Crimson Code</span>
+                                    </button>
+                                    <button class="theme-preset-btn" data-theme="starlight" id="theme-btn-starlight">
+                                        <span class="theme-indicator-circle starlight-dots"></span>
+                                        <span class="theme-preset-name">Starlight</span>
+                                    </button>
+                                    <button class="theme-preset-btn" data-theme="monochrome" id="theme-btn-monochrome">
+                                        <span class="theme-indicator-circle monochrome-dots"></span>
+                                        <span class="theme-preset-name">Monochrome</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <hr class="setting-divider">
+
+                            <div class="toggle-setting-row">
+                                <div class="setting-text-block">
+                                    <span class="setting-title">Synthesizer Sound Effects</span>
+                                    <span class="setting-desc">Produce high-tech retro chimes on timer finishes and clicks.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="system-audio-toggle" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <hr class="setting-divider">
+
+                            <h3>Data Sync & Backups</h3>
+                            <p class="setting-section-desc">Download a local backup of your dashboard or upload your JSON save on another device.</p>
+                            <div class="backup-actions-row">
+                                <button class="btn-primary backup-btn" id="btn-export-backup">
+                                    <i data-lucide="download"></i> Export JSON
+                                </button>
+                                <label class="btn-primary backup-btn upload-label" for="import-backup-file">
+                                    <i data-lucide="upload"></i> Import JSON
+                                    <input type="file" id="import-backup-file" accept=".json" style="display:none;">
+                                </label>
+                            </div>
+
+                            <hr class="setting-divider">
+
+                            <!-- Logout Setting button -->
+                            <button class="btn-danger-action" id="btn-profile-signout" style="background: rgba(255,179,0,0.05); border-color: var(--accent-warning); color: var(--accent-warning); margin-bottom: 16px;">
+                                <i data-lucide="log-out"></i> Sign Out from Account
+                            </button>
+
+                            <div class="danger-zone-settings">
+                                <h3>Danger Zone</h3>
+                                <button class="btn-danger-action" id="btn-factory-reset">
+                                    <i data-lucide="trash-2"></i> Factory Reset All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- GLOBAL OVERLAYS & MODALS -->
+
+    <!-- ==========================================
+       WELCOME ONBOARDING STEP WIZARD MODAL (NEW USERS)
+    ========================================== -->
+    <div class="overlay-modal" id="modal-onboarding">
+        <div class="modal-card glass-panel onboarding-wizard-card animate-reveal" style="max-width: 580px;">
+            <div class="onboarding-header">
+                <span class="onboarding-brand"><i data-lucide="zap"></i> Setup Wizard</span>
+                <span class="onboarding-steps-indicator" id="onboarding-steps-text">Step 1 of 3</span>
+            </div>
+
+            <!-- Slide 1: Setup Profile -->
+            <div class="onboarding-slide active" id="onboarding-slide-1">
+                <h3>Welcome! Let's build your profile.</h3>
+                <p class="onboarding-slide-desc">This name and major will appear on your TryCatch75 command bar.</p>
+                <div class="manager-form" style="margin-top: 20px;">
+                    <div class="calc-input-group">
+                        <label>Your Full Name</label>
+                        <input type="text" id="ob-profile-name" class="form-input" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Major / Year / College Subtitle</label>
+                        <input type="text" id="ob-profile-role" class="form-input" placeholder="e.g. Sophomore • Mechanical Engineering" required>
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Minimum Target Goal Percentage (%)</label>
+                        <input type="number" id="ob-profile-goal" class="form-input" value="75" min="50" max="100">
+                    </div>
+                    <button class="btn-primary ob-next-btn" style="margin-top: 10px;" id="ob-btn-go-2">
+                        Next: Configure Courses <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Bulk Add Subjects -->
+            <div class="onboarding-slide" id="onboarding-slide-2">
+                <h3>Select Your Subjects</h3>
+                <p class="onboarding-slide-desc">Enter the subjects you are taking this semester (comma-separated). We will generate isolated tracking blocks for each.</p>
+                <div class="manager-form" style="margin-top: 20px;">
+                    <div class="calc-input-group">
+                        <label>Subjects List (separated by commas)</label>
+                        <textarea id="ob-subjects-bulk" class="form-input font-mono" style="height: 120px; resize: none;" placeholder="e.g. Math III, Thermodynamics, Dynamics, Fluid Mechanics, Engineering Drawing"></textarea>
+                    </div>
+                    <div class="form-row-2">
+                        <button class="btn-secondary ob-back-btn" id="ob-btn-back-1"><i data-lucide="chevron-left"></i> Back</button>
+                        <button class="btn-primary ob-next-btn" id="ob-btn-go-3">Next: Initialize Attendance <i data-lucide="chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Init Attendance stats -->
+            <div class="onboarding-slide" id="onboarding-slide-3">
+                <h3>Initialize Attendance Metrics</h3>
+                <p class="onboarding-slide-desc">Are you in the middle of a semester? Enter your current attendance numbers below so you don't start from a blank ledger.</p>
+                
+                <div class="ob-attendance-initializer-container" id="ob-subject-sliders-list" style="margin: 20px 0; max-height: 220px; overflow-y: auto;">
+                    <!-- Populated dynamically based on Bulk subjects added -->
+                </div>
+
+                <div class="form-row-2">
+                    <button class="btn-secondary ob-back-btn" id="ob-btn-back-2"><i data-lucide="chevron-left"></i> Back</button>
+                    <button class="btn-primary" id="ob-btn-finish" style="background: var(--accent-primary); box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);">
+                        <i data-lucide="check-circle-2"></i> Launch Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <div class="onboarding-progress-dots" style="margin-top: 24px;">
+                <span class="ob-dot active"></span>
+                <span class="ob-dot"></span>
+                <span class="ob-dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       FAST GRID TIMETABLE GENERATOR MODAL
+    ========================================== -->
+    <div class="overlay-modal" id="modal-timetable-generator">
+        <div class="modal-card glass-panel matrix-generator-card animate-reveal" style="max-width: 820px; width: 100%;">
+            <div class="modal-header">
+                <h3>Fast Grid Matrix Timetable Builder</h3>
+                <button class="modal-close-btn" id="btn-close-timetable-matrix"><i data-lucide="x"></i></button>
+            </div>
+            
+            <p class="section-desc" style="margin-bottom: 16px;">Map a full week's college timetable in seconds. Choose standard period slot timings on the left, then click on cells in the Mon–Sat grid to assign subjects.</p>
+
+            <div class="matrix-builder-container">
+                <!-- Timings configurator column -->
+                <div class="matrix-period-config">
+                    <h4>Define Period Timing Templates</h4>
+                    <div class="period-slots-list-config" id="matrix-period-slots">
+                        <!-- Populated dynamically -->
+                    </div>
+                    <button class="btn-secondary" id="matrix-btn-add-period-row" style="width: 100%; padding: 8px 12px; font-size:12px; margin-top: 10px;">
+                        <i data-lucide="plus-circle"></i> Add Period Template Slot
+                    </button>
+                </div>
+
+                <!-- Visual clickable matrix table -->
+                <div class="matrix-grid-scroll-box">
+                    <table class="matrix-grid-table">
+                        <thead>
+                            <tr id="matrix-header-row">
+                                <th>Period Template</th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thu</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-grid-tbody">
+                            <!-- Clickable matrix grid cells generated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn-secondary" id="btn-cancel-timetable-matrix">Cancel</button>
+                <button class="btn-primary" id="btn-save-timetable-matrix" style="background: var(--accent-glow); box-shadow: 0 0 15px rgba(124, 77, 255, 0.3);">
+                    <i data-lucide="check"></i> Apply Timetable Grid
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. QUICK LOG ATTENDANCE MODAL -->
+    <div class="overlay-modal" id="modal-quick-log">
+        <div class="modal-card glass-panel animate-reveal">
+            <div class="modal-header">
+                <h3>Log Attendance Session</h3>
+                <button class="modal-close-btn" id="btn-close-quick-log"><i data-lucide="x"></i></button>
+            </div>
+            <form id="quick-log-form" class="manager-form">
+                <div class="calc-input-group">
+                    <label>Select Course</label>
+                    <select id="quick-log-subject-select" class="form-input" required>
+                        <!-- Dynamic -->
+                    </select>
+                </div>
+                
+                <div class="form-row-2">
+                    <div class="calc-input-group">
+                        <label>Date</label>
+                        <input type="date" id="quick-log-date" class="form-input" required>
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Time</label>
+                        <input type="time" id="quick-log-time" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="calc-input-group">
+                    <label>Select Status</label>
+                    <div class="quick-status-selector">
+                        <label class="status-option">
+                            <input type="radio" name="quick-status" value="PRESENT" checked>
+                            <span class="status-pill present-pill"><i data-lucide="check"></i> Present</span>
+                        </label>
+                        <label class="status-option">
+                            <input type="radio" name="quick-status" value="BUNKED">
+                            <span class="status-pill bunked-pill"><i data-lucide="x"></i> Bunked</span>
+                        </label>
+                        <label class="status-option">
+                            <input type="radio" name="quick-status" value="ABSENT">
+                            <span class="status-pill absent-pill"><i data-lucide="alert-triangle"></i> Absent</span>
+                        </label>
+                        <label class="status-option">
+                            <input type="radio" name="quick-status" value="CANCELLED">
+                            <span class="status-pill cancelled-pill"><i data-lucide="slash"></i> Cancelled</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <i data-lucide="check-circle-2"></i> Log Entry
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. EDIT HISTORY LOGS MODAL -->
+    <div class="overlay-modal" id="modal-history-logs">
+        <div class="modal-card glass-panel history-modal-card animate-reveal">
+            <div class="modal-header">
+                <h3>Detailed Attendance Logs</h3>
+                <button class="modal-close-btn" id="btn-close-history-logs"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="history-filters-row">
+                <input type="text" placeholder="Search logs by course name..." class="form-input" id="history-search-input">
+                <select id="history-filter-status" class="form-input">
+                    <option value="ALL">All Statuses</option>
+                    <option value="PRESENT">Present</option>
+                    <option value="BUNKED">Bunked</option>
+                    <option value="ABSENT">Absent (Unexcused)</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+
+            <div class="history-list-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-logs-tbody">
+                        <!-- Dynamic items -->
+                    </tbody>
+                </table>
+                <div class="empty-history-state" id="history-empty-view" style="display:none;">
+                    <i data-lucide="history" class="calc-big-icon"></i>
+                    <p>No historical logs found matching your filter parameters.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. COMMAND PALETTE MODAL -->
+    <div class="overlay-modal" id="modal-command-palette">
+        <div class="command-palette-card animate-palette">
+            <div class="palette-input-row">
+                <i data-lucide="search" class="palette-search-icon"></i>
+                <input type="text" placeholder="Type a command or search action (e.g. go dashboard, theme crimson)..." class="palette-search-input" id="palette-input-query" autofocus autocomplete="off">
+                <span class="palette-escape-hint">ESC to close</span>
+            </div>
+            <div class="palette-results-list" id="palette-suggestions">
+                <!-- Dynamically rendered suggestion prompts -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST SYSTEM CONTAINER -->
+    <div class="toast-notification-container" id="toast-container"></div>
+
+    <script src="script.js?v=2.1"></script>
+    <script>
+        // Start Lucide Icon rendering
+        lucide.createIcons();
+    </script>
+</body>
+</html>
