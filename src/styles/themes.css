@@ -1,0 +1,85 @@
+/* ═══════════════════════════════════════════
+   TryCatch75 — Theme Tokens
+   Cyberpunk Dark (default) + Clean Light
+   ═══════════════════════════════════════════ */
+
+/* Dark Theme (Default) */
+:root,
+.dark {
+  /* Backgrounds */
+  --bg-primary: #0e0e11; /* Very dark grayish purple/black */
+  --bg-secondary: #131317;
+  --bg-card: #18181c;
+  --bg-card-hover: #1f1f24;
+  --bg-elevated: #26262d;
+
+  /* Accent Colors */
+  --accent-cyan: #14b8a6; /* Muted cyan */
+  --accent-purple: #8b5cf6;
+  --accent-green: #34d399; /* Soft green */
+  --accent-red: #ef4444; /* Soft red for bunked */
+  --accent-yellow: #f59e0b;
+  --accent-orange: #ff6b35; /* Signature brand orange */
+
+  /* Text */
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+
+  /* Borders */
+  --border-default: #27272a; /* Flat thin borders */
+  --border-hover: #3f3f46;
+
+  /* Glows - Removed for minimalist look */
+  --glow-cyan: none;
+  --glow-purple: none;
+  --glow-red: none;
+  --glow-green: none;
+  --glow-yellow: none;
+  --glow-orange: none;
+
+  /* Grid */
+  --grid-line: transparent; /* No grid */
+
+  /* Fonts */
+  --font-heading: 'Fraunces', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+
+  /* Sidebar */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
+  --navbar-height: 64px;
+}
+
+/* Light Theme */
+.light {
+  --bg-primary: #f5f6fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f1f5;
+  --bg-elevated: #eaebf0;
+
+  --accent-cyan: #0891b2;
+  --accent-purple: #7c3aed;
+  --accent-green: #059669;
+  --accent-red: #dc2626;
+  --accent-yellow: #d97706;
+  --accent-orange: #f97316;
+
+  --text-primary: #1a1a2e;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+
+  --border-default: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(0, 0, 0, 0.2);
+
+  --glow-cyan: 0 1px 3px rgba(8, 145, 178, 0.1);
+  --glow-purple: 0 1px 3px rgba(124, 58, 237, 0.1);
+  --glow-red: 0 1px 3px rgba(220, 38, 38, 0.1);
+  --glow-green: 0 1px 3px rgba(5, 150, 105, 0.1);
+  --glow-yellow: 0 1px 3px rgba(217, 119, 6, 0.1);
+  --glow-orange: 0 1px 3px rgba(249, 115, 22, 0.1);
+
+  --grid-line: rgba(0, 0, 0, 0.02);
+}
