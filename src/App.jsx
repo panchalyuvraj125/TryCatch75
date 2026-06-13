@@ -1,12 +1,16 @@
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { useSubjects } from './hooks/useSubjects';
+import { useTimetable } from './hooks/useTimetable';
+import { parseShareLink } from './utils/calendarUtils';
 import Navbar from './components/layout/Navbar';
 import BottomNav from './components/layout/BottomNav';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import OnboardingTour from './components/onboarding/OnboardingTour';
 
 
 import Login from './pages/Login';
@@ -16,6 +20,7 @@ import Subjects from './pages/Subjects';
 import MarkAttendance from './pages/MarkAttendance';
 import TimetablePage from './pages/Timetable';
 import Calculator from './pages/Calculator';
+import BunkPlanner from './pages/BunkPlanner';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import History from './pages/History';
@@ -78,6 +83,14 @@ function AnimatedRoutes() {
           }
         />
         <Route
+          path="/bunk-planner"
+          element={
+            <ProtectedRoute>
+              <PageWrapper><BunkPlanner /></PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/analytics"
           element={
             <ProtectedRoute>
@@ -112,6 +125,57 @@ function PageWrapper({ children }) {
   );
 }
 
+function ImportHandler() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { addSubject } = useSubjects();
+  const { setDaySchedule } = useTimetable();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const importDataStr = searchParams.get('import');
+    
+    if (importDataStr) {
+      try {
+        const data = parseShareLink(importDataStr);
+        if (data && data.subjects && data.timetable) {
+          if (window.confirm('Import shared timetable? This will add new subjects and overwrite existing schedule slots.')) {
+            // Import logic
+            const subjectIdMap = {};
+            data.subjects.forEach(sub => {
+              // Create a dummy subject or actually add it
+              const id = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+              subjectIdMap[sub.id] = id;
+              addSubject({ ...sub, id });
+            });
+
+            // Re-map subject IDs in timetable
+            Object.entries(data.timetable).forEach(([day, dayData]) => {
+              if (dayData && dayData.periods) {
+                const mappedPeriods = dayData.periods.map(p => ({
+                  ...p,
+                  subjectId: subjectIdMap[p.subjectId] || p.subjectId
+                }));
+                setDaySchedule(day, mappedPeriods);
+              }
+            });
+            toast.success('Timetable imported successfully!');
+          }
+        }
+      } catch (err) {
+        toast.error('Failed to import timetable');
+      }
+      
+      // Clean up URL
+      searchParams.delete('import');
+      const newUrl = searchParams.toString() ? `${location.pathname}?${searchParams.toString()}` : location.pathname;
+      navigate(newUrl, { replace: true });
+    }
+  }, [location.search, navigate, addSubject, setDaySchedule]);
+
+  return null;
+}
+
 function AppLayout() {
   const location = useLocation();
 
@@ -122,6 +186,8 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] pb-20">
+      <ImportHandler />
+      <OnboardingTour />
       <Navbar />
       <main className="pt-16 transition-all duration-300 mx-auto max-w-7xl">
         <div className="p-4 lg:p-6 lg:px-12">

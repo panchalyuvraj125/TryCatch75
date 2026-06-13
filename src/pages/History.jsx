@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday } from 'date-fns';
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isSameDay } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAttendance } from '../hooks/useAttendance';
+import { useSubjects } from '../hooks/useSubjects';
+import { useTimetable } from '../hooks/useTimetable';
+import { formatDateKey, getDayName } from '../utils/dateHelpers';
 
 export default function History() {
+  const { records } = useAttendance();
+  const { subjects } = useSubjects();
+  const { timetable } = useTimetable();
+  
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
@@ -23,6 +32,10 @@ export default function History() {
 
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  // Get records for the selected date
+  const selectedDateStr = formatDateKey(selectedDate);
+  const selectedRecords = records.filter(r => r.date === selectedDateStr);
+
   return (
     <div className="space-y-8 max-w-3xl mx-auto pb-10">
       {/* Header */}
@@ -38,17 +51,15 @@ export default function History() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <select className="bg-[#111111] border border-[#27272a] text-[#f4f4f5] px-4 py-2.5 rounded-lg text-[13px] focus:outline-none focus:border-[var(--accent-orange)]">
-          <option>Date range</option>
-          <option>Last 7 days</option>
-          <option>Last 30 days</option>
-        </select>
-        <select className="bg-[#111111] border border-[#27272a] text-[#f4f4f5] px-4 py-2.5 rounded-lg text-[13px] focus:outline-none focus:border-[var(--accent-orange)]">
           <option>All Subjects</option>
+          {subjects.map(sub => (
+            <option key={sub.id} value={sub.id}>{sub.name}</option>
+          ))}
         </select>
         <select className="bg-[#111111] border border-[#27272a] text-[#f4f4f5] px-4 py-2.5 rounded-lg text-[13px] focus:outline-none focus:border-[var(--accent-orange)]">
           <option>All Status</option>
           <option>Present</option>
-          <option>Bunked</option>
+          <option>Absent</option>
         </select>
       </div>
 
@@ -80,33 +91,86 @@ export default function History() {
             {days.map((day, i) => {
               const isCurrentMonth = isSameMonth(day, monthStart);
               const isDayToday = isToday(day);
+              const isSelected = isSameDay(day, selectedDate);
               
-              // Dummy logic for coloring
+              const dateStr = formatDateKey(day);
+              const dayRecords = records.filter(r => r.date === dateStr);
+              const dayName = getDayName(day);
+              const hasCollege = timetable[dayName]?.periods?.length > 0;
+              
+              let dotColor = null;
+              if (dayRecords.length > 0) {
+                 const hasAbsent = dayRecords.some(r => r.status === 'absent');
+                 const hasPresent = dayRecords.some(r => r.status === 'present');
+                 if (hasAbsent) {
+                   dotColor = 'bg-[#ef4444]'; // red dot
+                 } else if (hasPresent) {
+                   dotColor = 'bg-[#34d399]'; // green dot
+                 } else {
+                   dotColor = 'bg-[var(--accent-cyan)]'; // medical/cancelled
+                 }
+              } else if (!hasCollege) {
+                 dotColor = 'bg-[#52525b]'; // gray dot (no college/holiday)
+              } else {
+                 // hasCollege is true, no records yet
+                 const today = new Date();
+                 today.setHours(23, 59, 59, 999);
+                 if (day <= today) {
+                   dotColor = 'bg-[var(--accent-orange)]'; // pending attendance
+                 }
+              }
+
               let bgColor = "bg-transparent";
               let textColor = "text-[#f4f4f5]";
               
               if (isCurrentMonth) {
-                const d = day.getDate();
-                if (d % 5 === 0) bgColor = "bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/20";
-                else if (d % 7 === 0) bgColor = "bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/20";
-                else bgColor = "bg-[#111111] hover:bg-[#27272a]";
+                bgColor = "bg-[#111111] hover:bg-[#27272a]";
               } else {
                 textColor = "text-[#52525b]";
               }
 
               if (isDayToday) {
-                bgColor = "bg-[var(--accent-orange)] text-white font-bold";
+                bgColor = "bg-[var(--accent-orange)] text-[#18181b] font-bold";
+              }
+              
+              if (isSelected && !isDayToday) {
+                bgColor += " ring-2 ring-[var(--accent-orange)] ring-offset-2 ring-offset-[#18181b]";
               }
 
               return (
                 <div
                   key={day.toString()}
-                  className={`aspect-square rounded-lg flex items-center justify-center text-[13px] ${bgColor} ${textColor} transition-colors cursor-pointer`}
+                  onClick={() => setSelectedDate(day)}
+                  className={`relative aspect-square rounded-lg flex items-center justify-center text-[13px] ${bgColor} ${textColor} transition-all cursor-pointer`}
                 >
                   {format(day, dateFormat)}
+                  
+                  {dotColor && (
+                    <div className={`absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full ${dotColor} ${isDayToday ? 'ring-1 ring-[#18181b]' : ''}`} />
+                  )}
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div className="mt-6 pt-4 border-t border-[#27272a] flex flex-wrap gap-4">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-[#34d399]"></div>
+            <span className="text-[11px] font-mono text-[#a1a1aa] uppercase tracking-wider">Present</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-[#ef4444]"></div>
+            <span className="text-[11px] font-mono text-[#a1a1aa] uppercase tracking-wider">Bunked</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-[var(--accent-orange)]"></div>
+            <span className="text-[11px] font-mono text-[#a1a1aa] uppercase tracking-wider">Pending</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-[#52525b]"></div>
+            <span className="text-[11px] font-mono text-[#a1a1aa] uppercase tracking-wider">Holiday</span>
           </div>
         </div>
       </div>
@@ -114,18 +178,40 @@ export default function History() {
       {/* Log Details */}
       <div className="bg-[#18181b] border border-[#27272a] rounded-2xl p-6 shadow-sm">
         <h3 className="text-[15px] font-medium text-[#f4f4f5] mb-4">
-          Tuesday, 19 Nov
+          {format(selectedDate, 'EEEE, d MMM yyyy')}
         </h3>
-        <div className="space-y-1">
-          <div className="flex items-center justify-between py-2.5 border-b border-[#27272a] last:border-0">
-            <span className="text-[13px] text-[#a1a1aa]">Database Management Systems</span>
-            <span className="text-[10px] font-mono tracking-widest text-[#34d399] bg-[#34d399]/10 px-2 py-1 rounded">PRESENT</span>
+        
+        {selectedRecords.length > 0 ? (
+          <div className="space-y-1">
+            {selectedRecords.map(record => {
+              const subject = subjects.find(s => s.id === record.subjectId);
+              let statusStyle = "";
+              let statusLabel = record.status.toUpperCase();
+              
+              if (record.status === 'present') {
+                statusStyle = "text-[#34d399] bg-[#34d399]/10";
+              } else if (record.status === 'absent') {
+                statusStyle = "text-[#ef4444] bg-[#ef4444]/10";
+                statusLabel = "BUNKED";
+              } else {
+                statusStyle = "text-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10";
+              }
+
+              return (
+                <div key={record.id} className="flex items-center justify-between py-2.5 border-b border-[#27272a] last:border-0">
+                  <span className="text-[13px] text-[#a1a1aa]">{subject?.name || 'Unknown Subject'}</span>
+                  <span className={`text-[10px] font-mono tracking-widest px-2 py-1 rounded ${statusStyle}`}>
+                    {statusLabel}
+                  </span>
+                </div>
+              );
+            })}
           </div>
-          <div className="flex items-center justify-between py-2.5 border-b border-[#27272a] last:border-0">
-            <span className="text-[13px] text-[#a1a1aa]">Operating Systems</span>
-            <span className="text-[10px] font-mono tracking-widest text-[#ef4444] bg-[#ef4444]/10 px-2 py-1 rounded">BUNKED</span>
+        ) : (
+          <div className="text-center py-6">
+            <p className="text-[13px] text-[#71717a]">No attendance marked on this date.</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

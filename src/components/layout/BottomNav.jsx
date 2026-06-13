@@ -12,7 +12,7 @@ const navItems = [
   { path: '/dashboard', label: 'STATS', icon: BarChart3 },
   { path: '/history', label: 'HISTORY', icon: Calendar },
   { path: '/timetable', label: 'SCHEDULE', icon: Clock },
-  { path: '/calculator', label: 'CALC', icon: Calculator },
+  { path: '/bunk-planner', label: 'PLANNER', icon: Calculator },
 ];
 
 export default function BottomNav() {

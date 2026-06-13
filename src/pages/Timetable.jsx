@@ -6,6 +6,7 @@ import { useTimetable } from '../hooks/useTimetable';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { DAYS_OF_WEEK, DAY_FULL_LABELS, MAX_PERIODS } from '../utils/constants';
+import { exportTimetableToICS, generateShareLink } from '../utils/calendarUtils';
 import toast from 'react-hot-toast';
 
 const TIME_SLOTS = [
@@ -64,6 +65,18 @@ export default function Timetable() {
     setPeriods(periods.filter((_, i) => i !== index));
   };
 
+  const handleExportICS = () => {
+    const res = exportTimetableToICS(timetable, subjects);
+    if (res.error) toast.error('Failed to export calendar');
+    else toast.success('Calendar downloaded!');
+  };
+
+  const handleShare = () => {
+    const link = generateShareLink(timetable, subjects);
+    navigator.clipboard.writeText(link);
+    toast.success('Share link copied to clipboard!');
+  };
+
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <div className="flex flex-col">
@@ -73,9 +86,27 @@ export default function Timetable() {
         <h1 className="font-heading text-4xl font-bold text-[#f4f4f5] tracking-tight mb-6">
           Timetable <span className="text-[var(--accent-orange)] italic font-medium">setup</span>
         </h1>
-        <p className="text-[14px] text-[#a1a1aa] mb-8">
-          Build your weekly schedule. Click any day to edit its slots. Data is local to this device.
-        </p>
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <p className="text-[14px] text-[#a1a1aa]">
+              Build your weekly schedule. Click any day to edit its slots.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={handleShare}
+              className="bg-[#111111] border border-[#27272a] text-[#a1a1aa] px-3 py-1.5 rounded-lg text-[12px] hover:text-[#f4f4f5] hover:bg-[#18181b] transition-colors"
+            >
+              Share Link
+            </button>
+            <button 
+              onClick={handleExportICS}
+              className="bg-[#111111] border border-[#27272a] text-[#a1a1aa] px-3 py-1.5 rounded-lg text-[12px] hover:text-[#f4f4f5] hover:bg-[#18181b] transition-colors"
+            >
+              Export .ics
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Day Tabs */}

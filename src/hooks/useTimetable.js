@@ -5,19 +5,20 @@ import { useAuth } from '../contexts/AuthContext';
 import { DAYS_OF_WEEK } from '../utils/constants';
 import { getDayName } from '../utils/dateHelpers';
 
-const STORAGE_KEY = 'tc75_timetable';
+const getStorageKey = (uid) => `tc75_timetable_${uid || 'guest'}`;
 
-function getLocalTimetable() {
+function getLocalTimetable(uid) {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(getStorageKey(uid));
     return data ? JSON.parse(data) : {};
   } catch {
     return {};
   }
 }
 
-function setLocalTimetable(timetable) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(timetable));
+function setLocalTimetable(uid, timetable) {
+  if (!uid) return;
+  localStorage.setItem(getStorageKey(uid), JSON.stringify(timetable));
 }
 
 /**
@@ -25,8 +26,8 @@ function setLocalTimetable(timetable) {
  */
 export function useTimetable() {
   const { user } = useAuth();
-  const [timetable, setTimetable] = useState(() => getLocalTimetable());
-  const [loading, setLoading] = useState(() => Object.keys(getLocalTimetable()).length === 0);
+  const [timetable, setTimetable] = useState(() => getLocalTimetable(user?.uid));
+  const [loading, setLoading] = useState(() => Object.keys(getLocalTimetable(user?.uid)).length === 0);
 
   useEffect(() => {
     if (!user) {
@@ -36,7 +37,7 @@ export function useTimetable() {
     }
 
     if (!isFirebaseConfigured) {
-      setTimetable(getLocalTimetable());
+      setTimetable(getLocalTimetable(user.uid));
       setLoading(false);
       return;
     }
@@ -50,12 +51,12 @@ export function useTimetable() {
           data[doc.id] = doc.data();
         });
         setTimetable(data);
-        setLocalTimetable(data);
+        setLocalTimetable(user.uid, data);
         setLoading(false);
       },
       (error) => {
         console.error('Timetable listener error:', error);
-        setTimetable(getLocalTimetable());
+        setTimetable(getLocalTimetable(user.uid));
         setLoading(false);
       }
     );
@@ -75,9 +76,9 @@ export function useTimetable() {
       const dayData = { periods };
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalTimetable();
+        const existing = getLocalTimetable(user.uid);
         existing[day] = dayData;
-        setLocalTimetable(existing);
+        setLocalTimetable(user.uid, existing);
         setTimetable(existing);
         return;
       }

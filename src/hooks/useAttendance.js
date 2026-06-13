@@ -15,19 +15,20 @@ import { useAuth } from '../contexts/AuthContext';
 import { formatDateKey } from '../utils/dateHelpers';
 import { ATTENDANCE_STATUS } from '../utils/constants';
 
-const STORAGE_KEY = 'tc75_attendance';
+const getStorageKey = (uid) => `tc75_attendance_${uid || 'guest'}`;
 
-function getLocalAttendance() {
+function getLocalAttendance(uid) {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(getStorageKey(uid));
     return data ? JSON.parse(data) : [];
   } catch {
     return [];
   }
 }
 
-function setLocalAttendance(records) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+function setLocalAttendance(uid, records) {
+  if (!uid) return;
+  localStorage.setItem(getStorageKey(uid), JSON.stringify(records));
 }
 
 /**
@@ -36,8 +37,8 @@ function setLocalAttendance(records) {
  */
 export function useAttendance() {
   const { user } = useAuth();
-  const [records, setRecords] = useState(() => getLocalAttendance());
-  const [loading, setLoading] = useState(() => getLocalAttendance().length === 0);
+  const [records, setRecords] = useState(() => getLocalAttendance(user?.uid));
+  const [loading, setLoading] = useState(() => getLocalAttendance(user?.uid).length === 0);
 
   // Load attendance records
   useEffect(() => {
@@ -48,7 +49,7 @@ export function useAttendance() {
     }
 
     if (!isFirebaseConfigured) {
-      setRecords(getLocalAttendance());
+      setRecords(getLocalAttendance(user.uid));
       setLoading(false);
       return;
     }
@@ -59,12 +60,12 @@ export function useAttendance() {
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setRecords(data);
-        setLocalAttendance(data); // Cache locally
+        setLocalAttendance(user.uid, data); // Cache locally
         setLoading(false);
       },
       (error) => {
         console.error('Attendance listener error:', error);
-        setRecords(getLocalAttendance());
+        setRecords(getLocalAttendance(user.uid));
         setLoading(false);
       }
     );
@@ -90,14 +91,14 @@ export function useAttendance() {
       };
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalAttendance();
+        const existing = getLocalAttendance(user.uid);
         const idx = existing.findIndex((r) => r.id === docId);
         if (idx >= 0) {
           existing[idx] = { ...record, id: docId };
         } else {
           existing.push({ ...record, id: docId });
         }
-        setLocalAttendance(existing);
+        setLocalAttendance(user.uid, existing);
         setRecords(existing);
         return;
       }
@@ -118,7 +119,7 @@ export function useAttendance() {
       const dateStr = typeof date === 'string' ? date : formatDateKey(date);
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalAttendance();
+        const existing = getLocalAttendance(user.uid);
         subjectIds.forEach((subjectId) => {
           const docId = `${dateStr}_${subjectId}`;
           const record = {
@@ -133,7 +134,7 @@ export function useAttendance() {
           if (idx >= 0) existing[idx] = record;
           else existing.push(record);
         });
-        setLocalAttendance(existing);
+        setLocalAttendance(user.uid, existing);
         setRecords(existing);
         return;
       }
@@ -163,8 +164,8 @@ export function useAttendance() {
       if (!user) return;
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalAttendance().filter((r) => r.id !== docId);
-        setLocalAttendance(existing);
+        const existing = getLocalAttendance(user.uid).filter((r) => r.id !== docId);
+        setLocalAttendance(user.uid, existing);
         setRecords(existing);
         return;
       }

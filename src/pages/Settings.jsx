@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const PROFILE_STORAGE_KEY = 'tc75_profile';
+
 
 export default function Settings() {
   const { user } = useAuth();
@@ -44,7 +44,7 @@ export default function Settings() {
       if (!user) return;
 
       // Try localStorage first
-      const cached = localStorage.getItem(PROFILE_STORAGE_KEY);
+      const cached = localStorage.getItem(`tc75_profile_${user.uid}`);
       if (cached) {
         try {
           setProfile(JSON.parse(cached));
@@ -60,7 +60,7 @@ export default function Settings() {
             const data = snap.data();
             const merged = { ...profile, ...data };
             setProfile(merged);
-            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(merged));
+            localStorage.setItem(`tc75_profile_${user.uid}`, JSON.stringify(merged));
           }
         } catch (err) {
           console.error('Failed to load profile:', err);
@@ -73,7 +73,9 @@ export default function Settings() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+      if (user) {
+        localStorage.setItem(`tc75_profile_${user.uid}`, JSON.stringify(profile));
+      }
 
       if (isFirebaseConfigured && user) {
         const profileRef = doc(db, 'users', user.uid);

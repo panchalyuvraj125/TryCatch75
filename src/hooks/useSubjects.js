@@ -11,19 +11,20 @@ import {
 import { db, isFirebaseConfigured } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 
-const STORAGE_KEY = 'tc75_subjects';
+const getStorageKey = (uid) => `tc75_subjects_${uid || 'guest'}`;
 
-function getLocalSubjects() {
+function getLocalSubjects(uid) {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(getStorageKey(uid));
     return data ? JSON.parse(data) : [];
   } catch {
     return [];
   }
 }
 
-function setLocalSubjects(subjects) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(subjects));
+function setLocalSubjects(uid, subjects) {
+  if (!uid) return;
+  localStorage.setItem(getStorageKey(uid), JSON.stringify(subjects));
 }
 
 /**
@@ -31,8 +32,8 @@ function setLocalSubjects(subjects) {
  */
 export function useSubjects() {
   const { user } = useAuth();
-  const [subjects, setSubjects] = useState(() => getLocalSubjects());
-  const [loading, setLoading] = useState(() => getLocalSubjects().length === 0);
+  const [subjects, setSubjects] = useState(() => getLocalSubjects(user?.uid));
+  const [loading, setLoading] = useState(() => getLocalSubjects(user?.uid).length === 0);
 
   useEffect(() => {
     if (!user) {
@@ -42,7 +43,7 @@ export function useSubjects() {
     }
 
     if (!isFirebaseConfigured) {
-      setSubjects(getLocalSubjects());
+      setSubjects(getLocalSubjects(user.uid));
       setLoading(false);
       return;
     }
@@ -53,12 +54,12 @@ export function useSubjects() {
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setSubjects(data);
-        setLocalSubjects(data); // Cache locally
+        setLocalSubjects(user.uid, data); // Cache locally
         setLoading(false);
       },
       (error) => {
         console.error('Subjects listener error:', error);
-        setSubjects(getLocalSubjects());
+        setSubjects(getLocalSubjects(user.uid));
         setLoading(false);
       }
     );
@@ -80,9 +81,9 @@ export function useSubjects() {
       };
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalSubjects();
+        const existing = getLocalSubjects(user.uid);
         existing.push({ ...subject, id });
-        setLocalSubjects(existing);
+        setLocalSubjects(user.uid, existing);
         setSubjects(existing);
         return id;
       }
@@ -105,11 +106,11 @@ export function useSubjects() {
       if (!user) return;
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalSubjects();
+        const existing = getLocalSubjects(user.uid);
         const idx = existing.findIndex((s) => s.id === subjectId);
         if (idx >= 0) {
           existing[idx] = { ...existing[idx], ...updates };
-          setLocalSubjects(existing);
+          setLocalSubjects(user.uid, existing);
           setSubjects(existing);
         }
         return;
@@ -129,8 +130,8 @@ export function useSubjects() {
       if (!user) return;
 
       if (!isFirebaseConfigured) {
-        const existing = getLocalSubjects().filter((s) => s.id !== subjectId);
-        setLocalSubjects(existing);
+        const existing = getLocalSubjects(user.uid).filter((s) => s.id !== subjectId);
+        setLocalSubjects(user.uid, existing);
         setSubjects(existing);
         return;
       }

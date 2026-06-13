@@ -68,7 +68,7 @@ export function AuthProvider({ children }) {
         { id: 'sub_wsp', name: 'WSP (PR)', type: 'practical', semester: 2, targetAttendance: 75, createdAt: new Date().toISOString() },
         { id: 'sub_emt', name: 'EMT II (TH)', type: 'theory', semester: 2, targetAttendance: 75, createdAt: new Date().toISOString() }
       ];
-      localStorage.setItem('tc75_subjects', JSON.stringify(am2Subjects));
+      localStorage.setItem(`tc75_subjects_${newUser.uid}`, JSON.stringify(am2Subjects));
 
       // Force seed AM2 Timetable
       const am2Timetable = {
@@ -117,7 +117,7 @@ export function AuthProvider({ children }) {
           { time: '03:00 - 04:00', subjectId: 'sub_wsp', room: 'OPP. TO CANTEEN' }
         ]}
       };
-      localStorage.setItem('tc75_timetable', JSON.stringify(am2Timetable));
+      localStorage.setItem(`tc75_timetable_${newUser.uid}`, JSON.stringify(am2Timetable));
       
       // We will reload the window to ensure hooks catch the new seeded data
       setTimeout(() => window.location.reload(), 100);

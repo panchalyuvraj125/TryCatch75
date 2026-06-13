@@ -5,6 +5,7 @@ import { useCalculator } from '../hooks/useCalculator';
 import SubjectCard from '../components/dashboard/SubjectCard';
 import OverallStats from '../components/dashboard/OverallStats';
 import AlertBanner from '../components/dashboard/AlertBanner';
+import DailyBriefing from '../components/dashboard/DailyBriefing';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { Plus, BookOpen } from 'lucide-react';
@@ -58,15 +59,21 @@ export default function Dashboard() {
             My <span className="text-[var(--accent-orange)] italic font-medium">stats</span>
           </h1>
         </div>
-        {subjects.length > 0 && (
-          <button className="bg-[#111111] border border-[#27272a] text-[#a1a1aa] px-4 py-2 rounded-lg text-[13px] hover:text-[#f4f4f5] hover:bg-[#18181b] transition-colors flex items-center gap-2">
-            <span className="font-mono">↓</span> Export CSV
-          </button>
-        )}
+        <div className="flex gap-2">
+          <Link to="/subjects" className="bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/30 px-4 py-2 rounded-lg text-[13px] hover:bg-[var(--accent-cyan)]/20 transition-colors flex items-center gap-2 font-medium" id="manage-subjects-btn">
+            Manage Subjects
+          </Link>
+          {subjects.length > 0 && (
+            <button className="bg-[#111111] border border-[#27272a] text-[#a1a1aa] px-4 py-2 rounded-lg text-[13px] hover:text-[#f4f4f5] hover:bg-[#18181b] transition-colors flex items-center gap-2">
+              <span className="font-mono">↓</span> Export CSV
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Alerts */}
       <AlertBanner subjectStats={subjectStats} isTodayMarked={todayMarked} />
+      <DailyBriefing />
 
       {/* Overall Stats */}
       {subjects.length > 0 && (
