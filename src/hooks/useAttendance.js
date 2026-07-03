@@ -9,41 +9,28 @@ export function useAttendance() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchAttendance = useCallback(async () => {
     if (!user) {
       setRecords([]);
       setLoading(false);
       return;
     }
 
-    const fetchAttendance = async () => {
-      const { data, error } = await supabase
-        .from('attendance')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('date', { ascending: false });
+    const { data, error } = await supabase
+      .from('attendance')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false });
 
-      if (!error && data) {
-        setRecords(data.map(r => ({ ...r, subjectId: r.subject_id, markedAt: r.marked_at })));
-      }
-      setLoading(false);
-    };
-
-    fetchAttendance();
-
-    const channel = supabase
-      .channel('attendance-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'attendance', filter: `user_id=eq.${user.id}` },
-        () => fetchAttendance()
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    if (!error && data) {
+      setRecords(data.map(r => ({ ...r, subjectId: r.subject_id, markedAt: r.marked_at })));
+    }
+    setLoading(false);
   }, [user]);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [fetchAttendance]);
 
   const markAttendance = useCallback(
     async (date, subjectId, status, note = '') => {
@@ -51,7 +38,7 @@ export function useAttendance() {
 
       const dateStr = typeof date === 'string' ? date : formatDateKey(date);
 
-      await supabase
+      const { error } = await supabase
         .from('attendance')
         .upsert({
           user_id: user.id,
@@ -61,8 +48,12 @@ export function useAttendance() {
           note,
           marked_at: new Date().toISOString(),
         }, { onConflict: 'user_id,subject_id,date' });
+
+      if (!error) {
+        await fetchAttendance();
+      }
     },
-    [user]
+    [user, fetchAttendance]
   );
 
   const bulkMark = useCallback(
@@ -80,24 +71,32 @@ export function useAttendance() {
         marked_at: new Date().toISOString(),
       }));
 
-      await supabase
+      const { error } = await supabase
         .from('attendance')
         .upsert(inserts, { onConflict: 'user_id,subject_id,date' });
+
+      if (!error) {
+        await fetchAttendance();
+      }
     },
-    [user]
+    [user, fetchAttendance]
   );
 
   const deleteAttendance = useCallback(
     async (recordId) => {
       if (!user) return;
 
-      await supabase
+      const { error } = await supabase
         .from('attendance')
         .delete()
         .eq('id', recordId)
         .eq('user_id', user.id);
+
+      if (!error) {
+        await fetchAttendance();
+      }
     },
-    [user]
+    [user, fetchAttendance]
   );
 
   const getRecordsByDate = useCallback(
@@ -193,5 +192,6 @@ export function useAttendance() {
     isTodayMarked,
     getCurrentStreak,
     getLongestStreak,
+    refresh: fetchAttendance,
   };
 }

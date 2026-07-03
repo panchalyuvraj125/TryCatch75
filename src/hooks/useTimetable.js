@@ -8,50 +8,37 @@ export function useTimetable() {
   const [timetable, setTimetable] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchTimetable = useCallback(async () => {
     if (!user) {
       setTimetable({});
       setLoading(false);
       return;
     }
 
-    const fetchTimetable = async () => {
-      const { data, error } = await supabase
-        .from('timetables')
-        .select('*')
-        .eq('user_id', user.id);
+    const { data, error } = await supabase
+      .from('timetables')
+      .select('*')
+      .eq('user_id', user.id);
 
-      if (!error && data) {
-        const ttData = {};
-        data.forEach((item) => {
-          ttData[item.day] = { periods: item.periods || [] };
-        });
-        setTimetable(ttData);
-      }
-      setLoading(false);
-    };
-
-    fetchTimetable();
-
-    const channel = supabase
-      .channel('timetables-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'timetables', filter: `user_id=eq.${user.id}` },
-        () => fetchTimetable()
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    if (!error && data) {
+      const ttData = {};
+      data.forEach((item) => {
+        ttData[item.day] = { periods: item.periods || [] };
+      });
+      setTimetable(ttData);
+    }
+    setLoading(false);
   }, [user]);
+
+  useEffect(() => {
+    fetchTimetable();
+  }, [fetchTimetable]);
 
   const setDaySchedule = useCallback(
     async (day, periods) => {
       if (!user) return;
 
-      await supabase
+      const { error } = await supabase
         .from('timetables')
         .upsert({
           user_id: user.id,
@@ -59,8 +46,12 @@ export function useTimetable() {
           periods,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id,day' });
+
+      if (!error) {
+        await fetchTimetable();
+      }
     },
-    [user]
+    [user, fetchTimetable]
   );
 
   const getTodaySchedule = useCallback(() => {
@@ -89,5 +80,6 @@ export function useTimetable() {
     getTodaySchedule,
     getTodaySubjectIds,
     getDaySchedule,
+    refresh: fetchTimetable,
   };
 }

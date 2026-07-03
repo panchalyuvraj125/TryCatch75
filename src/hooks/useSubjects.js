@@ -7,41 +7,28 @@ export function useSubjects() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchSubjects = useCallback(async () => {
     if (!user) {
       setSubjects([]);
       setLoading(false);
       return;
     }
 
-    const fetchSubjects = async () => {
-      const { data, error } = await supabase
-        .from('subjects')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
+    const { data, error } = await supabase
+      .from('subjects')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true });
 
-      if (!error && data) {
-        setSubjects(data.map(s => ({ ...s, id: s.id, subjectId: s.id })));
-      }
-      setLoading(false);
-    };
-
-    fetchSubjects();
-
-    const channel = supabase
-      .channel('subjects-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'subjects', filter: `user_id=eq.${user.id}` },
-        () => fetchSubjects()
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    if (!error && data) {
+      setSubjects(data.map(s => ({ ...s, id: s.id, subjectId: s.id })));
+    }
+    setLoading(false);
   }, [user]);
+
+  useEffect(() => {
+    fetchSubjects();
+  }, [fetchSubjects]);
 
   const addSubject = useCallback(
     async (subjectData) => {
@@ -67,9 +54,11 @@ export function useSubjects() {
         return null;
       }
 
+      // Refresh data
+      await fetchSubjects();
       return data?.id;
     },
-    [user]
+    [user, fetchSubjects]
   );
 
   const updateSubject = useCallback(
@@ -90,8 +79,11 @@ export function useSubjects() {
         .update(updateData)
         .eq('id', subjectId)
         .eq('user_id', user.id);
+
+      // Refresh data
+      await fetchSubjects();
     },
-    [user]
+    [user, fetchSubjects]
   );
 
   const deleteSubject = useCallback(
@@ -103,8 +95,11 @@ export function useSubjects() {
         .delete()
         .eq('id', subjectId)
         .eq('user_id', user.id);
+
+      // Refresh data
+      await fetchSubjects();
     },
-    [user]
+    [user, fetchSubjects]
   );
 
   const getSubjectsBySemester = useCallback(
@@ -121,5 +116,6 @@ export function useSubjects() {
     updateSubject,
     deleteSubject,
     getSubjectsBySemester,
+    refresh: fetchSubjects,
   };
 }
