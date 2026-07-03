@@ -257,8 +257,10 @@ function AppLayout() {
 }
 
 export default function App() {
+  const basename = import.meta.env.BASE_URL !== '/' ? import.meta.env.BASE_URL : undefined;
+
   return (
-    <BrowserRouter basename="/TryCatch75">
+    <BrowserRouter basename={basename}>
       <ThemeProvider>
         <AuthProvider>
           <AppLayout />
