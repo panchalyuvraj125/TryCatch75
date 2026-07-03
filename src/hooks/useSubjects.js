@@ -1,39 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  updateDoc,
-  onSnapshot,
-  serverTimestamp,
-} from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '../firebase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
-const getStorageKey = (uid) => `tc75_subjects_${uid || 'guest'}`;
-
-function getLocalSubjects(uid) {
-  try {
-    const data = localStorage.getItem(getStorageKey(uid));
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-function setLocalSubjects(uid, subjects) {
-  if (!uid) return;
-  localStorage.setItem(getStorageKey(uid), JSON.stringify(subjects));
-}
-
-/**
- * Hook for subject CRUD operations
- */
 export function useSubjects() {
   const { user } = useAuth();
-  const [subjects, setSubjects] = useState(() => getLocalSubjects(user?.uid));
-  const [loading, setLoading] = useState(() => getLocalSubjects(user?.uid).length === 0);
+  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
@@ -42,109 +14,99 @@ export function useSubjects() {
       return;
     }
 
-    if (!isFirebaseConfigured) {
-      setSubjects(getLocalSubjects(user.uid));
-      setLoading(false);
-      return;
-    }
+    const fetchSubjects = async () => {
+      const { data, error } = await supabase
+        .from('subjects')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
 
-    const subRef = collection(db, 'users', user.uid, 'subjects');
-    const unsubscribe = onSnapshot(
-      subRef,
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setSubjects(data);
-        setLocalSubjects(user.uid, data); // Cache locally
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Subjects listener error:', error);
-        setSubjects(getLocalSubjects(user.uid));
-        setLoading(false);
+      if (!error && data) {
+        setSubjects(data.map(s => ({ ...s, id: s.id, subjectId: s.id })));
       }
-    );
+      setLoading(false);
+    };
 
-    return () => unsubscribe();
+    fetchSubjects();
+
+    const channel = supabase
+      .channel('subjects-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'subjects', filter: `user_id=eq.${user.id}` },
+        () => fetchSubjects()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
-  /**
-   * Add a new subject
-   */
   const addSubject = useCallback(
     async (subjectData) => {
       if (!user) return null;
 
-      const id = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const subject = {
-        ...subjectData,
-        createdAt: new Date().toISOString(),
-      };
+      const { data, error } = await supabase
+        .from('subjects')
+        .insert({
+          user_id: user.id,
+          name: subjectData.name,
+          type: subjectData.type || 'theory',
+          credits: subjectData.credits || 3,
+          teacher_name: subjectData.teacherName || '',
+          contact_note: subjectData.contactNote || '',
+          semester: subjectData.semester || 1,
+          target_attendance: subjectData.targetAttendance || 75,
+        })
+        .select()
+        .maybeSingle();
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalSubjects(user.uid);
-        existing.push({ ...subject, id });
-        setLocalSubjects(user.uid, existing);
-        setSubjects(existing);
-        return id;
+      if (error) {
+        console.error('Error adding subject:', error);
+        return null;
       }
 
-      const docRef = doc(db, 'users', user.uid, 'subjects', id);
-      await setDoc(docRef, {
-        ...subject,
-        createdAt: serverTimestamp(),
-      });
-      return id;
+      return data?.id;
     },
     [user]
   );
 
-  /**
-   * Update an existing subject
-   */
   const updateSubject = useCallback(
     async (subjectId, updates) => {
       if (!user) return;
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalSubjects(user.uid);
-        const idx = existing.findIndex((s) => s.id === subjectId);
-        if (idx >= 0) {
-          existing[idx] = { ...existing[idx], ...updates };
-          setLocalSubjects(user.uid, existing);
-          setSubjects(existing);
-        }
-        return;
-      }
+      const updateData = {};
+      if (updates.name !== undefined) updateData.name = updates.name;
+      if (updates.type !== undefined) updateData.type = updates.type;
+      if (updates.credits !== undefined) updateData.credits = updates.credits;
+      if (updates.teacherName !== undefined) updateData.teacher_name = updates.teacherName;
+      if (updates.contactNote !== undefined) updateData.contact_note = updates.contactNote;
+      if (updates.semester !== undefined) updateData.semester = updates.semester;
+      if (updates.targetAttendance !== undefined) updateData.target_attendance = updates.targetAttendance;
 
-      const docRef = doc(db, 'users', user.uid, 'subjects', subjectId);
-      await updateDoc(docRef, { ...updates, updatedAt: serverTimestamp() });
+      await supabase
+        .from('subjects')
+        .update(updateData)
+        .eq('id', subjectId)
+        .eq('user_id', user.id);
     },
     [user]
   );
 
-  /**
-   * Delete a subject
-   */
   const deleteSubject = useCallback(
     async (subjectId) => {
       if (!user) return;
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalSubjects(user.uid).filter((s) => s.id !== subjectId);
-        setLocalSubjects(user.uid, existing);
-        setSubjects(existing);
-        return;
-      }
-
-      const docRef = doc(db, 'users', user.uid, 'subjects', subjectId);
-      await deleteDoc(docRef);
+      await supabase
+        .from('subjects')
+        .delete()
+        .eq('id', subjectId)
+        .eq('user_id', user.id);
     },
     [user]
   );
 
-  /**
-   * Get subjects filtered by semester
-   */
   const getSubjectsBySemester = useCallback(
     (semester) => {
       return subjects.filter((s) => s.semester === semester);

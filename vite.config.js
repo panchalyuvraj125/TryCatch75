@@ -59,5 +59,16 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['recharts'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-utils': ['date-fns', 'lucide-react'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 500,
   },
 });
