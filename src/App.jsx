@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,103 +12,27 @@ import BottomNav from './components/layout/BottomNav';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import OnboardingTour from './components/onboarding/OnboardingTour';
 
+// Lazy load pages for code-splitting
+const Login = lazy(() => import('./pages/Login'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Subjects = lazy(() => import('./pages/Subjects'));
+const MarkAttendance = lazy(() => import('./pages/MarkAttendance'));
+const TimetablePage = lazy(() => import('./pages/Timetable'));
+const Calculator = lazy(() => import('./pages/Calculator'));
+const BunkPlanner = lazy(() => import('./pages/BunkPlanner'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const Settings = lazy(() => import('./pages/Settings'));
+const History = lazy(() => import('./pages/History'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
-import Login from './pages/Login';
-
-import Dashboard from './pages/Dashboard';
-import Subjects from './pages/Subjects';
-import MarkAttendance from './pages/MarkAttendance';
-import TimetablePage from './pages/Timetable';
-import Calculator from './pages/Calculator';
-import BunkPlanner from './pages/BunkPlanner';
-import Analytics from './pages/Analytics';
-import Settings from './pages/Settings';
-import History from './pages/History';
-import NotFound from './pages/NotFound';
-
-function AnimatedRoutes() {
-  const location = useLocation();
-
+function PageLoader() {
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Navigate to="/mark" replace />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><Dashboard /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/subjects"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><Subjects /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><History /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/mark"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><MarkAttendance /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/timetable"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><TimetablePage /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/calculator"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><Calculator /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/bunk-planner"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><BunkPlanner /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><Analytics /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <PageWrapper><Settings /></PageWrapper>
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
-      </Routes>
-    </AnimatePresence>
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" />
+        <p className="text-[var(--text-muted)] text-sm">Loading...</p>
+      </div>
+    </div>
   );
 }
 
@@ -125,6 +49,144 @@ function PageWrapper({ children }) {
   );
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <Login />
+            </Suspense>
+          }
+        />
+        <Route path="/" element={<Navigate to="/mark" replace />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <Dashboard />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subjects"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <Subjects />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <History />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mark"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <MarkAttendance />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/timetable"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <TimetablePage />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/calculator"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <Calculator />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bunk-planner"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <BunkPlanner />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <Analytics />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <PageWrapper>
+                <Suspense fallback={<PageLoader />}>
+                  <Settings />
+                </Suspense>
+              </PageWrapper>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <PageWrapper>
+              <Suspense fallback={<PageLoader />}>
+                <NotFound />
+              </Suspense>
+            </PageWrapper>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 function ImportHandler() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -134,22 +196,19 @@ function ImportHandler() {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const importDataStr = searchParams.get('import');
-    
+
     if (importDataStr) {
       try {
         const data = parseShareLink(importDataStr);
         if (data && data.subjects && data.timetable) {
           if (window.confirm('Import shared timetable? This will add new subjects and overwrite existing schedule slots.')) {
-            // Import logic
             const subjectIdMap = {};
             data.subjects.forEach(sub => {
-              // Create a dummy subject or actually add it
               const id = `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
               subjectIdMap[sub.id] = id;
               addSubject({ ...sub, id });
             });
 
-            // Re-map subject IDs in timetable
             Object.entries(data.timetable).forEach(([day, dayData]) => {
               if (dayData && dayData.periods) {
                 const mappedPeriods = dayData.periods.map(p => ({
@@ -165,8 +224,7 @@ function ImportHandler() {
       } catch (err) {
         toast.error('Failed to import timetable');
       }
-      
-      // Clean up URL
+
       searchParams.delete('import');
       const newUrl = searchParams.toString() ? `${location.pathname}?${searchParams.toString()}` : location.pathname;
       navigate(newUrl, { replace: true });
@@ -179,7 +237,6 @@ function ImportHandler() {
 function AppLayout() {
   const location = useLocation();
 
-  // Don't show layout on login page
   if (location.pathname === '/login') {
     return <AnimatedRoutes />;
   }
@@ -200,8 +257,10 @@ function AppLayout() {
 }
 
 export default function App() {
+  const basename = import.meta.env.BASE_URL !== '/' ? import.meta.env.BASE_URL : undefined;
+
   return (
-    <BrowserRouter basename="/TryCatch75">
+    <BrowserRouter basename={basename}>
       <ThemeProvider>
         <AuthProvider>
           <AppLayout />

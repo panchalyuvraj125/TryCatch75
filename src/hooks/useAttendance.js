@@ -1,184 +1,104 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  query,
-  where,
-  onSnapshot,
-  getDocs,
-  writeBatch,
-} from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '../firebase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDateKey } from '../utils/dateHelpers';
 import { ATTENDANCE_STATUS } from '../utils/constants';
 
-const getStorageKey = (uid) => `tc75_attendance_${uid || 'guest'}`;
-
-function getLocalAttendance(uid) {
-  try {
-    const data = localStorage.getItem(getStorageKey(uid));
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-}
-
-function setLocalAttendance(uid, records) {
-  if (!uid) return;
-  localStorage.setItem(getStorageKey(uid), JSON.stringify(records));
-}
-
-/**
- * Hook for attendance CRUD operations
- * Uses Firestore when configured, falls back to localStorage
- */
 export function useAttendance() {
   const { user } = useAuth();
-  const [records, setRecords] = useState(() => getLocalAttendance(user?.uid));
-  const [loading, setLoading] = useState(() => getLocalAttendance(user?.uid).length === 0);
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Load attendance records
-  useEffect(() => {
+  const fetchAttendance = useCallback(async () => {
     if (!user) {
       setRecords([]);
       setLoading(false);
       return;
     }
 
-    if (!isFirebaseConfigured) {
-      setRecords(getLocalAttendance(user.uid));
-      setLoading(false);
-      return;
+    const { data, error } = await supabase
+      .from('attendance')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('date', { ascending: false });
+
+    if (!error && data) {
+      setRecords(data.map(r => ({ ...r, subjectId: r.subject_id, markedAt: r.marked_at })));
     }
-
-    const attRef = collection(db, 'users', user.uid, 'attendance');
-    const unsubscribe = onSnapshot(
-      attRef,
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setRecords(data);
-        setLocalAttendance(user.uid, data); // Cache locally
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Attendance listener error:', error);
-        setRecords(getLocalAttendance(user.uid));
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
+    setLoading(false);
   }, [user]);
 
-  /**
-   * Mark attendance for a subject on a date
-   */
+  useEffect(() => {
+    fetchAttendance();
+  }, [fetchAttendance]);
+
   const markAttendance = useCallback(
     async (date, subjectId, status, note = '') => {
       if (!user) return;
 
       const dateStr = typeof date === 'string' ? date : formatDateKey(date);
-      const docId = `${dateStr}_${subjectId}`;
-      const record = {
-        date: dateStr,
-        subjectId,
-        status,
-        note,
-        markedAt: new Date().toISOString(),
-      };
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalAttendance(user.uid);
-        const idx = existing.findIndex((r) => r.id === docId);
-        if (idx >= 0) {
-          existing[idx] = { ...record, id: docId };
-        } else {
-          existing.push({ ...record, id: docId });
-        }
-        setLocalAttendance(user.uid, existing);
-        setRecords(existing);
-        return;
+      const { error } = await supabase
+        .from('attendance')
+        .upsert({
+          user_id: user.id,
+          subject_id: subjectId,
+          date: dateStr,
+          status,
+          note,
+          marked_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,subject_id,date' });
+
+      if (!error) {
+        await fetchAttendance();
       }
-
-      const docRef = doc(db, 'users', user.uid, 'attendance', docId);
-      await setDoc(docRef, record, { merge: true });
     },
-    [user]
+    [user, fetchAttendance]
   );
 
-  /**
-   * Bulk mark all subjects for a date
-   */
   const bulkMark = useCallback(
     async (date, subjectIds, status) => {
       if (!user || !subjectIds.length) return;
 
       const dateStr = typeof date === 'string' ? date : formatDateKey(date);
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalAttendance(user.uid);
-        subjectIds.forEach((subjectId) => {
-          const docId = `${dateStr}_${subjectId}`;
-          const record = {
-            id: docId,
-            date: dateStr,
-            subjectId,
-            status,
-            note: '',
-            markedAt: new Date().toISOString(),
-          };
-          const idx = existing.findIndex((r) => r.id === docId);
-          if (idx >= 0) existing[idx] = record;
-          else existing.push(record);
-        });
-        setLocalAttendance(user.uid, existing);
-        setRecords(existing);
-        return;
-      }
+      const inserts = subjectIds.map((subjectId) => ({
+        user_id: user.id,
+        subject_id: subjectId,
+        date: dateStr,
+        status,
+        note: '',
+        marked_at: new Date().toISOString(),
+      }));
 
-      const batch = writeBatch(db);
-      subjectIds.forEach((subjectId) => {
-        const docId = `${dateStr}_${subjectId}`;
-        const docRef = doc(db, 'users', user.uid, 'attendance', docId);
-        batch.set(docRef, {
-          date: dateStr,
-          subjectId,
-          status,
-          note: '',
-          markedAt: new Date().toISOString(),
-        });
-      });
-      await batch.commit();
+      const { error } = await supabase
+        .from('attendance')
+        .upsert(inserts, { onConflict: 'user_id,subject_id,date' });
+
+      if (!error) {
+        await fetchAttendance();
+      }
     },
-    [user]
+    [user, fetchAttendance]
   );
 
-  /**
-   * Delete an attendance record
-   */
   const deleteAttendance = useCallback(
-    async (docId) => {
+    async (recordId) => {
       if (!user) return;
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalAttendance(user.uid).filter((r) => r.id !== docId);
-        setLocalAttendance(user.uid, existing);
-        setRecords(existing);
-        return;
-      }
+      const { error } = await supabase
+        .from('attendance')
+        .delete()
+        .eq('id', recordId)
+        .eq('user_id', user.id);
 
-      const docRef = doc(db, 'users', user.uid, 'attendance', docId);
-      await deleteDoc(docRef);
+      if (!error) {
+        await fetchAttendance();
+      }
     },
-    [user]
+    [user, fetchAttendance]
   );
 
-  /**
-   * Get records for a specific date
-   */
   const getRecordsByDate = useCallback(
     (date) => {
       const dateStr = typeof date === 'string' ? date : formatDateKey(date);
@@ -187,44 +107,32 @@ export function useAttendance() {
     [records]
   );
 
-  /**
-   * Get records for a specific subject
-   */
   const getRecordsBySubject = useCallback(
     (subjectId) => {
-      return records.filter((r) => r.subjectId === subjectId);
+      return records.filter((r) => r.subject_id === subjectId || r.subjectId === subjectId);
     },
     [records]
   );
 
-  /**
-   * Get attendance stats for a subject
-   */
   const getSubjectStats = useCallback(
     (subjectId) => {
-      const subRecords = records.filter((r) => r.subjectId === subjectId);
+      const subRecords = records.filter((r) => r.subject_id === subjectId || r.subjectId === subjectId);
       const present = subRecords.filter((r) => r.status === ATTENDANCE_STATUS.PRESENT).length;
       const absent = subRecords.filter((r) => r.status === ATTENDANCE_STATUS.ABSENT).length;
       const medical = subRecords.filter((r) => r.status === ATTENDANCE_STATUS.MEDICAL).length;
       const holiday = subRecords.filter((r) => r.status === ATTENDANCE_STATUS.HOLIDAY).length;
-      const total = present + absent + medical; // Holidays don't count in total
+      const total = present + absent + medical;
 
       return { present, absent, medical, holiday, total };
     },
     [records]
   );
 
-  /**
-   * Check if attendance is marked for today
-   */
   const isTodayMarked = useCallback(() => {
     const today = formatDateKey(new Date());
     return records.some((r) => r.date === today);
   }, [records]);
 
-  /**
-   * Get current streak (consecutive present days)
-   */
   const getCurrentStreak = useCallback(() => {
     const dates = [...new Set(records.filter((r) => r.status === ATTENDANCE_STATUS.PRESENT).map((r) => r.date))].sort().reverse();
 
@@ -237,7 +145,6 @@ export function useAttendance() {
         streak++;
         const d = new Date(date);
         d.setDate(d.getDate() - 1);
-        // Skip Sundays
         if (d.getDay() === 0) d.setDate(d.getDate() - 1);
         checkDate = formatDateKey(d);
       } else {
@@ -248,9 +155,6 @@ export function useAttendance() {
     return streak;
   }, [records]);
 
-  /**
-   * Get longest streak in records
-   */
   const getLongestStreak = useCallback(() => {
     const presentDates = [...new Set(records.filter((r) => r.status === ATTENDANCE_STATUS.PRESENT).map((r) => r.date))].sort();
 
@@ -264,7 +168,6 @@ export function useAttendance() {
         const prev = new Date(presentDates[i - 1]);
         const curr = new Date(presentDates[i]);
         const diff = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
-        // Allow 1 day gap (weekend) or consecutive
         if (diff <= 2) {
           current++;
         } else {
@@ -289,5 +192,6 @@ export function useAttendance() {
     isTodayMarked,
     getCurrentStreak,
     getLongestStreak,
+    refresh: fetchAttendance,
   };
 }

@@ -1,114 +1,70 @@
 import { useState, useEffect, useCallback } from 'react';
-import { doc, setDoc, onSnapshot, collection } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '../firebase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { DAYS_OF_WEEK } from '../utils/constants';
 import { getDayName } from '../utils/dateHelpers';
 
-const getStorageKey = (uid) => `tc75_timetable_${uid || 'guest'}`;
-
-function getLocalTimetable(uid) {
-  try {
-    const data = localStorage.getItem(getStorageKey(uid));
-    return data ? JSON.parse(data) : {};
-  } catch {
-    return {};
-  }
-}
-
-function setLocalTimetable(uid, timetable) {
-  if (!uid) return;
-  localStorage.setItem(getStorageKey(uid), JSON.stringify(timetable));
-}
-
-/**
- * Hook for timetable CRUD operations
- */
 export function useTimetable() {
   const { user } = useAuth();
-  const [timetable, setTimetable] = useState(() => getLocalTimetable(user?.uid));
-  const [loading, setLoading] = useState(() => Object.keys(getLocalTimetable(user?.uid)).length === 0);
+  const [timetable, setTimetable] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchTimetable = useCallback(async () => {
     if (!user) {
       setTimetable({});
       setLoading(false);
       return;
     }
 
-    if (!isFirebaseConfigured) {
-      setTimetable(getLocalTimetable(user.uid));
-      setLoading(false);
-      return;
+    const { data, error } = await supabase
+      .from('timetables')
+      .select('*')
+      .eq('user_id', user.id);
+
+    if (!error && data) {
+      const ttData = {};
+      data.forEach((item) => {
+        ttData[item.day] = { periods: item.periods || [] };
+      });
+      setTimetable(ttData);
     }
-
-    const ttRef = collection(db, 'users', user.uid, 'timetable');
-    const unsubscribe = onSnapshot(
-      ttRef,
-      (snapshot) => {
-        const data = {};
-        snapshot.docs.forEach((doc) => {
-          data[doc.id] = doc.data();
-        });
-        setTimetable(data);
-        setLocalTimetable(user.uid, data);
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Timetable listener error:', error);
-        setTimetable(getLocalTimetable(user.uid));
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
+    setLoading(false);
   }, [user]);
 
-  /**
-   * Set timetable for a specific day
-   * @param {string} day - e.g., 'monday'
-   * @param {Array} periods - Array of { time, subjectId, room }
-   */
+  useEffect(() => {
+    fetchTimetable();
+  }, [fetchTimetable]);
+
   const setDaySchedule = useCallback(
     async (day, periods) => {
       if (!user) return;
 
-      const dayData = { periods };
+      const { error } = await supabase
+        .from('timetables')
+        .upsert({
+          user_id: user.id,
+          day,
+          periods,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,day' });
 
-      if (!isFirebaseConfigured) {
-        const existing = getLocalTimetable(user.uid);
-        existing[day] = dayData;
-        setLocalTimetable(user.uid, existing);
-        setTimetable(existing);
-        return;
+      if (!error) {
+        await fetchTimetable();
       }
-
-      const docRef = doc(db, 'users', user.uid, 'timetable', day);
-      await setDoc(docRef, dayData);
     },
-    [user]
+    [user, fetchTimetable]
   );
 
-  /**
-   * Get today's schedule
-   */
   const getTodaySchedule = useCallback(() => {
     const today = getDayName(new Date());
     const dayData = timetable[today];
     return dayData?.periods || [];
   }, [timetable]);
 
-  /**
-   * Get today's subject IDs (unique)
-   */
   const getTodaySubjectIds = useCallback(() => {
     const periods = getTodaySchedule();
-    return [...new Set(periods.filter((p) => p.subjectId).map((p) => p.subjectId))];
+    return [...new Set(periods.filter((p) => p.subjectId || p.subject_id).map((p) => p.subjectId || p.subject_id))];
   }, [getTodaySchedule]);
 
-  /**
-   * Get schedule for a specific day
-   */
   const getDaySchedule = useCallback(
     (day) => {
       const dayData = timetable[day];
@@ -124,5 +80,6 @@ export function useTimetable() {
     getTodaySchedule,
     getTodaySubjectIds,
     getDaySchedule,
+    refresh: fetchTimetable,
   };
 }

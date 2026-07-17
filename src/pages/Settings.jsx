@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useSubjects } from '../hooks/useSubjects';
 import { useAttendance } from '../hooks/useAttendance';
@@ -17,21 +15,22 @@ import {
   School,
   Save,
   Sparkles,
-  Key
+  Key,
+  LogOut,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-
-
 export default function Settings() {
-  const { user } = useAuth();
+  const { user, profile, updateProfile, signOut } = useAuth();
   const { subjects } = useSubjects();
   const { getSubjectStats } = useAttendance();
   const { subjectStats } = useCalculator(subjects, getSubjectStats);
+  const navigate = useNavigate();
 
-  const [profile, setProfile] = useState({
+  const [formData, setFormData] = useState({
     name: '',
-    rollNo: '',
+    roll_no: '',
     branch: '',
     year: '',
     university: 'custom',
@@ -41,51 +40,33 @@ export default function Settings() {
   });
   const [saving, setSaving] = useState(false);
 
-  // Load profile
   useEffect(() => {
-    const loadProfile = async () => {
-      if (!user) return;
-
-      // Try localStorage first
-      const cached = localStorage.getItem(`tc75_profile_${user.uid}`);
-      if (cached) {
-        try {
-          setProfile(JSON.parse(cached));
-        } catch {}
-      }
-
-      // Then try Firestore
-      if (isFirebaseConfigured) {
-        try {
-          const profileRef = doc(db, 'users', user.uid);
-          const snap = await getDoc(profileRef);
-          if (snap.exists()) {
-            const data = snap.data();
-            const merged = { ...profile, ...data };
-            setProfile(merged);
-            localStorage.setItem(`tc75_profile_${user.uid}`, JSON.stringify(merged));
-          }
-        } catch (err) {
-          console.error('Failed to load profile:', err);
-        }
-      }
-    };
-    loadProfile();
-  }, [user]);
+    if (profile) {
+      setFormData({
+        name: profile.name || '',
+        roll_no: profile.roll_no || '',
+        branch: profile.branch || '',
+        year: profile.year || '',
+        university: profile.university || 'custom',
+        semester: profile.semester || 1,
+        threshold: profile.threshold || 75,
+      });
+    }
+  }, [profile]);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      if (user) {
-        localStorage.setItem(`tc75_profile_${user.uid}`, JSON.stringify(profile));
-      }
-
-      if (isFirebaseConfigured && user) {
-        const profileRef = doc(db, 'users', user.uid);
-        await setDoc(profileRef, { ...profile, updatedAt: serverTimestamp() }, { merge: true });
-      }
-
-      toast.success('Profile saved! ✓');
+      await updateProfile({
+        name: formData.name,
+        roll_no: formData.roll_no,
+        branch: formData.branch,
+        year: formData.year,
+        university: formData.university,
+        semester: formData.semester,
+        threshold: formData.threshold,
+      });
+      toast.success('Profile saved!');
     } catch (error) {
       toast.error('Failed to save profile');
     } finally {
@@ -96,15 +77,23 @@ export default function Settings() {
   const handleUniversityChange = (uniId) => {
     const preset = UNIVERSITY_PRESETS[uniId];
     if (preset) {
-      setProfile({
-        ...profile,
+      setFormData({
+        ...formData,
         university: uniId,
         threshold: preset.threshold,
       });
     }
   };
 
-  // Export data with subject stats
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      toast.error('Failed to sign out');
+    }
+  };
+
   const exportData = subjectStats.map((s) => ({
     name: s.name,
     type: s.type,
@@ -126,6 +115,26 @@ export default function Settings() {
         </p>
       </div>
 
+      {/* Account Info */}
+      <Card>
+        <div className="flex items-center gap-2 mb-4">
+          <User size={18} className="text-[var(--accent-cyan)]" />
+          <h3 className="font-heading font-semibold text-[var(--text-primary)]">
+            Account
+          </h3>
+        </div>
+
+        <div className="bg-[var(--bg-secondary)] rounded-lg p-4 mb-4">
+          <p className="text-sm text-[var(--text-secondary)]">
+            Signed in as <strong className="text-[var(--text-primary)]">{user?.email}</strong>
+          </p>
+        </div>
+
+        <Button variant="ghost" icon={LogOut} onClick={handleSignOut} size="sm">
+          Sign Out
+        </Button>
+      </Card>
+
       {/* Profile */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
@@ -140,8 +149,8 @@ export default function Settings() {
             <label className="block text-xs text-[var(--text-muted)] mb-1">Name</label>
             <input
               type="text"
-              value={profile.name}
-              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Your name"
               className="cyber-input"
             />
@@ -150,8 +159,8 @@ export default function Settings() {
             <label className="block text-xs text-[var(--text-muted)] mb-1">Roll No</label>
             <input
               type="text"
-              value={profile.rollNo}
-              onChange={(e) => setProfile({ ...profile, rollNo: e.target.value })}
+              value={formData.roll_no}
+              onChange={(e) => setFormData({ ...formData, roll_no: e.target.value })}
               placeholder="e.g., 21CS102"
               className="cyber-input"
             />
@@ -159,8 +168,8 @@ export default function Settings() {
           <div>
             <label className="block text-xs text-[var(--text-muted)] mb-1">Branch</label>
             <select
-              value={profile.branch}
-              onChange={(e) => setProfile({ ...profile, branch: e.target.value })}
+              value={formData.branch}
+              onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
               className="cyber-select"
             >
               <option value="">Select branch</option>
@@ -172,8 +181,8 @@ export default function Settings() {
           <div>
             <label className="block text-xs text-[var(--text-muted)] mb-1">Year</label>
             <select
-              value={profile.year}
-              onChange={(e) => setProfile({ ...profile, year: e.target.value })}
+              value={formData.year}
+              onChange={(e) => setFormData({ ...formData, year: e.target.value })}
               className="cyber-select"
             >
               <option value="">Select year</option>
@@ -185,8 +194,8 @@ export default function Settings() {
           <div>
             <label className="block text-xs text-[var(--text-muted)] mb-1">Semester</label>
             <select
-              value={profile.semester}
-              onChange={(e) => setProfile({ ...profile, semester: parseInt(e.target.value) })}
+              value={formData.semester}
+              onChange={(e) => setFormData({ ...formData, semester: parseInt(e.target.value) })}
               className="cyber-select"
             >
               {SEMESTERS.map((s) => (
@@ -202,9 +211,9 @@ export default function Settings() {
               type="number"
               min="50"
               max="100"
-              value={profile.threshold}
+              value={formData.threshold}
               onChange={(e) =>
-                setProfile({ ...profile, threshold: parseInt(e.target.value) || 75 })
+                setFormData({ ...formData, threshold: parseInt(e.target.value) || 75 })
               }
               className="cyber-input font-mono"
             />
@@ -234,7 +243,7 @@ export default function Settings() {
               onClick={() => handleUniversityChange(uni.id)}
               className={`px-3 py-3 rounded-lg border text-left transition-all text-xs
                 ${
-                  profile.university === uni.id
+                  formData.university === uni.id
                     ? 'border-[var(--accent-cyan)] bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)]'
                     : 'border-[var(--border-default)] text-[var(--text-secondary)] hover:border-[var(--border-hover)]'
                 }`}
@@ -267,8 +276,8 @@ export default function Settings() {
             <Key size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               type="password"
-              value={profile.geminiKey || ''}
-              onChange={(e) => setProfile({ ...profile, geminiKey: e.target.value })}
+              value={formData.geminiKey || ''}
+              onChange={(e) => setFormData({ ...formData, geminiKey: e.target.value })}
               placeholder="AIzaSy..."
               className="cyber-input pl-8 font-mono"
             />
@@ -294,7 +303,7 @@ export default function Settings() {
             variant="outline"
             size="sm"
             icon={Download}
-            onClick={() => exportCSV(exportData, profile.name)}
+            onClick={() => exportCSV(exportData, formData.name)}
             disabled={exportData.length === 0}
           >
             Download CSV
@@ -303,7 +312,7 @@ export default function Settings() {
             variant="outline"
             size="sm"
             icon={Printer}
-            onClick={() => printReport(exportData, profile)}
+            onClick={() => printReport(exportData, { ...formData, rollNo: formData.roll_no })}
             disabled={exportData.length === 0}
           >
             Print Report
@@ -312,7 +321,7 @@ export default function Settings() {
             variant="outline"
             size="sm"
             icon={Share2}
-            onClick={() => shareWhatsApp(exportData, profile.name)}
+            onClick={() => shareWhatsApp(exportData, formData.name)}
             disabled={exportData.length === 0}
           >
             Share via WhatsApp

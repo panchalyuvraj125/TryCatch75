@@ -7,7 +7,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { format } from 'date-fns';
 
 export default function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -80,7 +80,7 @@ export default function Navbar() {
             </button>
 
             {/* User Profile Pill with Dropdown */}
-            {user && user.displayName && (
+            {user && (
               <div className="relative">
                 <button
                   onClick={() => setShowDropdown(!showDropdown)}
@@ -88,11 +88,11 @@ export default function Navbar() {
                 >
                   <div className="w-6 h-6 rounded-full bg-[var(--accent-orange)] flex items-center justify-center">
                     <span className="text-xs font-bold text-white">
-                      {user.displayName.charAt(0).toUpperCase()}
+                      {(profile?.name || user.email || 'U').charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <span className="text-sm font-medium text-[var(--text-primary)]">
-                    {user.displayName}
+                    {profile?.name || user.email?.split('@')[0] || 'User'}
                   </span>
                   <ChevronDown size={14} className="text-[var(--text-muted)] ml-1" />
                 </button>
@@ -102,7 +102,7 @@ export default function Navbar() {
                   <div className="absolute right-0 mt-2 w-48 rounded-xl border border-[var(--border-default)] bg-[var(--bg-card)] shadow-xl overflow-hidden z-50">
                     <div className="p-3 border-b border-[var(--border-default)]">
                       <p className="text-sm font-medium text-[var(--text-primary)] truncate">
-                        {user.displayName}
+                        {profile?.name || user.email}
                       </p>
                     </div>
                     <div className="p-1">
