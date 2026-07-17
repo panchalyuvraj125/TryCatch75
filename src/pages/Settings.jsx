@@ -16,6 +16,8 @@ import {
   Share2,
   School,
   Save,
+  Sparkles,
+  Key
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -35,6 +37,7 @@ export default function Settings() {
     university: 'custom',
     semester: 1,
     threshold: 75,
+    geminiKey: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -244,6 +247,36 @@ export default function Settings() {
               )}
             </button>
           ))}
+        </div>
+      </Card>
+
+      {/* AI Settings */}
+      <Card>
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles size={18} className="text-yellow-400" />
+          <h3 className="font-heading font-semibold text-[var(--text-primary)]">
+            AI Assistant Settings
+          </h3>
+        </div>
+
+        <div>
+          <label className="block text-xs text-[var(--text-muted)] mb-1">
+            Google Gemini API Key
+          </label>
+          <div className="relative">
+            <Key size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+            <input
+              type="password"
+              value={profile.geminiKey || ''}
+              onChange={(e) => setProfile({ ...profile, geminiKey: e.target.value })}
+              placeholder="AIzaSy..."
+              className="cyber-input pl-8 font-mono"
+            />
+          </div>
+          <p className="text-[10px] text-[var(--text-muted)] mt-1.5 leading-relaxed">
+            Required for the Free AI Advisor and Smart Timetable OCR. <br />
+            Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-[var(--accent-cyan)] hover:underline">Google AI Studio</a>.
+          </p>
         </div>
       </Card>
 

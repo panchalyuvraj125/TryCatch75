@@ -6,6 +6,7 @@ import SubjectCard from '../components/dashboard/SubjectCard';
 import OverallStats from '../components/dashboard/OverallStats';
 import AlertBanner from '../components/dashboard/AlertBanner';
 import DailyBriefing from '../components/dashboard/DailyBriefing';
+import AIAdvisor from '../components/ai/AIAdvisor';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { Plus, BookOpen } from 'lucide-react';
@@ -73,7 +74,11 @@ export default function Dashboard() {
 
       {/* Alerts */}
       <AlertBanner subjectStats={subjectStats} isTodayMarked={todayMarked} />
-      <DailyBriefing />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <DailyBriefing />
+        <AIAdvisor subjectStats={subjectStats} overallStats={overallStats} />
+      </div>
 
       {/* Overall Stats */}
       {subjects.length > 0 && (

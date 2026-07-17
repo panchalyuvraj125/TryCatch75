@@ -12,6 +12,8 @@ import {
   SEMESTERS,
 } from '../utils/constants';
 import toast from 'react-hot-toast';
+import { useAuth } from '../contexts/AuthContext';
+import SmartTimetableUpload from '../components/setup/SmartTimetableUpload';
 
 const typeIcons = {
   theory: BookOpen,
@@ -20,6 +22,7 @@ const typeIcons = {
 };
 
 export default function Subjects() {
+  const { user } = useAuth();
   const { subjects, addSubject, updateSubject, deleteSubject } = useSubjects();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
@@ -97,6 +100,18 @@ export default function Subjects() {
           Add Subject
         </Button>
       </div>
+
+      {/* Smart Timetable Upload */}
+      <SmartTimetableUpload 
+        geminiKey={(() => {
+          try {
+            const p = JSON.parse(localStorage.getItem(`tc75_profile_${user?.uid}`));
+            return p?.geminiKey || '';
+          } catch { return ''; }
+        })()} 
+        semester={1}
+        onComplete={() => {}}
+      />
 
       {/* Subject List */}
       {subjects.length > 0 ? (

@@ -4,6 +4,7 @@ import { useCalculator } from '../hooks/useCalculator';
 import WeeklyBarChart from '../components/charts/WeeklyBarChart';
 import MonthlyTrendChart from '../components/charts/MonthlyTrendChart';
 import SubjectPieChart from '../components/charts/SubjectPieChart';
+import AttendanceHeatmap from '../components/charts/AttendanceHeatmap';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { Trophy, TrendingDown, Flame, Award } from 'lucide-react';
@@ -81,6 +82,9 @@ export default function Analytics() {
           )}
         </Card>
       </div>
+
+      {/* Heatmap */}
+      <AttendanceHeatmap records={records} />
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
