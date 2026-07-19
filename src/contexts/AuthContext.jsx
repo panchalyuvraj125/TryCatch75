@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
@@ -17,76 +16,86 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async (userId) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (!error && data) {
-      setProfile(data);
+    try {
+      const storedProfiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+      const userProfile = storedProfiles[userId];
+      if (userProfile) {
+        setProfile(userProfile);
+      }
+    } catch (e) {
+      console.error('Error fetching profile:', e);
     }
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
+    try {
+      // Auto-create a demo user if database is empty
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (Object.keys(users).length === 0) {
+        const demoId = 'demo_user_1';
+        users[demoId] = { id: demoId, email: 'demo', password: 'demo' };
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+        profiles[demoId] = { id: demoId, name: 'Demo Student', created_at: new Date().toISOString() };
+        localStorage.setItem('profiles', JSON.stringify(profiles));
       }
-      setLoading(false);
-    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        (async () => {
-          await fetchProfile(session.user.id);
-        })();
-      } else {
-        setProfile(null);
+      const storedSession = localStorage.getItem('session');
+      if (storedSession) {
+        const sessionUser = JSON.parse(storedSession);
+        setUser(sessionUser);
+        fetchProfile(sessionUser.id);
       }
+    } catch (e) {
+      console.error('Error restoring session:', e);
+    } finally {
       setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    }
   }, [fetchProfile]);
 
   const signUp = useCallback(async (email, password, name) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name },
-        emailRedirectTo: undefined,
-      },
-    });
-
-    if (error) throw error;
-
-    if (data.user) {
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        name: name || email.split('@')[0],
-      });
+    // Generate a simple unique ID for local usage
+    const userId = 'user_' + Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    if (Object.values(users).some(u => u.email === email)) {
+      throw new Error('Already registered: An account with this username already exists.');
     }
 
-    return data;
+    const newUser = { id: userId, email, password };
+    users[userId] = newUser;
+    localStorage.setItem('users', JSON.stringify(users));
+
+    const newProfile = { id: userId, name: name || email.split('@')[0], created_at: new Date().toISOString() };
+    const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+    profiles[userId] = newProfile;
+    localStorage.setItem('profiles', JSON.stringify(profiles));
+
+    localStorage.setItem('session', JSON.stringify({ id: userId, email }));
+    setUser({ id: userId, email });
+    setProfile(newProfile);
+
+    return { user: { id: userId, email } };
   }, []);
 
   const signIn = useCallback(async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    const existingUser = Object.values(users).find(u => u.email === email && u.password === password);
+    
+    if (!existingUser) {
+      throw new Error('Invalid credentials');
+    }
 
-    if (error) throw error;
-    return data;
-  }, []);
+    localStorage.setItem('session', JSON.stringify({ id: existingUser.id, email: existingUser.email }));
+    setUser({ id: existingUser.id, email: existingUser.email });
+    await fetchProfile(existingUser.id);
+
+    return { user: { id: existingUser.id, email: existingUser.email } };
+  }, [fetchProfile]);
 
   const signOut = useCallback(async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    localStorage.removeItem('session');
     setUser(null);
     setProfile(null);
   }, []);
@@ -94,16 +103,17 @@ export function AuthProvider({ children }) {
   const updateProfile = useCallback(async (updates) => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', user.id)
-      .select()
-      .maybeSingle();
-
-    if (error) throw error;
-    setProfile(data);
-    return data;
+    const profiles = JSON.parse(localStorage.getItem('profiles') || '{}');
+    const updatedProfile = { 
+      ...profiles[user.id], 
+      ...updates, 
+      updated_at: new Date().toISOString() 
+    };
+    profiles[user.id] = updatedProfile;
+    localStorage.setItem('profiles', JSON.stringify(profiles));
+    
+    setProfile(updatedProfile);
+    return updatedProfile;
   }, [user]);
 
   const value = {

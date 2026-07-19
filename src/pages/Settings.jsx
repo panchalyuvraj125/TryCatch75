@@ -7,16 +7,19 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { UNIVERSITY_PRESETS, BRANCHES, YEARS, SEMESTERS } from '../utils/constants';
 import { exportCSV, printReport, shareWhatsApp } from '../utils/exportUtils';
+import { loadDemoData, clearDemoData } from '../utils/demoData';
+import DataSync from '../components/settings/DataSync';
+import { useNotifications } from '../hooks/useNotifications';
 import {
   User,
   Download,
   Printer,
   Share2,
-  School,
   Save,
-  Sparkles,
-  Key,
   LogOut,
+  Bell,
+  School,
+  DatabaseZap,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -26,6 +29,7 @@ export default function Settings() {
   const { subjects } = useSubjects();
   const { getSubjectStats } = useAttendance();
   const { subjectStats } = useCalculator(subjects, getSubjectStats);
+  const { permission: notifPermission, requestPermission } = useNotifications();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -36,7 +40,7 @@ export default function Settings() {
     university: 'custom',
     semester: 1,
     threshold: 75,
-    geminiKey: '',
+    autoPilotEnabled: false,
   });
   const [saving, setSaving] = useState(false);
 
@@ -50,6 +54,7 @@ export default function Settings() {
         university: profile.university || 'custom',
         semester: profile.semester || 1,
         threshold: profile.threshold || 75,
+        autoPilotEnabled: profile.autoPilotEnabled || false,
       });
     }
   }, [profile]);
@@ -65,6 +70,7 @@ export default function Settings() {
         university: formData.university,
         semester: formData.semester,
         threshold: formData.threshold,
+        autoPilotEnabled: formData.autoPilotEnabled,
       });
       toast.success('Profile saved!');
     } catch (error) {
@@ -259,37 +265,46 @@ export default function Settings() {
         </div>
       </Card>
 
-      {/* AI Settings */}
+      {/* Notifications */}
       <Card>
         <div className="flex items-center gap-2 mb-4">
-          <Sparkles size={18} className="text-yellow-400" />
+          <Bell size={18} className="text-[var(--accent-orange)]" />
           <h3 className="font-heading font-semibold text-[var(--text-primary)]">
-            AI Assistant Settings
+            Smart Notifications
           </h3>
         </div>
-
-        <div>
-          <label className="block text-xs text-[var(--text-muted)] mb-1">
-            Google Gemini API Key
-          </label>
-          <div className="relative">
-            <Key size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-            <input
-              type="password"
-              value={formData.geminiKey || ''}
-              onChange={(e) => setFormData({ ...formData, geminiKey: e.target.value })}
-              placeholder="AIzaSy..."
-              className="cyber-input pl-8 font-mono"
-            />
+        
+        <div className="flex items-center justify-between bg-[var(--bg-secondary)] p-4 rounded-xl border border-[var(--border-default)]">
+          <div>
+            <p className="text-sm font-medium text-[var(--text-primary)]">Class Reminders</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Get notified 10 minutes before a class starts.</p>
           </div>
-          <p className="text-[10px] text-[var(--text-muted)] mt-1.5 leading-relaxed">
-            Required for the Free AI Advisor and Smart Timetable OCR. <br />
-            Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-[var(--accent-cyan)] hover:underline">Google AI Studio</a>.
-          </p>
+          <Button 
+            size="sm" 
+            variant={notifPermission === 'granted' ? 'outline' : 'primary'}
+            onClick={() => requestPermission()}
+            disabled={notifPermission === 'granted'}
+          >
+            {notifPermission === 'granted' ? 'Enabled' : 'Enable'}
+          </Button>
+        </div>
+
+        <div className="flex items-center justify-between bg-[var(--bg-secondary)] p-4 rounded-xl border border-[var(--border-default)]">
+          <div>
+            <p className="text-sm font-medium text-[var(--text-primary)]">Smart Auto-Pilot ✈️</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Automatically mark classes 'Present' if you forget.</p>
+          </div>
+          <button 
+            onClick={() => setFormData(prev => ({ ...prev, autoPilotEnabled: !prev.autoPilotEnabled }))}
+            className={`w-10 h-6 rounded-full relative transition-colors duration-300 ${formData.autoPilotEnabled ? 'bg-[var(--accent-green)]' : 'bg-[#27272a]'}`}
+          >
+            <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${formData.autoPilotEnabled ? 'left-5' : 'left-1'}`} />
+          </button>
         </div>
       </Card>
 
-      {/* Export */}
+      {/* Data Sync */}
+      <DataSync />
       <Card>
         <div className="flex items-center gap-2 mb-4">
           <Download size={18} className="text-[var(--accent-green)]" />
@@ -333,6 +348,45 @@ export default function Settings() {
             Add subjects and mark attendance to enable export.
           </p>
         )}
+      </Card>
+
+      {/* Developer Tools */}
+      <Card>
+        <div className="flex items-center gap-2 mb-4">
+          <DatabaseZap size={18} className="text-[var(--accent-purple)]" />
+          <h3 className="font-heading font-semibold text-[var(--text-primary)]">
+            Testing & Demo
+          </h3>
+        </div>
+        
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-[var(--text-secondary)] mb-2">
+            Want to see how the app looks with a full semester of data? Load the demo preset.
+          </p>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                if (window.confirm('This will OVERWRITE your current data with demo data. Are you sure?')) {
+                  loadDemoData(user?.id);
+                }
+              }}
+            >
+              Load Demo
+            </Button>
+            <Button 
+              className="flex-1 bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20"
+              onClick={() => {
+                if (window.confirm('WARNING: This will completely wipe all your subjects, attendance, and deadlines. This cannot be undone. Proceed?')) {
+                  clearDemoData(user?.id);
+                }
+              }}
+            >
+              Wipe All Data
+            </Button>
+          </div>
+        </div>
       </Card>
     </div>
   );

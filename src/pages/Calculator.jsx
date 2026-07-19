@@ -5,6 +5,7 @@ import { useAttendance } from '../hooks/useAttendance';
 import { useCalculator } from '../hooks/useCalculator';
 import BunkCalculator from '../components/calculator/BunkCalculator';
 import RecoveryPlanner from '../components/calculator/RecoveryPlanner';
+import WhatIfSimulator from '../components/calculator/WhatIfSimulator';
 import Card from '../components/ui/Card';
 import { Calculator as CalcIcon, TrendingUp, TriangleAlert as AlertTriangle, Target, ChevronDown, ChevronUp } from 'lucide-react';
 import {
@@ -291,117 +292,7 @@ export default function Calculator() {
               <BunkCalculator subjectStats={subjectStats} threshold={75} />
 
               {/* What-If Calculator */}
-              <Card>
-                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">
-                  What-If Calculator
-                </h3>
-                <p className="text-sm text-[var(--text-secondary)] mb-4">
-                  Select a subject and see the impact of bunking or attending classes
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <label className="block text-xs text-[var(--text-muted)] mb-2">
-                      Subject
-                    </label>
-                    <select
-                      className="w-full cyber-input"
-                      value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
-                    >
-                      <option value="">Select Subject</option>
-                      {subjectStats.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name} ({s.percent.toFixed(1)}%)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-[var(--text-muted)] mb-2">
-                      If I Bunk
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min="0"
-                        value={bunkCount}
-                        onChange={(e) => setBunkCount(parseInt(e.target.value) || 0)}
-                        className="cyber-input flex-1"
-                      />
-                      <span className="text-sm text-[var(--text-muted)]">classes</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-[var(--text-muted)] mb-2">
-                      If I Attend
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        min="0"
-                        value={attendCount}
-                        onChange={(e) => setAttendCount(parseInt(e.target.value) || 0)}
-                        className="cyber-input flex-1"
-                      />
-                      <span className="text-sm text-[var(--text-muted)]">classes</span>
-                    </div>
-                  </div>
-                </div>
-
-                {subject && (
-                  <div className="grid grid-cols-2 gap-4">
-                    {(() => {
-                      const s = subjectStats.find((x) => x.id === subject);
-                      if (!s) return null;
-                      const afterBunk = whatIfBunk(s.present, s.total, bunkCount);
-                      const afterAttend = whatIfAttend(s.present, s.total, attendCount);
-                      return (
-                        <>
-                          <div className="bg-[var(--bg-secondary)] p-4 rounded-xl border border-[var(--border-default)]">
-                            <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-2">
-                              After Bunking {bunkCount}
-                            </p>
-                            <span
-                              className={`text-3xl font-bold ${
-                                afterBunk >= 75
-                                  ? 'text-[var(--accent-green)]'
-                                  : 'text-[var(--accent-red)]'
-                              }`}
-                            >
-                              {afterBunk.toFixed(1)}%
-                            </span>
-                            <p className="text-xs text-[var(--text-muted)] mt-1">
-                              {afterBunk >= 75
-                                ? 'Still safe!'
-                                : `${classesNeeded(s.present, s.total + bunkCount, 75)} classes to recover`}
-                            </p>
-                          </div>
-                          <div className="bg-[var(--bg-secondary)] p-4 rounded-xl border border-[var(--border-default)]">
-                            <p className="text-xs text-[var(--text-muted)] uppercase tracking-wider mb-2">
-                              After Attending {attendCount}
-                            </p>
-                            <span
-                              className={`text-3xl font-bold ${
-                                afterAttend >= 75
-                                  ? 'text-[var(--accent-green)]'
-                                  : 'text-[var(--accent-red)]'
-                              }`}
-                            >
-                              {afterAttend.toFixed(1)}%
-                            </span>
-                            <p className="text-xs text-[var(--text-muted)] mt-1">
-                              {s.percent < 75 && afterAttend >= 75
-                                ? 'Would reach safety!'
-                                : 'Keep it up!'}
-                            </p>
-                          </div>
-                        </>
-                      );
-                    })()}
-                  </div>
-                )}
-              </Card>
+              <WhatIfSimulator subjectStats={subjectStats} threshold={75} />
             </>
           ) : (
             <div className="text-center py-12">

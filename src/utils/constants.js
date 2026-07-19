@@ -11,6 +11,7 @@ export const ATTENDANCE_STATUS = {
   ABSENT: 'absent',
   HOLIDAY: 'holiday',
   MEDICAL: 'medical',
+  OFFICIAL: 'official',
 };
 
 /** Subject types */

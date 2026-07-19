@@ -25,6 +25,8 @@ export default function MarkAttendance() {
   const { getTodaySubjectIds, getDaySchedule } = useTimetable();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [notes, setNotes] = useState({});
+  const [showExtraClass, setShowExtraClass] = useState(false);
+  const [extraSubjectId, setExtraSubjectId] = useState('');
 
   const dateStr = formatDateKey(selectedDate);
   const dayName = getDayName(selectedDate);
@@ -38,22 +40,33 @@ export default function MarkAttendance() {
     : subjects;
 
   const getRecordStatus = (subjectId) => {
-    const record = dayRecords.find((r) => r.subjectId === subjectId);
+    const record = dayRecords.find((r) => (r.subjectId || r.subject_id) === subjectId);
     return record?.status || null;
   };
+
+  // Extra subjects are those that have records today but aren't in timetable, 
+  // OR the user explicitly wants to add them.
+  const extraRecordsIds = dayRecords
+    .filter(r => !timetableSubjectIds.includes((r.subjectId || r.subject_id)))
+    .map(r => (r.subjectId || r.subject_id));
+  const finalDisplaySubjects = subjects.filter(s => 
+    timetableSubjectIds.includes(s.id) || extraRecordsIds.includes(s.id)
+  );
+  
+  const availableExtraSubjects = subjects.filter(s => !finalDisplaySubjects.some(fs => fs.id === s.id));
 
   const handleMark = async (subjectId, status) => {
     try {
       await markAttendance(dateStr, subjectId, status, notes[subjectId] || '');
-      const statusEmoji = { present: '✅', absent: '❌', holiday: '🏖️', medical: '🏥' };
-      toast.success(`${statusEmoji[status]} Marked ${status}`);
+      const statusEmoji = { present: '✅', absent: '❌', holiday: '🏖️', medical: '🏥', official: '🏆' };
+      toast.success(`${statusEmoji[status] || '✓'} Marked ${status}`);
     } catch (error) {
       toast.error('Failed to mark attendance');
     }
   };
 
   const handleBulkMark = async (status) => {
-    const subjectIds = displaySubjects.map((s) => s.id);
+    const subjectIds = finalDisplaySubjects.map((s) => s.id);
     try {
       await bulkMark(dateStr, subjectIds, status);
       toast.success(
@@ -147,9 +160,9 @@ export default function MarkAttendance() {
           {format(selectedDate, 'EEEE')}'s Subjects
         </h3>
 
-        {displaySubjects.length > 0 ? (
+        {finalDisplaySubjects.length > 0 ? (
           <div className="space-y-3">
-            {displaySubjects.map((subject, i) => {
+            {finalDisplaySubjects.map((subject, i) => {
               const currentStatus = getRecordStatus(subject.id);
               // Fallback to "holiday" or "medical" acting like cancelled for simplicity in UI matching
               
@@ -197,16 +210,22 @@ export default function MarkAttendance() {
                         >
                           <X size={14} /> Bunked
                         </button>
-                        <button
-                          onClick={() => handleMark(subject.id, 'holiday')} // mapping cancelled to holiday
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${
-                            (currentStatus === 'holiday' || currentStatus === 'medical')
-                              ? 'bg-[#27272a] text-[#f4f4f5]' 
+                        <select
+                          value={currentStatus && !['present', 'absent'].includes(currentStatus) ? currentStatus : ''}
+                          onChange={(e) => {
+                            if (e.target.value) handleMark(subject.id, e.target.value);
+                          }}
+                          className={`bg-transparent text-[12px] font-medium ml-2 outline-none cursor-pointer ${
+                            currentStatus && !['present', 'absent'].includes(currentStatus) 
+                              ? 'text-[#f4f4f5]' 
                               : 'text-[#71717a] hover:text-[#a1a1aa]'
                           }`}
                         >
-                          <span className="font-bold">—</span> Cancelled
-                        </button>
+                          <option value="" disabled>More...</option>
+                          <option value="holiday">Class Cancelled</option>
+                          <option value="medical">Medical Leave</option>
+                          <option value="official">Official Leave</option>
+                        </select>
                       </div>
 
                     </div>
@@ -223,6 +242,44 @@ export default function MarkAttendance() {
           </div>
         )}
       </div>
+
+      {/* Extra Class Button */}
+      {availableExtraSubjects.length > 0 && (
+        <div className="pt-4 border-t border-[#27272a]">
+          <button
+            onClick={() => setShowExtraClass(!showExtraClass)}
+            className="text-[13px] text-[var(--accent-cyan)] font-medium hover:underline"
+          >
+            + Add Extra Class
+          </button>
+          
+          {showExtraClass && (
+            <div className="mt-4 flex gap-2">
+              <select 
+                className="bg-[#111111] border border-[#27272a] text-[#f4f4f5] px-3 py-2 rounded-lg text-[13px] flex-1"
+                value={extraSubjectId}
+                onChange={(e) => setExtraSubjectId(e.target.value)}
+              >
+                <option value="">Select subject...</option>
+                {availableExtraSubjects.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+              <Button 
+                size="sm" 
+                disabled={!extraSubjectId}
+                onClick={() => {
+                  handleMark(extraSubjectId, 'present');
+                  setShowExtraClass(false);
+                  setExtraSubjectId('');
+                }}
+              >
+                Add
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
 
     </div>
   );

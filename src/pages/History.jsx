@@ -5,12 +5,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAttendance } from '../hooks/useAttendance';
 import { useSubjects } from '../hooks/useSubjects';
 import { useTimetable } from '../hooks/useTimetable';
+import { useHolidays } from '../hooks/useHolidays';
 import { formatDateKey, getDayName } from '../utils/dateHelpers';
 
 export default function History() {
-  const { records } = useAttendance();
+  const { records, deleteAttendance, markAttendance } = useAttendance();
   const { subjects } = useSubjects();
   const { timetable } = useTimetable();
+  const { isHoliday, toggleHoliday } = useHolidays();
   
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -109,7 +111,7 @@ export default function History() {
                  } else {
                    dotColor = 'bg-[var(--accent-cyan)]'; // medical/cancelled
                  }
-              } else if (!hasCollege) {
+              } else if (!hasCollege || isHoliday(dateStr)) {
                  dotColor = 'bg-[#52525b]'; // gray dot (no college/holiday)
               } else {
                  // hasCollege is true, no records yet
@@ -176,15 +178,27 @@ export default function History() {
       </div>
 
       {/* Log Details */}
-      <div className="bg-[#18181b] border border-[#27272a] rounded-2xl p-6 shadow-sm">
-        <h3 className="text-[15px] font-medium text-[#f4f4f5] mb-4">
-          {format(selectedDate, 'EEEE, d MMM yyyy')}
-        </h3>
+      <div className="bg-[#18181b] border border-[#27272a] rounded-2xl p-6 shadow-sm mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-[15px] font-medium text-[#f4f4f5]">
+            {format(selectedDate, 'EEEE, d MMM yyyy')}
+          </h3>
+          <button 
+            onClick={() => toggleHoliday(selectedDateStr)}
+            className={`text-[11px] font-medium px-3 py-1.5 rounded-full border transition-colors ${
+              isHoliday(selectedDateStr) 
+                ? 'bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] border-[var(--accent-cyan)]/20' 
+                : 'bg-transparent text-[#71717a] border-[#27272a] hover:text-[#a1a1aa]'
+            }`}
+          >
+            {isHoliday(selectedDateStr) ? '🌴 College Holiday' : 'Mark as Holiday'}
+          </button>
+        </div>
         
         {selectedRecords.length > 0 ? (
           <div className="space-y-1">
             {selectedRecords.map(record => {
-              const subject = subjects.find(s => s.id === record.subjectId);
+              const subject = subjects.find(s => s.id === (record.subjectId || record.subject_id));
               let statusStyle = "";
               let statusLabel = record.status.toUpperCase();
               
@@ -198,11 +212,28 @@ export default function History() {
               }
 
               return (
-                <div key={record.id} className="flex items-center justify-between py-2.5 border-b border-[#27272a] last:border-0">
+                <div key={record.id} className="flex items-center justify-between py-2.5 border-b border-[#27272a] last:border-0 group">
                   <span className="text-[13px] text-[#a1a1aa]">{subject?.name || 'Unknown Subject'}</span>
-                  <span className={`text-[10px] font-mono tracking-widest px-2 py-1 rounded ${statusStyle}`}>
-                    {statusLabel}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={record.status}
+                      onChange={(e) => markAttendance(selectedDateStr, record.subjectId || record.subject_id, e.target.value)}
+                      className={`text-[10px] font-mono tracking-widest px-2 py-1 rounded outline-none cursor-pointer appearance-none text-center ${statusStyle}`}
+                    >
+                      <option value="present">PRESENT</option>
+                      <option value="absent">BUNKED</option>
+                      <option value="holiday">HOLIDAY</option>
+                      <option value="medical">MEDICAL</option>
+                      <option value="official">OFFICIAL</option>
+                    </select>
+                    <button 
+                      onClick={() => deleteAttendance(record.id)}
+                      className="text-[#71717a] hover:text-[#ef4444] opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                      title="Delete Record"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
                 </div>
               );
             })}

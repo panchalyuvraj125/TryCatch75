@@ -11,6 +11,8 @@ import Navbar from './components/layout/Navbar';
 import BottomNav from './components/layout/BottomNav';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import OnboardingTour from './components/onboarding/OnboardingTour';
+import { useNotifications } from './hooks/useNotifications';
+import { useAutoPilot } from './hooks/useAutoPilot';
 
 // Lazy load pages for code-splitting
 const Login = lazy(() => import('./pages/Login'));
@@ -234,6 +236,16 @@ function ImportHandler() {
   return null;
 }
 
+function NotificationEnabler() {
+  useNotifications();
+  return null;
+}
+
+function AutoPilotEnabler() {
+  useAutoPilot();
+  return null;
+}
+
 function AppLayout() {
   const location = useLocation();
 
@@ -244,6 +256,8 @@ function AppLayout() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] pb-20">
       <ImportHandler />
+      <NotificationEnabler />
+      <AutoPilotEnabler />
       <OnboardingTour />
       <Navbar />
       <main className="pt-16 transition-all duration-300 mx-auto max-w-7xl">

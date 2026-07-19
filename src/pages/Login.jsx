@@ -6,8 +6,7 @@ import toast from 'react-hot-toast';
 
 export default function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp } = useAuth();
@@ -16,7 +15,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (!username || !password) {
       toast.error('Please fill in all fields');
       return;
     }
@@ -28,12 +27,14 @@ export default function Login() {
 
     setIsLoading(true);
 
+    const dummyEmail = `${username.trim().toLowerCase()}@trycatch.local`;
+
     try {
       if (isSignUp) {
-        await signUp(email, password, name || email.split('@')[0]);
+        await signUp(dummyEmail, password, username);
         toast.success('Account created! Welcome aboard.');
       } else {
-        await signIn(email, password);
+        await signIn(dummyEmail, password);
         toast.success('Welcome back!');
       }
       navigate('/dashboard');
@@ -41,9 +42,9 @@ export default function Login() {
       const message = error?.message?.toLowerCase() || 'authentication failed';
 
       if (message.includes('invalid credentials') || message.includes('invalid login')) {
-        toast.error('Invalid email or password');
+        toast.error('Invalid username or password');
       } else if (message.includes('already registered') || message.includes('already exists')) {
-        toast.error('An account with this email already exists');
+        toast.error('An account with this username already exists');
         setIsSignUp(false);
       } else if (message.includes('weak password')) {
         toast.error('Password is too weak. Use at least 6 characters.');
@@ -70,36 +71,18 @@ export default function Login() {
           </p>
 
           <div className="space-y-4 mb-6">
-            {isSignUp && (
-              <div>
-                <label className="block text-[10px] tracking-[0.15em] text-[#71717a] font-mono uppercase mb-2">
-                  Your Name
-                </label>
-                <div className="relative">
-                  <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#52525b]" />
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-[#111111] border border-[#27272a] rounded-lg pl-10 pr-4 py-3 text-[#f4f4f5] placeholder-[#52525b] focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-sm"
-                    placeholder="e.g. Yuvraj Panchal"
-                  />
-                </div>
-              </div>
-            )}
-
             <div>
               <label className="block text-[10px] tracking-[0.15em] text-[#71717a] font-mono uppercase mb-2">
-                Email Address
+                Username
               </label>
               <div className="relative">
-                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#52525b]" />
+                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#52525b]" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full bg-[#111111] border border-[#27272a] rounded-lg pl-10 pr-4 py-3 text-[#f4f4f5] placeholder-[#52525b] focus:outline-none focus:border-[var(--accent-orange)] transition-colors text-sm"
-                  placeholder="your@email.com"
+                  placeholder="Enter your username"
                   required
                 />
               </div>

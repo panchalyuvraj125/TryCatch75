@@ -4,11 +4,13 @@ import { motion } from 'framer-motion';
 import { Sun, Moon, WifiOff, LogOut, User, ChevronDown, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { usePWA } from '../../hooks/usePWA';
 import { format } from 'date-fns';
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { isInstallable, promptInstall } = usePWA();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
@@ -60,6 +62,18 @@ export default function Navbar() {
           )}
 
           <div className="flex items-center gap-2">
+            {/* Install PWA Button */}
+            {isInstallable && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={promptInstall}
+                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--accent-orange)] text-black font-medium text-xs hover:bg-[var(--accent-orange)]/90 transition-colors"
+              >
+                Install App
+              </motion.button>
+            )}
+
             {/* Theme Toggle */}
             <motion.button
               id="theme-toggle"

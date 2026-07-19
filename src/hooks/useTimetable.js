@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { getDayName } from '../utils/dateHelpers';
 
@@ -8,27 +7,28 @@ export function useTimetable() {
   const [timetable, setTimetable] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const fetchTimetable = useCallback(async () => {
+  const getStorageKey = useCallback(() => `timetables_${user?.id}`, [user]);
+
+  const fetchTimetable = useCallback(() => {
     if (!user) {
       setTimetable({});
       setLoading(false);
       return;
     }
 
-    const { data, error } = await supabase
-      .from('timetables')
-      .select('*')
-      .eq('user_id', user.id);
-
-    if (!error && data) {
+    try {
+      const stored = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
       const ttData = {};
-      data.forEach((item) => {
+      stored.forEach((item) => {
         ttData[item.day] = { periods: item.periods || [] };
       });
       setTimetable(ttData);
+    } catch (e) {
+      console.error('Error fetching timetable:', e);
+      setTimetable({});
     }
     setLoading(false);
-  }, [user]);
+  }, [user, getStorageKey]);
 
   useEffect(() => {
     fetchTimetable();
@@ -38,20 +38,30 @@ export function useTimetable() {
     async (day, periods) => {
       if (!user) return;
 
-      const { error } = await supabase
-        .from('timetables')
-        .upsert({
+      try {
+        const stored = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+        const index = stored.findIndex(t => t.day === day);
+        
+        const updateData = {
           user_id: user.id,
           day,
           periods,
           updated_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,day' });
+        };
 
-      if (!error) {
-        await fetchTimetable();
+        if (index !== -1) {
+          stored[index] = updateData;
+        } else {
+          stored.push(updateData);
+        }
+
+        localStorage.setItem(getStorageKey(), JSON.stringify(stored));
+        fetchTimetable();
+      } catch (e) {
+        console.error('Error setting day schedule:', e);
       }
     },
-    [user, fetchTimetable]
+    [user, getStorageKey, fetchTimetable]
   );
 
   const getTodaySchedule = useCallback(() => {

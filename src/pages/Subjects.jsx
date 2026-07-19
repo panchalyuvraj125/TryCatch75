@@ -13,7 +13,6 @@ import {
 } from '../utils/constants';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
-import SmartTimetableUpload from '../components/setup/SmartTimetableUpload';
 
 const typeIcons = {
   theory: BookOpen,
@@ -34,11 +33,12 @@ export default function Subjects() {
     teacherName: '',
     contactNote: '',
     semester: 1,
+    targetAttendance: 75,
   });
 
   const openAdd = () => {
     setEditingSubject(null);
-    setForm({ name: '', credits: 3, type: 'theory', teacherName: '', contactNote: '', semester: 1 });
+    setForm({ name: '', credits: 3, type: 'theory', teacherName: '', contactNote: '', semester: 1, targetAttendance: 75 });
     setModalOpen(true);
   };
 
@@ -51,6 +51,7 @@ export default function Subjects() {
       teacherName: subject.teacherName || '',
       contactNote: subject.contactNote || '',
       semester: subject.semester || 1,
+      targetAttendance: subject.target_attendance || 75,
     });
     setModalOpen(true);
   };
@@ -101,17 +102,7 @@ export default function Subjects() {
         </Button>
       </div>
 
-      {/* Smart Timetable Upload */}
-      <SmartTimetableUpload 
-        geminiKey={(() => {
-          try {
-            const p = JSON.parse(localStorage.getItem(`tc75_profile_${user?.uid}`));
-            return p?.geminiKey || '';
-          } catch { return ''; }
-        })()} 
-        semester={1}
-        onComplete={() => {}}
-      />
+
 
       {/* Subject List */}
       {subjects.length > 0 ? (
@@ -144,6 +135,11 @@ export default function Subjects() {
                             <span className="text-xs text-[var(--text-muted)]">
                               {subject.credits} credits
                             </span>
+                            {subject.target_attendance && (
+                              <Badge variant="warning" size="xs">
+                                Target: {subject.target_attendance}%
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -263,6 +259,22 @@ export default function Subjects() {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label className="block text-xs text-[var(--text-muted)] mb-1">
+              Target Attendance % (Optional)
+            </label>
+            <input
+              type="number"
+              min="50"
+              max="100"
+              value={form.targetAttendance}
+              onChange={(e) =>
+                setForm({ ...form, targetAttendance: parseInt(e.target.value) || 75 })
+              }
+              className="cyber-input"
+            />
           </div>
 
           <div>

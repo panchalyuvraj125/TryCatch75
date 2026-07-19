@@ -23,12 +23,13 @@ export function useCalculator(subjects, getSubjectStats, threshold = 75) {
    */
   const subjectStats = useMemo(() => {
     return subjects.map((subject) => {
+      const subThreshold = subject.target_attendance || threshold;
       const stats = getSubjectStats(subject.id);
       const percent = currentPercent(stats.present, stats.total);
-      const status = getStatus(percent, threshold);
-      const statusMessage = getStatusMessage(percent, threshold);
-      const bunksLeft = safeBunks(stats.present, stats.total, threshold);
-      const needed = classesNeeded(stats.present, stats.total, threshold);
+      const status = getStatus(percent, subThreshold);
+      const statusMessage = getStatusMessage(percent, subThreshold);
+      const bunksLeft = safeBunks(stats.present, stats.total, subThreshold);
+      const needed = classesNeeded(stats.present, stats.total, subThreshold);
 
       return {
         ...subject,
@@ -70,7 +71,10 @@ export function useCalculator(subjects, getSubjectStats, threshold = 75) {
     const subjectData = subjectStats.map((s) => ({
       present: s.present,
       total: s.total,
+      target: s.target_attendance || threshold,
     }));
+    // Since detentionRisk usually takes a single threshold, we can modify it or pass a weighted average.
+    // For now, let's keep the global threshold for overall risk.
     return detentionRisk(subjectData, threshold);
   }, [subjectStats, threshold]);
 
@@ -105,17 +109,18 @@ export function useCalculator(subjects, getSubjectStats, threshold = 75) {
     const subject = subjectStats.find((s) => s.id === subjectId);
     if (!subject) return null;
 
+    const subThreshold = subject.target_attendance || threshold;
     return {
       currentPercent: subject.percent,
       afterBunk: whatIfBunk(subject.present, subject.total, bunkMore),
       afterAttend: whatIfAttend(subject.present, subject.total, attendMore),
       statusAfterBunk: getStatus(
         whatIfBunk(subject.present, subject.total, bunkMore),
-        threshold
+        subThreshold
       ),
       statusAfterAttend: getStatus(
         whatIfAttend(subject.present, subject.total, attendMore),
-        threshold
+        subThreshold
       ),
     };
   };
@@ -126,7 +131,8 @@ export function useCalculator(subjects, getSubjectStats, threshold = 75) {
   const calculateBunkBudget = (subjectId, daysLeft, subjectsPerDay) => {
     const subject = subjectStats.find((s) => s.id === subjectId);
     if (!subject) return 0;
-    return weeklyBunkBudget(subject.present, subject.total, daysLeft, subjectsPerDay, threshold);
+    const subThreshold = subject.target_attendance || threshold;
+    return weeklyBunkBudget(subject.present, subject.total, daysLeft, subjectsPerDay, subThreshold);
   };
 
   /**
