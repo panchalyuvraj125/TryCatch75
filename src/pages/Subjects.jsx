@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, BookOpen, FlaskConical, Presentation } from 'lucide-react';
+import { Plus, Edit2, Trash2, BookOpen, FlaskConical, Presentation, RotateCcw } from 'lucide-react';
 import { useSubjects } from '../hooks/useSubjects';
+import { useAttendance } from '../hooks/useAttendance';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
@@ -23,6 +24,7 @@ const typeIcons = {
 export default function Subjects() {
   const { user } = useAuth();
   const { subjects, addSubject, updateSubject, deleteSubject } = useSubjects();
+  const { clearSubjectAttendance } = useAttendance();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -147,8 +149,21 @@ export default function Subjects() {
                         <button
                           onClick={() => openEdit(subject)}
                           className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--accent-cyan)] hover:bg-[var(--bg-secondary)] transition-colors"
+                          title="Edit Subject"
                         >
                           <Edit2 size={14} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Clear all attendance records for ${subject.name}? This cannot be undone.`)) {
+                              clearSubjectAttendance(subject.id);
+                              toast.success('Attendance records cleared');
+                            }
+                          }}
+                          className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--accent-yellow)] hover:bg-[var(--accent-yellow)]/10 transition-colors"
+                          title="Clear Attendance"
+                        >
+                          <RotateCcw size={14} />
                         </button>
                         <button
                           onClick={() => setConfirmDelete(subject.id)}

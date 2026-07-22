@@ -363,20 +363,34 @@ export default function Settings() {
           <p className="text-sm text-[var(--text-secondary)] mb-2">
             Want to see how the app looks with a full semester of data? Load the demo preset.
           </p>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             <Button 
               variant="outline"
-              className="flex-1"
+              className="w-full"
               onClick={() => {
                 if (window.confirm('This will OVERWRITE your current data with demo data. Are you sure?')) {
                   loadDemoData(user?.id);
                 }
               }}
             >
-              Load Demo
+              Load Demo Data
             </Button>
             <Button 
-              className="flex-1 bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20"
+              className="w-full bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 border-yellow-500/20"
+              onClick={() => {
+                if (window.confirm('NEW SEMESTER RESET: This will clear all attendance records and history, but KEEP your subjects and settings. Proceed?')) {
+                  localStorage.removeItem(`attendance_${user?.id}`);
+                  localStorage.removeItem(`holidays_${user?.id}`);
+                  localStorage.removeItem(`timetable_${user?.id}`);
+                  toast.success('Semester reset successful!');
+                  setTimeout(() => window.location.reload(), 1000);
+                }
+              }}
+            >
+              New Semester Reset
+            </Button>
+            <Button 
+              className="w-full bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20"
               onClick={() => {
                 if (window.confirm('WARNING: This will completely wipe all your subjects, attendance, and deadlines. This cannot be undone. Proceed?')) {
                   clearDemoData(user?.id);

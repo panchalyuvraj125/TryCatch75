@@ -4,6 +4,7 @@ import { useAttendance } from '../hooks/useAttendance';
 import { useCalculator } from '../hooks/useCalculator';
 import OverallStats from '../components/dashboard/OverallStats';
 import AlertBanner from '../components/dashboard/AlertBanner';
+import QuickBunkPlanner from '../components/dashboard/QuickBunkPlanner';
 import DailyBriefing from '../components/dashboard/DailyBriefing';
 import DeadlinesWidget from '../components/dashboard/DeadlinesWidget';
 import AchievementsList from '../components/dashboard/AchievementsList';
@@ -72,6 +73,8 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <QuickBunkPlanner subjectStats={subjectStats} />
+
       {/* Alerts */}
       <AlertBanner subjectStats={subjectStats} isTodayMarked={todayMarked} />
       
@@ -136,14 +139,14 @@ export default function Dashboard() {
             {subjectStats.map((subject, i) => {
               const absentCount = subject.total - subject.present;
               return (
-                <div key={subject.id} className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 hover:border-[#3f3f46] transition-colors">
+                <div key={subject.id} className={`bg-[#18181b] border rounded-xl p-5 transition-all duration-300 ${subject.percent >= 75 ? 'border-[#34d399]/30 hover:border-[#34d399]/60 shadow-[0_0_15px_rgba(52,211,153,0.05)]' : 'border-[#ef4444]/50 hover:border-[#ef4444]/80 shadow-[0_0_20px_rgba(239,68,68,0.15)] bg-[#ef4444]/5'}`}>
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="text-[15px] font-medium text-[#f4f4f5]">{subject.name}</h3>
                       <p className="text-[12px] text-[#71717a] mt-1">{subject.present} attended · {absentCount} bunked</p>
                     </div>
                     <div className="text-right">
-                      <span className={`text-[20px] font-bold ${subject.percent >= 75 ? 'text-[#34d399]' : 'text-[#ef4444]'}`}>
+                      <span className={`text-[20px] font-bold ${subject.percent >= 75 ? 'text-[#34d399] drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'text-[#ef4444] drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]'}`}>
                         {subject.percent.toFixed(0)}%
                       </span>
                     </div>

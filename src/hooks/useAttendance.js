@@ -121,6 +121,22 @@ export function useAttendance() {
     [user, getStorageKey, fetchAttendance]
   );
 
+  const clearSubjectAttendance = useCallback(
+    async (subjectId) => {
+      if (!user) return;
+
+      try {
+        const stored = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
+        const filtered = stored.filter(r => r.subject_id !== subjectId && r.subjectId !== subjectId);
+        localStorage.setItem(getStorageKey(), JSON.stringify(filtered));
+        fetchAttendance();
+      } catch (e) {
+        console.error('Error clearing subject attendance:', e);
+      }
+    },
+    [user, getStorageKey, fetchAttendance]
+  );
+
   const getRecordsByDate = useCallback(
     (date) => {
       const dateStr = typeof date === 'string' ? date : formatDateKey(date);
@@ -219,6 +235,7 @@ export function useAttendance() {
     markAttendance,
     bulkMark,
     deleteAttendance,
+    clearSubjectAttendance,
     getRecordsByDate,
     getRecordsBySubject,
     getSubjectStats,

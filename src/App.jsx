@@ -265,6 +265,9 @@ function AppLayout() {
           <AnimatedRoutes />
         </div>
       </main>
+      <footer className="w-full text-center py-6 pb-24 text-[11px] font-mono text-[#71717a] border-t border-[#27272a] mt-10">
+        <p>Optimized for SVKM’s Shri Bhagubhai Mafatlal Polytechnic College | Built by Yuvraj Vasant Panchal</p>
+      </footer>
       <BottomNav />
     </div>
   );

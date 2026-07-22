@@ -1,0 +1,22 @@
+{
+  "name": "TryCatch75 — Attendance Tracker",
+  "short_name": "TryCatch75",
+  "description": "Smart attendance management for Indian engineering students",
+  "start_url": "/TryCatch75/",
+  "scope": "/TryCatch75/",
+  "display": "standalone",
+  "theme_color": "#2563eb",
+  "background_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/TryCatch75/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/TryCatch75/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
