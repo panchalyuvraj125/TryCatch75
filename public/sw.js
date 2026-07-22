@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trycatch75-cache-v2';
+const CACHE_NAME = 'trycatch75-cache-v3';
 const urlsToCache = [
   '/TryCatch75/',
   '/TryCatch75/index.html',
@@ -17,46 +17,53 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Fix for GitHub Pages SPA routing (404 issue)
+  // Navigation requests: Network First, fallback to Cache if offline
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      caches.match('/TryCatch75/index.html').then(response => {
-        return response || fetch(event.request);
-      })
+      fetch(event.request)
+        .then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseCopy = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put('/TryCatch75/index.html', responseCopy);
+            });
+            return networkResponse;
+          }
+          return caches.match('/TryCatch75/index.html');
+        })
+        .catch(() => {
+          return caches.match('/TryCatch75/index.html');
+        })
     );
     return;
   }
 
+  // Other assets: Cache First, Network fallback
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return cached response if found
         if (response) {
           return response;
         }
 
-        // Clone the request
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest).then(
-          response => {
-            // Check if valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+          networkResponse => {
+            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+              return networkResponse;
             }
 
-            // Clone the response
-            const responseToCache = response.clone();
+            const responseToCache = networkResponse.clone();
 
             caches.open(CACHE_NAME)
               .then(cache => {
-                // Ignore API calls or external domains for now, only cache our origin
                 if (event.request.url.startsWith(self.location.origin)) {
                   cache.put(event.request, responseToCache);
                 }
               });
 
-            return response;
+            return networkResponse;
           }
         );
       })
