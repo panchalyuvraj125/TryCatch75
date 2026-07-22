@@ -121,12 +121,4 @@ export const clearDemoData = (userId) => {
   window.location.reload();
 };
 
-export const clearDemoData = (userId) => {
-  if (!userId) return;
-  localStorage.removeItem(`subjects_${userId}`);
-  localStorage.removeItem(`timetable_${userId}`);
-  localStorage.removeItem(`attendance_${userId}`);
-  localStorage.removeItem(`holidays_${userId}`);
-  localStorage.removeItem(`deadlines_${userId}`);
-  window.location.reload();
-};
+
