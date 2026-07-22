@@ -1,5 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
+    <linearGradient id="logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
     <style>
       .text-orange { fill: #f59e0b; font-family: 'JetBrains Mono', monospace; font-weight: bold; }
       .text-white { fill: #ffffff; font-family: 'JetBrains Mono', monospace; font-weight: bold; }
@@ -11,6 +15,9 @@
       .icon-white { stroke: #ffffff; }
     </style>
   </defs>
+
+  <!-- Dark Background Container with Rounded Corners -->
+  <rect width="512" height="512" rx="96" fill="url(#logo-bg)" stroke="#1e293b" stroke-width="8" />
 
   <!-- 75% Circular Gauge -->
   <g transform="translate(256, 160)">
