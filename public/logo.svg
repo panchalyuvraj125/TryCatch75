@@ -1,29 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-  <!-- Minimalist dark background -->
-  <rect width="100" height="100" rx="24" fill="#0a0a0f" />
-  
-  <g stroke="#00f5ff" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Glowing shadow layer -->
-    <g filter="drop-shadow(0px 0px 6px rgba(0, 245, 255, 0.6))">
-      <!-- The inner checkmark -->
-      <path d="M 32 52 L 46 66 L 76 26" stroke-width="10" />
-      
-      <!-- The continuous brace frame -->
-      <path d="M 58 20 
-               L 35 20 
-               C 25 20, 20 25, 20 35 
-               L 20 42 
-               C 20 46, 16 48, 10 50 
-               C 16 52, 20 54, 20 58 
-               L 20 65 
-               C 20 75, 25 80, 35 80 
-               L 65 80 
-               C 75 80, 80 75, 80 65 
-               L 80 58 
-               C 80 54, 84 52, 90 50 
-               C 84 48, 80 46, 80 42 
-               L 80 36" 
-            stroke-width="8" />
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <style>
+      .text-orange { fill: #f59e0b; font-family: 'JetBrains Mono', monospace; font-weight: bold; }
+      .text-white { fill: #ffffff; font-family: 'JetBrains Mono', monospace; font-weight: bold; }
+      .text-large { font-size: 64px; }
+      .text-medium { font-size: 48px; }
+      .stroke-green { stroke: #22c55e; }
+      .stroke-white { stroke: #ffffff; }
+      .icon-fill { fill: none; stroke: #f59e0b; stroke-width: 16; stroke-linecap: round; stroke-linejoin: round; }
+      .icon-white { stroke: #ffffff; }
+    </style>
+  </defs>
+
+  <!-- 75% Circular Gauge -->
+  <g transform="translate(256, 160)">
+    <!-- Background Circle -->
+    <circle cx="0" cy="0" r="90" fill="none" stroke="#334155" stroke-width="20" />
+    
+    <!-- White Arc (Top Left) -->
+    <path d="M 0 -90 A 90 90 0 0 0 -90 0" fill="none" class="stroke-white" stroke-width="20" stroke-linecap="round" />
+    
+    <!-- Green Arc (75% completion from top right to bottom left) -->
+    <path d="M 0 -90 A 90 90 0 1 1 -90 0" fill="none" class="stroke-green" stroke-width="20" stroke-linecap="round" />
+    
+    <!-- 75% Text -->
+    <text x="0" y="20" text-anchor="middle" class="text-white text-large">75%</text>
+  </g>
+
+  <!-- Try{Catch}75 Text -->
+  <g transform="translate(256, 320)">
+    <text x="0" y="0" text-anchor="middle" class="text-medium">
+      <tspan class="text-orange">Try</tspan>
+      <tspan class="text-orange">{</tspan>
+      <tspan class="text-white">Catch</tspan>
+      <tspan class="text-orange">}</tspan>
+      <tspan class="text-orange">75</tspan>
+    </text>
+  </g>
+
+  <!-- Books and Laptop Icons -->
+  <g transform="translate(180, 370)">
+    <!-- Stack of Books (White) -->
+    <path d="M 10 30 L 60 15 L 110 30 L 60 45 Z" class="icon-fill icon-white" />
+    <path d="M 10 45 L 60 60 L 110 45" class="icon-fill icon-white" />
+    <path d="M 10 60 L 60 75 L 110 60" class="icon-fill icon-white" />
+  </g>
+
+  <g transform="translate(260, 360)">
+    <!-- Laptop (Orange) -->
+    <rect x="20" y="10" width="80" height="50" rx="4" class="icon-fill" />
+    <path d="M 10 60 L 110 60" stroke="#f59e0b" stroke-width="20" stroke-linecap="round" />
   </g>
 </svg>
