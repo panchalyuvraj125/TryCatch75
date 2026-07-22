@@ -16,6 +16,16 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Fix for GitHub Pages SPA routing (404 issue)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match('/TryCatch75/index.html').then(response => {
+        return response || fetch(event.request);
+      })
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
