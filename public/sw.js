@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trycatch75-cache-v1';
+const CACHE_NAME = 'trycatch75-cache-v2';
 const urlsToCache = [
   '/TryCatch75/',
   '/TryCatch75/index.html',
@@ -7,6 +7,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -63,6 +64,7 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('activate', event => {
+  event.waitUntil(clients.claim());
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
