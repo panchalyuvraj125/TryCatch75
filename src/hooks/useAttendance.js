@@ -20,7 +20,7 @@ export function useAttendance() {
     try {
       const stored = JSON.parse(localStorage.getItem(getStorageKey()) || '[]');
       const sorted = stored.sort((a, b) => new Date(b.date) - new Date(a.date));
-      setRecords(sorted.map(r => ({ ...r, subjectId: r.subject_id, markedAt: r.marked_at })));
+      setRecords(sorted.map(r => ({ ...r, subjectId: r.subject_id || r.subjectId, markedAt: r.marked_at || r.markedAt })));
     } catch (e) {
       console.error('Error fetching attendance:', e);
       setRecords([]);

@@ -74,7 +74,7 @@ export const loadDemoData = (userId) => {
       records.push({
         id: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         user_id: userId,
-        subjectId: period.subjectId,
+        subject_id: period.subjectId,
         date: dateStr,
         status: status,
         marked_at: new Date(d.setHours(14)).toISOString()
