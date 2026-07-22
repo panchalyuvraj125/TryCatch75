@@ -37,7 +37,6 @@ export default function Navbar() {
         {/* Left: Logo */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 select-none">
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="TryCatch75 Logo" className="w-8 h-8 rounded-lg shadow-sm" />
             <span className="font-heading font-bold text-2xl text-[var(--text-primary)] tracking-tight">
               TryCatch<span className="text-[var(--accent-orange)] italic font-medium">75</span>
             </span>

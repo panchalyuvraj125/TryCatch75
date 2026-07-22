@@ -14,18 +14,17 @@ import OnboardingTour from './components/onboarding/OnboardingTour';
 import { useNotifications } from './hooks/useNotifications';
 import { useAutoPilot } from './hooks/useAutoPilot';
 
-// Lazy load pages for code-splitting
-const Login = lazy(() => import('./pages/Login'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Subjects = lazy(() => import('./pages/Subjects'));
-const MarkAttendance = lazy(() => import('./pages/MarkAttendance'));
-const TimetablePage = lazy(() => import('./pages/Timetable'));
-const Calculator = lazy(() => import('./pages/Calculator'));
-const BunkPlanner = lazy(() => import('./pages/BunkPlanner'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const Settings = lazy(() => import('./pages/Settings'));
-const History = lazy(() => import('./pages/History'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Subjects from './pages/Subjects';
+import MarkAttendance from './pages/MarkAttendance';
+import TimetablePage from './pages/Timetable';
+import Calculator from './pages/Calculator';
+import BunkPlanner from './pages/BunkPlanner';
+import Analytics from './pages/Analytics';
+import Settings from './pages/Settings';
+import History from './pages/History';
+import NotFound from './pages/NotFound';
 
 function PageLoader() {
   return (
