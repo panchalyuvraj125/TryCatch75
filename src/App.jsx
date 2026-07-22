@@ -65,7 +65,7 @@ function AnimatedRoutes() {
             </Suspense>
           }
         />
-        <Route path="/" element={<Navigate to="/mark" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route
           path="/dashboard"
           element={
