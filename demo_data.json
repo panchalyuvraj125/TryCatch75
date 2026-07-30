@@ -1,0 +1,672 @@
+{
+  "activeSemesterId": "demo-sem",
+  "semesters": {
+    "demo-sem": {
+      "id": "demo-sem",
+      "label": "Demo Semester",
+      "personalInfo": {
+        "name": "Jane Doe",
+        "rollNumber": "2024CS101",
+        "branch": "Computer Science",
+        "year": "3",
+        "semester": "5",
+        "section": "A"
+      },
+      "courses": [
+        {
+          "id": "c1",
+          "code": "CS301",
+          "name": "Operating Systems",
+          "minAttendance": 75,
+          "goalAttendance": 85,
+          "color": "#ef4444"
+        },
+        {
+          "id": "c2",
+          "code": "CS302",
+          "name": "Database Management",
+          "minAttendance": 75,
+          "goalAttendance": 80,
+          "color": "#3b82f6"
+        },
+        {
+          "id": "c3",
+          "code": "CS303",
+          "name": "Computer Networks",
+          "minAttendance": 75,
+          "goalAttendance": 90,
+          "color": "#10b981"
+        },
+        {
+          "id": "c4",
+          "code": "HU301",
+          "name": "Economics",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#f59e0b"
+        }
+      ],
+      "timetable": {
+        "Mon": {
+          "0": "c1",
+          "1": "c2",
+          "3": "c3"
+        },
+        "Tue": {
+          "1": "c3",
+          "2": "c4",
+          "4": "c1"
+        },
+        "Wed": {
+          "0": "c2",
+          "1": "c1",
+          "3": "c4"
+        },
+        "Thu": {
+          "2": "c2",
+          "3": "c3",
+          "4": "c4"
+        },
+        "Fri": {
+          "0": "c3",
+          "1": "c4",
+          "2": "c1"
+        }
+      },
+      "periodTimes": [
+        {
+          "start": "09:00",
+          "end": "09:50"
+        },
+        {
+          "start": "10:00",
+          "end": "10:50"
+        },
+        {
+          "start": "11:00",
+          "end": "11:50"
+        },
+        {
+          "start": "12:00",
+          "end": "12:50"
+        },
+        {
+          "start": "14:00",
+          "end": "14:50"
+        }
+      ],
+      "attendanceLog": [
+        {
+          "id": "x28igpiq5",
+          "courseId": "c3",
+          "date": "2026-06-30",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "a97tn0rcj",
+          "courseId": "c4",
+          "date": "2026-06-30",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "ym7uw8uec",
+          "courseId": "c1",
+          "date": "2026-06-30",
+          "period": 4,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "78efy3z8y",
+          "courseId": "c2",
+          "date": "2026-07-01",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "zqkg70g9o",
+          "courseId": "c1",
+          "date": "2026-07-01",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "mnp1k4y4q",
+          "courseId": "c4",
+          "date": "2026-07-01",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "13aa8poh9",
+          "courseId": "c2",
+          "date": "2026-07-02",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "2yna1wqr4",
+          "courseId": "c3",
+          "date": "2026-07-02",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "kkf0n03uk",
+          "courseId": "c4",
+          "date": "2026-07-02",
+          "period": 4,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "o1vaig1tk",
+          "courseId": "c3",
+          "date": "2026-07-03",
+          "period": 0,
+          "status": "present",
+          "note": "Test note"
+        },
+        {
+          "id": "mkiqihfe8",
+          "courseId": "c4",
+          "date": "2026-07-03",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "db68xfxcj",
+          "courseId": "c1",
+          "date": "2026-07-03",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "e5vml8vvo",
+          "courseId": "c1",
+          "date": "2026-07-06",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "h1lvmcui7",
+          "courseId": "c2",
+          "date": "2026-07-06",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "3ffsmu721",
+          "courseId": "c3",
+          "date": "2026-07-06",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "ax6bv55us",
+          "courseId": "c3",
+          "date": "2026-07-07",
+          "period": 1,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "c93369i5a",
+          "courseId": "c4",
+          "date": "2026-07-07",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "bj0lk2atk",
+          "courseId": "c1",
+          "date": "2026-07-07",
+          "period": 4,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "tcahkue8y",
+          "courseId": "c2",
+          "date": "2026-07-08",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "ib0c88m7m",
+          "courseId": "c1",
+          "date": "2026-07-08",
+          "period": 1,
+          "status": "cancelled",
+          "note": ""
+        },
+        {
+          "id": "v8mjf2wt8",
+          "courseId": "c4",
+          "date": "2026-07-08",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "t0swv3add",
+          "courseId": "c2",
+          "date": "2026-07-09",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "c6p3drqgj",
+          "courseId": "c3",
+          "date": "2026-07-09",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "i1ymvx5di",
+          "courseId": "c4",
+          "date": "2026-07-09",
+          "period": 4,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "icvzdz89d",
+          "courseId": "c3",
+          "date": "2026-07-10",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "xazfkxkcr",
+          "courseId": "c4",
+          "date": "2026-07-10",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "wxhzx7rom",
+          "courseId": "c1",
+          "date": "2026-07-10",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "jwnhe7z6f",
+          "courseId": "c1",
+          "date": "2026-07-13",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "tqonh2tfj",
+          "courseId": "c2",
+          "date": "2026-07-13",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "6elia6u7n",
+          "courseId": "c3",
+          "date": "2026-07-13",
+          "period": 3,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "jg2tcva9a",
+          "courseId": "c3",
+          "date": "2026-07-14",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "b4mxgh1v4",
+          "courseId": "c4",
+          "date": "2026-07-14",
+          "period": 2,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "xtgor6aw2",
+          "courseId": "c1",
+          "date": "2026-07-14",
+          "period": 4,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "4bs7100nn",
+          "courseId": "c2",
+          "date": "2026-07-15",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "795se3dfh",
+          "courseId": "c1",
+          "date": "2026-07-15",
+          "period": 1,
+          "status": "present",
+          "note": "Test note"
+        },
+        {
+          "id": "9lhw5su8r",
+          "courseId": "c4",
+          "date": "2026-07-15",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "rpvkk9227",
+          "courseId": "c2",
+          "date": "2026-07-16",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "ud6jebsrj",
+          "courseId": "c3",
+          "date": "2026-07-16",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "eay9v76um",
+          "courseId": "c4",
+          "date": "2026-07-16",
+          "period": 4,
+          "status": "present",
+          "note": "Test note"
+        },
+        {
+          "id": "zt8ry4xus",
+          "courseId": "c3",
+          "date": "2026-07-17",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "rti17ttfa",
+          "courseId": "c4",
+          "date": "2026-07-17",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "ptq7122u8",
+          "courseId": "c1",
+          "date": "2026-07-17",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "1ybtw7x9f",
+          "courseId": "c1",
+          "date": "2026-07-20",
+          "period": 0,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "5uzy07pfp",
+          "courseId": "c2",
+          "date": "2026-07-20",
+          "period": 1,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "d2p6wa7z4",
+          "courseId": "c3",
+          "date": "2026-07-20",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "v7cou44hk",
+          "courseId": "c3",
+          "date": "2026-07-21",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "5oacf69zw",
+          "courseId": "c4",
+          "date": "2026-07-21",
+          "period": 2,
+          "status": "cancelled",
+          "note": ""
+        },
+        {
+          "id": "hgx9dkr77",
+          "courseId": "c1",
+          "date": "2026-07-21",
+          "period": 4,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "hr61h5ad1",
+          "courseId": "c2",
+          "date": "2026-07-22",
+          "period": 0,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "647pnzyqb",
+          "courseId": "c1",
+          "date": "2026-07-22",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "d1qtlltuh",
+          "courseId": "c4",
+          "date": "2026-07-22",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "783tp95qk",
+          "courseId": "c2",
+          "date": "2026-07-23",
+          "period": 2,
+          "status": "present",
+          "note": "Test note"
+        },
+        {
+          "id": "kwcfphvvi",
+          "courseId": "c3",
+          "date": "2026-07-23",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "uk0qengav",
+          "courseId": "c4",
+          "date": "2026-07-23",
+          "period": 4,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "f2uqtjwju",
+          "courseId": "c3",
+          "date": "2026-07-24",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "gvegkjasx",
+          "courseId": "c4",
+          "date": "2026-07-24",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "b8kk5dvm7",
+          "courseId": "c1",
+          "date": "2026-07-24",
+          "period": 2,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "5b0baufht",
+          "courseId": "c1",
+          "date": "2026-07-27",
+          "period": 0,
+          "status": "present",
+          "note": "Test note"
+        },
+        {
+          "id": "kokpj4ukd",
+          "courseId": "c2",
+          "date": "2026-07-27",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "jec180oew",
+          "courseId": "c3",
+          "date": "2026-07-27",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "ybtkutqn3",
+          "courseId": "c3",
+          "date": "2026-07-28",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "zxd9kf7ty",
+          "courseId": "c4",
+          "date": "2026-07-28",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "kc0vqfwpc",
+          "courseId": "c1",
+          "date": "2026-07-28",
+          "period": 4,
+          "status": "cancelled",
+          "note": ""
+        },
+        {
+          "id": "ueuyhhctu",
+          "courseId": "c2",
+          "date": "2026-07-29",
+          "period": 0,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "az5mq6dxb",
+          "courseId": "c1",
+          "date": "2026-07-29",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "s62fhvc2m",
+          "courseId": "c4",
+          "date": "2026-07-29",
+          "period": 3,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "hezoi43x5",
+          "courseId": "c2",
+          "date": "2026-07-30",
+          "period": 2,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "id": "l4oxz15vw",
+          "courseId": "c3",
+          "date": "2026-07-30",
+          "period": 3,
+          "status": "absent",
+          "note": ""
+        },
+        {
+          "id": "g2ziq3o9f",
+          "courseId": "c4",
+          "date": "2026-07-30",
+          "period": 4,
+          "status": "absent",
+          "note": ""
+        }
+      ],
+      "holidays": [
+        {
+          "id": "h1",
+          "date": "2026-08-15",
+          "label": "Independence Day"
+        },
+        {
+          "id": "h2",
+          "date": "2026-09-05",
+          "label": "Teacher's Day"
+        }
+      ],
+      "semester": {
+        "start": "2026-06-30",
+        "end": "2026-10-28"
+      },
+      "setupComplete": true
+    }
+  },
+  "theme": "dark"
+}
