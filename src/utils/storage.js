@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'trycatch75_data_v5';
+const STORAGE_KEY = 'trycatch75_data_v6';
 
 const DEFAULT_DATA = {
   personalInfo: {
@@ -234,36 +234,42 @@ const DEFAULT_GLOBAL_DATA = {
         {
           "date": "2026-08-03",
           "courseId": "c8",
-          "period": 1,
+          "period": 0,
           "status": "cancelled"
         },
         {
           "date": "2026-08-03",
           "courseId": "c1",
-          "period": 2,
+          "period": 1,
           "status": "present"
         },
         {
           "date": "2026-08-03",
           "courseId": "c1",
-          "period": 3,
+          "period": 2,
           "status": "present"
         },
         {
           "date": "2026-08-03",
           "courseId": "c2",
-          "period": 4,
+          "period": 3,
           "status": "present"
         },
         {
           "date": "2026-08-03",
           "courseId": "c3",
-          "period": 5,
+          "period": 4,
           "status": "present"
         },
         {
           "date": "2026-08-05",
           "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c12",
           "period": 2,
           "status": "present"
         },
@@ -275,20 +281,20 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "date": "2026-08-05",
-          "courseId": "c12",
-          "period": 4,
-          "status": "present"
-        },
-        {
-          "date": "2026-08-05",
           "courseId": "c8",
-          "period": 5,
+          "period": 4,
           "status": "present"
         },
         {
           "date": "2026-08-05",
           "courseId": "c3",
-          "period": 6,
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c12",
+          "period": 3,
           "status": "present"
         },
         {
@@ -299,68 +305,68 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "date": "2026-08-06",
-          "courseId": "c12",
-          "period": 5,
-          "status": "present"
-        },
-        {
-          "date": "2026-08-06",
           "courseId": "c6",
-          "period": 6,
+          "period": 5,
           "status": "present"
         },
         {
           "date": "2026-08-07",
           "courseId": "c7",
-          "period": 2,
+          "period": 1,
           "status": "absent"
         },
         {
           "date": "2026-08-07",
           "courseId": "c4",
-          "period": 3,
+          "period": 2,
           "status": "absent"
         },
         {
           "date": "2026-08-07",
           "courseId": "c2",
-          "period": 4,
+          "period": 3,
           "status": "absent"
         },
         {
           "date": "2026-08-07",
           "courseId": "c3",
-          "period": 5,
+          "period": 4,
           "status": "absent"
         },
         {
           "date": "2026-08-10",
           "courseId": "c8",
-          "period": 1,
+          "period": 0,
           "status": "cancelled"
         },
         {
           "date": "2026-08-10",
           "courseId": "c1",
-          "period": 2,
+          "period": 1,
           "status": "present"
         },
         {
           "date": "2026-08-10",
           "courseId": "c1",
-          "period": 3,
+          "period": 2,
           "status": "present"
         },
         {
           "date": "2026-08-10",
           "courseId": "c2",
-          "period": 4,
+          "period": 3,
           "status": "present"
         },
         {
           "date": "2026-08-10",
           "courseId": "c3",
-          "period": 5,
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c6",
+          "period": 0,
           "status": "present"
         },
         {
@@ -371,19 +377,19 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "date": "2026-08-11",
-          "courseId": "c6",
-          "period": 2,
-          "status": "present"
-        },
-        {
-          "date": "2026-08-11",
           "courseId": "c2",
-          "period": 4,
+          "period": 3,
           "status": "present"
         },
         {
           "date": "2026-08-11",
           "courseId": "c11",
+          "period": 5,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c12",
           "period": 6,
           "status": "cancelled"
         },
@@ -395,19 +401,19 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "date": "2026-08-11",
-          "courseId": "c12",
-          "period": 8,
-          "status": "cancelled"
-        },
-        {
-          "date": "2026-08-11",
           "courseId": "c10",
-          "period": 9,
+          "period": 8,
           "status": "cancelled"
         },
         {
           "date": "2026-08-12",
           "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c12",
           "period": 2,
           "status": "present"
         },
@@ -419,31 +425,31 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "date": "2026-08-12",
-          "courseId": "c12",
-          "period": 4,
-          "status": "present"
-        },
-        {
-          "date": "2026-08-12",
           "courseId": "c8",
-          "period": 5,
+          "period": 4,
           "status": "cancelled"
         },
         {
           "date": "2026-08-12",
           "courseId": "c3",
-          "period": 6,
+          "period": 5,
           "status": "present"
         },
         {
           "date": "2026-08-13",
           "courseId": "c10",
-          "period": 1,
+          "period": 0,
           "status": "present"
         },
         {
           "date": "2026-08-13",
           "courseId": "c9",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c5",
           "period": 3,
           "status": "present"
         },
@@ -455,26 +461,20 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "date": "2026-08-13",
-          "courseId": "c5",
+          "courseId": "c8",
           "period": 5,
           "status": "present"
         },
         {
           "date": "2026-08-13",
-          "courseId": "c8",
-          "period": 6,
-          "status": "present"
-        },
-        {
-          "date": "2026-08-13",
           "courseId": "c6",
-          "period": 8,
+          "period": 7,
           "status": "absent"
         },
         {
           "date": "2026-08-13",
           "courseId": "c8",
-          "period": 9,
+          "period": 8,
           "status": "cancelled"
         }
       ],
