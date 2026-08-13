@@ -56,6 +56,7 @@ export default function Layout({ children }) {
               courses: [],
               timetable: {},
               periodTimes: currentSem?.periodTimes || [],
+              overrides: {},
               attendanceLog: [],
               holidays: [],
               semester: { start: '', end: '' },

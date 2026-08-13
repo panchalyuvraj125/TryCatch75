@@ -4,6 +4,7 @@ import { CheckCircle2, XCircle, MinusCircle, CalendarDays, CheckCheck, XOctagon,
 import { useApp } from '../context/AppContext';
 import { getClassesForDate } from '../utils/storage';
 import { showToast } from '../components/ui/Toast';
+import OverrideModal from '../components/OverrideModal';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -13,6 +14,7 @@ const fadeUp = {
 export default function MarkAttendance() {
   const { state, update } = useApp();
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [showOverrideModal, setShowOverrideModal] = useState(false);
   
   const [history, setHistory] = useState(() => [{ logs: state.attendanceLog, desc: 'Initial state' }]);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -186,7 +188,7 @@ export default function MarkAttendance() {
       </motion.div>
 
       {/* Date Picker */}
-      <motion.div variants={fadeUp} initial="hidden" animate="show" className="card p-4 mb-6">
+      <motion.div variants={fadeUp} initial="hidden" animate="show" className="card p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <CalendarDays className="w-4 h-4 text-text-muted" />
           <label className="text-xs font-medium text-text-muted">Date:</label>
@@ -197,6 +199,12 @@ export default function MarkAttendance() {
             className="!w-auto"
           />
         </div>
+        <button
+          onClick={() => setShowOverrideModal(true)}
+          className="text-xs text-text-secondary bg-bg-tertiary hover:text-text-primary hover:bg-bg-elevated px-3 py-1.5 rounded-lg transition-colors border border-border"
+        >
+          Edit Schedule
+        </button>
       </motion.div>
 
       {/* Bulk Actions */}
@@ -314,6 +322,12 @@ export default function MarkAttendance() {
           </p>
         </div>
       )}
+      
+      <OverrideModal 
+        isOpen={showOverrideModal} 
+        onClose={() => setShowOverrideModal(false)} 
+        dateStr={selectedDate} 
+      />
     </div>
   );
 }

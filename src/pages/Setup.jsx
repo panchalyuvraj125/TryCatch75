@@ -187,6 +187,21 @@ export default function Setup() {
     setPeriodTimes((prev) => prev.map((p, i) => (i === index ? { ...p, [field]: value } : p)));
   };
 
+  const applyPreset8to5 = () => {
+    setPeriodTimes([
+      { start: '08:00', end: '09:00' },
+      { start: '09:00', end: '10:00' },
+      { start: '10:00', end: '11:00' },
+      { start: '11:00', end: '12:00' },
+      { start: '12:00', end: '13:00' },
+      { start: '13:00', end: '14:00' },
+      { start: '14:00', end: '15:00' },
+      { start: '15:00', end: '16:00' },
+      { start: '16:00', end: '17:00' },
+    ]);
+    showToast('Applied 8:00 AM - 5:00 PM preset', 'success');
+  };
+
   const addHoliday = () => {
     if (!holidayDate) return showToast('Select a date', 'warning');
     if (!holidayLabel.trim()) return showToast('Enter a label', 'warning');
@@ -534,6 +549,14 @@ export default function Setup() {
                   <summary className="text-xs text-text-muted cursor-pointer hover:text-text-secondary transition-colors">
                     Configure period times
                   </summary>
+                  <div className="mt-3 mb-2">
+                    <button
+                      onClick={applyPreset8to5}
+                      className="w-full text-xs bg-bg-tertiary text-text-secondary hover:text-text-primary hover:bg-bg-elevated px-3 py-2 rounded-lg transition-all cursor-pointer font-medium border border-border"
+                    >
+                      Apply 8:00 AM - 5:00 PM (1 hr periods) Preset
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
                     {periodTimes.map((pt, i) => (
                       <div key={i} className="flex items-center gap-2 text-xs">

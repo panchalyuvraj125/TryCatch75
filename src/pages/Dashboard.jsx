@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +16,7 @@ import {
   getAttendanceForCourse,
   getTodayClasses,
 } from '../utils/storage';
+import OverrideModal from '../components/OverrideModal';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -29,6 +31,7 @@ const fadeUp = {
 export default function Dashboard() {
   const { state } = useApp();
   const navigate = useNavigate();
+  const [showOverrideModal, setShowOverrideModal] = useState(false);
   const overall = getOverallAttendance(state);
   const todayClasses = getTodayClasses(state);
 
@@ -110,12 +113,20 @@ export default function Dashboard() {
               <Calendar className="w-4 h-4" />
               Today's Classes
             </h3>
-            <button
-              onClick={() => navigate('/mark')}
-              className="text-xs text-accent hover:text-accent-hover font-medium flex items-center gap-1 cursor-pointer transition-colors"
-            >
-              Mark Attendance <ArrowRight className="w-3 h-3" />
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowOverrideModal(true)}
+                className="text-xs text-text-muted hover:text-text-primary font-medium flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                Edit Schedule
+              </button>
+              <button
+                onClick={() => navigate('/mark')}
+                className="text-xs text-accent hover:text-accent-hover font-medium flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                Mark Attendance <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
           </div>
           {todayClasses.length > 0 ? (
             <div className="space-y-2">
@@ -237,6 +248,11 @@ export default function Dashboard() {
           )}
         </motion.div>
       </motion.div>
+      <OverrideModal 
+        isOpen={showOverrideModal} 
+        onClose={() => setShowOverrideModal(false)} 
+        dateStr={new Date().toISOString().slice(0, 10)} 
+      />
     </div>
   );
 }

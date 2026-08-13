@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'trycatch75_data';
+const STORAGE_KEY = 'trycatch75_data_v5';
 
 const DEFAULT_DATA = {
   personalInfo: {
@@ -28,6 +28,7 @@ const DEFAULT_DATA = {
     { start: '16:00', end: '16:50' },
     { start: '17:00', end: '17:50' },
   ],
+  overrides: {},
   attendanceLog: [],
   holidays: [],
   semester: { start: '', end: '' },
@@ -35,11 +36,468 @@ const DEFAULT_DATA = {
 };
 
 const DEFAULT_GLOBAL_DATA = {
-  activeSemesterId: 'default',
-  semesters: {
-    'default': { id: 'default', label: 'Semester 1', ...DEFAULT_DATA }
+  "activeSemesterId": "demo-sem",
+  "semesters": {
+    "demo-sem": {
+      "id": "demo-sem",
+      "label": "Demo Semester",
+      "personalInfo": {
+        "name": "Jane Doe",
+        "rollNumber": "2024CS101",
+        "branch": "AI & ML",
+        "year": "2",
+        "semester": "3",
+        "section": "AM2"
+      },
+      "courses": [
+        {
+          "id": "c1",
+          "code": "25AF1XXXOEM305X",
+          "name": "Open Elective (E-Business)",
+          "minAttendance": 75,
+          "goalAttendance": 85,
+          "color": "#ef4444"
+        },
+        {
+          "id": "c2",
+          "code": "25AF1245PC303",
+          "name": "Discrete Mathematics",
+          "minAttendance": 75,
+          "goalAttendance": 80,
+          "color": "#3b82f6"
+        },
+        {
+          "id": "c3",
+          "code": "25AF1000VE310",
+          "name": "Universal Human Values-II",
+          "minAttendance": 75,
+          "goalAttendance": 90,
+          "color": "#10b981"
+        },
+        {
+          "id": "c4",
+          "code": "25AFAIPC304",
+          "name": "Artificial Intelligence",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#f59e0b"
+        },
+        {
+          "id": "c5",
+          "code": "25AFAIPCL311",
+          "name": "Artificial Intelligence Laboratory",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#8b5cf6"
+        },
+        {
+          "id": "c6",
+          "code": "25AF1245PC302",
+          "name": "Data Structures",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#ec4899"
+        },
+        {
+          "id": "c7",
+          "code": "25AF1000VE308A",
+          "name": "Life of Chhatrapati Shivaji Maharaj",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#14b8a6"
+        },
+        {
+          "id": "c8",
+          "code": "25AF1000BS301",
+          "name": "Engineering Mathematics-III",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#6366f1"
+        },
+        {
+          "id": "c9",
+          "code": "25AFAIPC307",
+          "name": "Prompt Engineering",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#84cc16"
+        },
+        {
+          "id": "c10",
+          "code": "25AFAIMD306",
+          "name": "Multi-Disciplinary Minor Course",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#f43f5e"
+        },
+        {
+          "id": "c11",
+          "code": "25AFAIPCL309-TH",
+          "name": "Data Structures Laboratory with Python (Theory)",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#a855f7"
+        },
+        {
+          "id": "c12",
+          "code": "25AFAIPCL309-PR",
+          "name": "Data Structures Laboratory with Python (Practical)",
+          "minAttendance": 75,
+          "goalAttendance": 75,
+          "color": "#d946ef"
+        }
+      ],
+      "timetable": {
+        "Mon": {
+          "0": "c8",
+          "1": "c1",
+          "2": "c1",
+          "3": "c2",
+          "4": "c3"
+        },
+        "Tue": {
+          "0": "c6",
+          "1": "c6",
+          "3": "c2",
+          "5": "c11",
+          "6": "c12",
+          "7": "c12",
+          "8": "c10"
+        },
+        "Wed": {
+          "1": "c1",
+          "2": "c12",
+          "3": "c12",
+          "4": "c8",
+          "5": "c3"
+        },
+        "Thu": {
+          "0": "c10",
+          "2": "c9",
+          "3": "c5",
+          "4": "c5",
+          "5": "c8",
+          "7": "c6",
+          "8": "c8"
+        },
+        "Fri": {
+          "0": "c4",
+          "1": "c7",
+          "2": "c3",
+          "3": "c2",
+          "4": "c4"
+        },
+        "Sat": {
+          "2": "c9",
+          "3": "c9"
+        }
+      },
+      "periodTimes": [
+        {
+          "start": "08:00",
+          "end": "09:00"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00"
+        },
+        {
+          "start": "10:00",
+          "end": "11:00"
+        },
+        {
+          "start": "11:00",
+          "end": "12:00"
+        },
+        {
+          "start": "12:00",
+          "end": "13:00"
+        },
+        {
+          "start": "13:00",
+          "end": "14:00"
+        },
+        {
+          "start": "14:00",
+          "end": "15:00"
+        },
+        {
+          "start": "15:00",
+          "end": "16:00"
+        },
+        {
+          "start": "16:00",
+          "end": "17:00"
+        }
+      ],
+      "attendanceLog": [
+        {
+          "date": "2026-08-03",
+          "courseId": "c8",
+          "period": 1,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c1",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c2",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c3",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c8",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c3",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c12",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c6",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c7",
+          "period": 2,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c4",
+          "period": 3,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c2",
+          "period": 4,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c3",
+          "period": 5,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c8",
+          "period": 1,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c1",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c2",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c3",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c6",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c6",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c2",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c11",
+          "period": 6,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c12",
+          "period": 7,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c12",
+          "period": 8,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c10",
+          "period": 9,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c8",
+          "period": 5,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c3",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c10",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c9",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c5",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c5",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c8",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c6",
+          "period": 8,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c8",
+          "period": 9,
+          "status": "cancelled"
+        }
+      ],
+      "holidays": [
+        {
+          "id": "h1",
+          "date": "2026-08-15",
+          "label": "Independence Day"
+        },
+        {
+          "id": "h2",
+          "date": "2026-09-05",
+          "label": "Teacher's Day"
+        }
+      ],
+      "semester": {
+        "start": "2026-08-03",
+        "end": "2026-12-15"
+      },
+      "setupComplete": true
+    }
   },
-  theme: 'dark'
+  "theme": "dark"
 };
 
 export function getData() {
@@ -126,7 +584,14 @@ export function importData(file) {
 }
 
 export function getAttendanceForCourse(data, courseId) {
-  const logs = data.attendanceLog.filter((l) => l.courseId === courseId);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const startStr = data.semester?.start || '1970-01-01';
+
+  const logs = data.attendanceLog.filter((l) => 
+    l.courseId === courseId &&
+    l.date >= startStr &&
+    l.date <= todayStr
+  );
   const total = logs.filter((l) => l.status !== 'cancelled').length;
   const attended = logs.filter((l) => l.status === 'present').length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
@@ -134,7 +599,14 @@ export function getAttendanceForCourse(data, courseId) {
 }
 
 export function getOverallAttendance(data) {
-  const logs = data.attendanceLog.filter((l) => l.status !== 'cancelled');
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const startStr = data.semester?.start || '1970-01-01';
+
+  const logs = data.attendanceLog.filter((l) => 
+    l.status !== 'cancelled' &&
+    l.date >= startStr &&
+    l.date <= todayStr
+  );
   const total = logs.length;
   const attended = logs.filter((l) => l.status === 'present').length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
@@ -149,10 +621,13 @@ export function getTodayClasses(data) {
 
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const today = days[new Date().getDay()];
-  const daySchedule = data.timetable[today] || {};
+  const daySchedule = data.timetable?.[today] || {};
+  const dateOverrides = data.overrides?.[dateStr] || {};
+  
+  const mergedSchedule = { ...daySchedule, ...dateOverrides };
   const classes = [];
 
-  Object.entries(daySchedule).forEach(([period, courseId]) => {
+  Object.entries(mergedSchedule).forEach(([period, courseId]) => {
     if (courseId) {
       const course = data.courses.find((c) => c.id === courseId);
       const time = data.periodTimes[parseInt(period)] || {};
@@ -173,10 +648,13 @@ export function getClassesForDate(data, dateStr) {
   const date = new Date(dateStr);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const day = days[date.getDay()];
-  const daySchedule = data.timetable[day] || {};
+  const daySchedule = data.timetable?.[day] || {};
+  const dateOverrides = data.overrides?.[dateStr] || {};
+
+  const mergedSchedule = { ...daySchedule, ...dateOverrides };
   const classes = [];
 
-  Object.entries(daySchedule).forEach(([period, courseId]) => {
+  Object.entries(mergedSchedule).forEach(([period, courseId]) => {
     if (courseId) {
       const course = data.courses.find((c) => c.id === courseId);
       const time = data.periodTimes[parseInt(period)] || {};

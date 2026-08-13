@@ -23,7 +23,7 @@ export function scheduleClassNotifications(state) {
   // Check holidays
   if (state.holidays && state.holidays.some(h => h.date === dateStr)) return;
 
-  const daySchedule = state.timetable[dayStr] || {};
+  const daySchedule = state.timetable?.[dayStr] || {};
   
   Object.entries(daySchedule).forEach(([periodIdxStr, courseId]) => {
     const periodIdx = parseInt(periodIdxStr);
