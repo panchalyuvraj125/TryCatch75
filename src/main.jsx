@@ -5,10 +5,6 @@ import { AppProvider } from './context/AppContext';
 import App from './App';
 import './index.css';
 import { getTheme } from './utils/storage';
-import { registerSW } from 'virtual:pwa-register';
-
-// Register Service Worker for PWA
-registerSW({ immediate: true });
 
 // Initialize theme
 document.documentElement.setAttribute('data-theme', getTheme());

@@ -3,12 +3,15 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
-export default defineConfig({
-  base: '/TryCatch75/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/TryCatch75/' : '/',
+  server: {
+    port: 3000,
+  },
   plugins: [
     react(),
     tailwindcss(),
-    VitePWA({
+    ...(command === 'build' ? [VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon-192.png', 'icon-512.png'],
       manifest: {
@@ -33,6 +36,6 @@ export default defineConfig({
           }
         ]
       }
-    })
+    })] : [])
   ],
-})
+}))
