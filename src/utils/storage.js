@@ -583,15 +583,24 @@ export function importData(file) {
   });
 }
 
+function getUniqueClassLogs(logs) {
+  const latestLogByClass = new Map();
+  logs.forEach((log) => {
+    if (!log?.date || !log?.courseId || typeof log.period !== 'number') return;
+    latestLogByClass.set(`${log.date}|${log.courseId}|${log.period}`, log);
+  });
+  return Array.from(latestLogByClass.values());
+}
+
 export function getAttendanceForCourse(data, courseId) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const startStr = data.semester?.start || '1970-01-01';
 
-  const logs = data.attendanceLog.filter((l) => 
+  const logs = getUniqueClassLogs(data.attendanceLog.filter((l) => 
     l.courseId === courseId &&
     l.date >= startStr &&
     l.date <= todayStr
-  );
+  ));
   const total = logs.filter((l) => l.status !== 'cancelled').length;
   const attended = logs.filter((l) => l.status === 'present').length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
@@ -602,11 +611,11 @@ export function getOverallAttendance(data) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const startStr = data.semester?.start || '1970-01-01';
 
-  const logs = data.attendanceLog.filter((l) => 
+  const logs = getUniqueClassLogs(data.attendanceLog.filter((l) => 
     l.status !== 'cancelled' &&
     l.date >= startStr &&
     l.date <= todayStr
-  );
+  ));
   const total = logs.length;
   const attended = logs.filter((l) => l.status === 'present').length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
