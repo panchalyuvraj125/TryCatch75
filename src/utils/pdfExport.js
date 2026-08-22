@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { getAttendanceForCourse, getOverallAttendance, calculateSafeBunks, calculateClassesNeeded } from './storage';
 
 function getHealthLabel(pct) {
@@ -90,7 +90,7 @@ export function exportAttendancePDF(state) {
     ];
   });
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: y,
     head: [['Code', 'Subject', 'Total', 'Present', 'Absent', '%', 'Status', 'Action']],
     body: tableData,
