@@ -1,59 +1,132 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { getAttendanceForCourse, getOverallAttendance } from './storage';
+import { getAttendanceForCourse, getOverallAttendance, calculateSafeBunks, calculateClassesNeeded } from './storage';
+
+function getHealthLabel(pct) {
+  if (pct >= 85) return 'Excellent';
+  if (pct >= 75) return 'Good';
+  if (pct >= 65) return 'Needs Attention';
+  return 'Critical';
+}
 
 export function exportAttendancePDF(state) {
   const doc = new jsPDF();
-  
-  // Title
-  doc.setFontSize(18);
-  doc.setTextColor(40);
-  doc.text('TryCatch75 - Attendance Report', 14, 22);
+  const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Personal Info
-  doc.setFontSize(10);
-  doc.setTextColor(100);
+  // Header Bar
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, pageWidth, 28, 'F');
+
+  // Title
+  doc.setFontSize(16);
+  doc.setTextColor(255, 255, 255);
+  doc.text('TryCatch75', 14, 12);
+  doc.setFontSize(9);
+  doc.text('Student Attendance Report', 14, 20);
+
+  // Generation Date
+  doc.setFontSize(8);
+  doc.text(
+    `Generated: ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`,
+    pageWidth - 14, 20, { align: 'right' }
+  );
+
+  // Personal Info Section
   const info = state.personalInfo || {};
-  let y = 32;
-  if (info.name) { doc.text(`Name: ${info.name}`, 14, y); y += 6; }
-  if (info.rollNumber) { doc.text(`Roll Number: ${info.rollNumber}`, 14, y); y += 6; }
-  if (info.branch) { doc.text(`Branch: ${info.branch}`, 14, y); y += 6; }
-  if (info.semester) { doc.text(`Semester: ${info.semester}`, 14, y); y += 6; }
-  
+  let y = 38;
+  doc.setFontSize(11);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Student Information', 14, y);
+  y += 8;
+
+  doc.setFontSize(9);
+  doc.setTextColor(80, 80, 80);
+  const infoLines = [];
+  if (info.name) infoLines.push(`Name: ${info.name}`);
+  if (info.rollNumber) infoLines.push(`Roll Number: ${info.rollNumber}`);
+  if (info.branch) infoLines.push(`Branch: ${info.branch}`);
+  if (info.year) infoLines.push(`Year: ${info.year}`);
+  if (info.semester) infoLines.push(`Semester: ${info.semester}`);
+  if (info.section) infoLines.push(`Section: ${info.section}`);
+
+  infoLines.forEach(line => {
+    doc.text(line, 14, y);
+    y += 5;
+  });
+
   // Overall Stats
   const overall = getOverallAttendance(state);
   y += 6;
-  doc.setFontSize(12);
-  doc.setTextColor(40);
+  doc.setFontSize(11);
+  doc.setTextColor(30, 30, 30);
   doc.text('Overall Attendance', 14, y);
-  y += 6;
-  doc.setFontSize(10);
-  doc.setTextColor(100);
-  doc.text(`Total Classes: ${overall.total} | Attended: ${overall.attended} | Missed: ${overall.missed} | Percentage: ${overall.percentage}%`, 14, y);
-  
+  y += 8;
+
+  doc.setFontSize(9);
+  doc.setTextColor(80, 80, 80);
+  doc.text(`Attendance: ${overall.percentage}% (${getHealthLabel(overall.percentage)})`, 14, y);
+  y += 5;
+  doc.text(`Classes Attended: ${overall.attended} / ${overall.total}`, 14, y);
+  y += 5;
+  doc.text(`Classes Missed: ${overall.missed}`, 14, y);
   y += 10;
-  
+
   // Subject Table
   const tableData = state.courses.map(course => {
     const stats = getAttendanceForCourse(state, course.id);
+    const safeBunks = calculateSafeBunks(stats.attended, stats.total, course.minAttendance);
+    const needed = calculateClassesNeeded(stats.attended, stats.total, course.minAttendance);
+    const status = getHealthLabel(stats.percentage);
+
     return [
       course.code,
       course.name,
       stats.total.toString(),
       stats.attended.toString(),
       stats.missed.toString(),
-      `${stats.percentage}%`
+      `${stats.percentage}%`,
+      status,
+      stats.percentage >= course.minAttendance ? `Can skip ${safeBunks}` : `Need ${needed}`,
     ];
   });
 
   doc.autoTable({
     startY: y,
-    head: [['Code', 'Course Name', 'Total', 'Attended', 'Missed', 'Percentage']],
+    head: [['Code', 'Subject', 'Total', 'Present', 'Absent', '%', 'Status', 'Action']],
     body: tableData,
-    theme: 'striped',
-    headStyles: { fillColor: [0, 112, 243] },
-    styles: { fontSize: 10 }
+    theme: 'grid',
+    headStyles: {
+      fillColor: [37, 99, 235],
+      fontSize: 8,
+      fontStyle: 'bold',
+      halign: 'center',
+    },
+    bodyStyles: {
+      fontSize: 8,
+      halign: 'center',
+    },
+    columnStyles: {
+      0: { halign: 'left', cellWidth: 22 },
+      1: { halign: 'left', cellWidth: 40 },
+      6: { halign: 'center' },
+      7: { halign: 'center' },
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 250],
+    },
+    styles: {
+      cellPadding: 3,
+      lineColor: [220, 220, 230],
+      lineWidth: 0.3,
+    },
   });
 
-  doc.save(`Attendance_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
+  // Footer
+  const finalY = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(7);
+  doc.setTextColor(150, 150, 150);
+  doc.text('This report was generated by TryCatch75 — Student Attendance Tracker', 14, finalY);
+  doc.text('All data is stored locally in the browser. No data is sent to any server.', 14, finalY + 4);
+
+  doc.save(`TryCatch75_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
 }

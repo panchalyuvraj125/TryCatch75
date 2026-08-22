@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { TrendingUp, BarChart3, Calendar, Target, Sparkles, ArrowRight, Download } from 'lucide-react';
+import { TrendingUp, BarChart3, Calendar, Target, Sparkles, Download } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { getAttendanceForCourse, getOverallAttendance, getRemainingClasses } from '../utils/storage';
 import { exportAttendancePDF } from '../utils/pdfExport';
@@ -30,12 +30,16 @@ const stagger = {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="card p-2 text-xs shadow-lg">
-      <p className="font-semibold mb-1">{label}</p>
+    <div className="card p-3 shadow-lg border-border">
+      <p className="text-xs font-semibold mb-2">{label}</p>
       {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color }}>
-          {p.name}: {p.value}%
-        </p>
+        <div key={i} className="flex items-center justify-between gap-4 text-xs">
+          <span className="flex items-center gap-1.5 font-medium" style={{ color: p.color }}>
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+            {p.name}
+          </span>
+          <span className="font-bold">{p.value}%</span>
+        </div>
       ))}
     </div>
   );
@@ -158,227 +162,253 @@ export default function Analytics() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-      <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-8 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg sm:text-xl font-semibold tracking-tight">Analytics</h2>
-          <p className="text-xs text-text-muted mt-1">
-            Detailed attendance insights and trends.
-          </p>
-        </div>
-        <button
-          onClick={() => exportAttendancePDF(state)}
-          className="h-9 px-4 bg-accent hover:bg-accent-hover text-white text-xs font-medium rounded-lg transition-all duration-200 active:scale-95 cursor-pointer flex items-center gap-2"
-        >
-          <Download className="w-3.5 h-3.5" />
-          Export PDF
-        </button>
-      </motion.div>
-
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
       <motion.div variants={stagger} initial="hidden" animate="show">
+        <motion.div variants={fadeUp} className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-accent" />
+              Analytics
+            </h2>
+            <p className="text-sm text-text-muted mt-0.5">
+              Detailed attendance insights and trends.
+            </p>
+          </div>
+          <button
+            onClick={() => exportAttendancePDF(state)}
+            className="btn btn-primary btn-sm hidden sm:flex"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Export PDF
+          </button>
+        </motion.div>
+
         {/* Overall Stats Cards */}
-        <motion.div variants={fadeUp} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          <div className="card p-4 text-center">
-            <Target className="w-5 h-5 mx-auto mb-1 text-accent" />
-            <p className="text-xl font-bold">{overall.percentage}%</p>
-            <p className="text-[10px] text-text-muted">Overall</p>
+        <motion.div variants={fadeUp} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+          <div className="stat-card">
+            <Target className="w-5 h-5 mb-2 text-accent" />
+            <span className="stat-card-value">{overall.percentage}%</span>
+            <span className="stat-card-label">Overall</span>
           </div>
-          <div className="card p-4 text-center">
-            <Calendar className="w-5 h-5 mx-auto mb-1 text-text-muted" />
-            <p className="text-xl font-bold">{overall.total}</p>
-            <p className="text-[10px] text-text-muted">Total Classes</p>
+          <div className="stat-card">
+            <Calendar className="w-5 h-5 mb-2 text-text-muted" />
+            <span className="stat-card-value">{overall.total}</span>
+            <span className="stat-card-label">Total Classes</span>
           </div>
-          <div className="card p-4 text-center">
-            <TrendingUp className="w-5 h-5 mx-auto mb-1" style={{ color: 'var(--success)' }} />
-            <p className="text-xl font-bold">{overall.attended}</p>
-            <p className="text-[10px] text-text-muted">Attended</p>
+          <div className="stat-card">
+            <TrendingUp className="w-5 h-5 mb-2 text-success" />
+            <span className="stat-card-value text-success">{overall.attended}</span>
+            <span className="stat-card-label">Attended</span>
           </div>
-          <div className="card p-4 text-center">
-            <BarChart3 className="w-5 h-5 mx-auto mb-1" style={{ color: 'var(--danger)' }} />
-            <p className="text-xl font-bold">{overall.missed}</p>
-            <p className="text-[10px] text-text-muted">Missed</p>
+          <div className="stat-card">
+            <BarChart3 className="w-5 h-5 mb-2 text-danger" />
+            <span className="stat-card-value text-danger">{overall.missed}</span>
+            <span className="stat-card-label">Missed</span>
           </div>
         </motion.div>
 
-        {/* Attendance Trend Line Chart */}
-        <motion.div variants={fadeUp} className="card p-4 sm:p-6 mb-6">
-          <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Attendance Trend
-          </h3>
-          {trendData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
-                  axisLine={{ stroke: 'var(--border-color)' }}
-                  tickLine={false}
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
-                  axisLine={{ stroke: 'var(--border-color)' }}
-                  tickLine={false}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="percentage"
-                  name="Attendance"
-                  stroke="var(--accent)"
-                  strokeWidth={2}
-                  dot={{ fill: 'var(--accent)', r: 3 }}
-                  activeDot={{ r: 5, fill: 'var(--accent)' }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="h-[250px] flex items-center justify-center">
-              <p className="text-sm text-text-muted">No attendance data yet. Start marking attendance to see trends.</p>
-            </div>
-          )}
+        {/* Mobile Export Button */}
+        <motion.div variants={fadeUp} className="mb-6 sm:hidden">
+          <button
+            onClick={() => exportAttendancePDF(state)}
+            className="btn btn-primary w-full"
+          >
+            <Download className="w-4 h-4" />
+            Export PDF Report
+          </button>
         </motion.div>
 
         {/* Subject-wise Bar Chart */}
-        <motion.div variants={fadeUp} className="card p-4 sm:p-6 mb-6">
-          <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
+        <motion.div variants={fadeUp} className="card p-4 sm:p-5 mb-6">
+          <h3 className="section-header">
             <BarChart3 className="w-4 h-4" />
             Subject-wise Comparison
           </h3>
           {subjectData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={subjectData} barCategoryGap="20%">
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-                <XAxis
-                  dataKey="name"
-                  tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
-                  axisLine={{ stroke: 'var(--border-color)' }}
-                  tickLine={false}
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
-                  axisLine={{ stroke: 'var(--border-color)' }}
-                  tickLine={false}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="attendance" name="Attendance" radius={[4, 4, 0, 0]}>
-                  {subjectData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={subjectData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} barCategoryGap="20%">
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                    axisLine={{ stroke: 'var(--border-color)' }}
+                    tickLine={false}
+                    dy={10}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickCount={6}
+                  />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--bg-elevated)', opacity: 0.5 }} />
+                  <Bar dataKey="attendance" name="Attendance" radius={[4, 4, 0, 0]}>
+                    {subjectData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="h-[250px] flex items-center justify-center">
-              <p className="text-sm text-text-muted">Add courses and mark attendance to see comparison.</p>
+            <div className="empty-state">
+              <BarChart3 className="empty-state-icon" />
+              <h3 className="empty-state-title">No Data Available</h3>
+              <p className="empty-state-text">Add courses and mark attendance to see comparisons.</p>
             </div>
           )}
         </motion.div>
 
-        {/* Weekly Heatmap */}
-        <motion.div variants={fadeUp} className="card p-4 sm:p-6">
-          <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Attendance Heatmap
+        {/* Attendance Trend Line Chart */}
+        <motion.div variants={fadeUp} className="card p-4 sm:p-5 mb-6">
+          <h3 className="section-header">
+            <TrendingUp className="w-4 h-4" />
+            Attendance Trend
           </h3>
-          {heatmapData.length > 0 ? (
-            <div className="overflow-x-auto">
-              <div className="flex gap-0.5 items-start">
-                {/* Day labels */}
-                <div className="flex flex-col gap-0.5 mr-1 pt-0">
-                  {dayLabels.map((d, i) => (
-                    <div
-                      key={i}
-                      className="w-4 h-4 flex items-center justify-center text-[8px] text-text-muted font-mono"
-                    >
-                      {i % 2 === 1 ? d : ''}
-                    </div>
-                  ))}
-                </div>
-                {/* Weeks */}
-                {heatmapData.map((week, wi) => (
-                  <div key={wi} className="flex flex-col gap-0.5">
-                    {week.map((cell) => (
+          {trendData.length > 0 ? (
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                    axisLine={{ stroke: 'var(--border-color)' }}
+                    tickLine={false}
+                    dy={10}
+                    minTickGap={30}
+                  />
+                  <YAxis
+                    domain={['auto', 100]}
+                    tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickCount={6}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line
+                    type="monotone"
+                    dataKey="percentage"
+                    name="Attendance"
+                    stroke="var(--accent)"
+                    strokeWidth={3}
+                    dot={{ fill: 'var(--bg-primary)', stroke: 'var(--accent)', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, fill: 'var(--accent)', stroke: 'var(--bg-primary)', strokeWidth: 2 }}
+                    animationDuration={1000}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="empty-state">
+              <TrendingUp className="empty-state-icon" />
+              <h3 className="empty-state-title">No Trends Yet</h3>
+              <p className="empty-state-text">Start marking attendance to see how your percentage changes over time.</p>
+            </div>
+          )}
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Weekly Heatmap */}
+          <motion.div variants={fadeUp} className="card p-4 sm:p-5">
+            <h3 className="section-header">
+              <Calendar className="w-4 h-4" />
+              Attendance Heatmap
+            </h3>
+            {heatmapData.length > 0 ? (
+              <div>
+                <div className="flex gap-1 items-start overflow-x-auto pb-2">
+                  <div className="flex flex-col gap-1 mr-2 pt-0 shrink-0">
+                    {dayLabels.map((d, i) => (
                       <div
-                        key={cell.date}
-                        className="w-4 h-4 rounded-sm transition-colors"
-                        style={{
-                          backgroundColor: getHeatColor(cell.rate),
-                          opacity: cell.rate === null ? 0.3 : 0.8 + (cell.rate / 100) * 0.2,
-                        }}
-                        title={`${cell.date}: ${cell.rate !== null ? cell.rate + '%' : 'No data'}`}
-                      />
+                        key={i}
+                        className="w-4 h-4 flex items-center justify-center text-[9px] text-text-muted font-medium"
+                      >
+                        {i % 2 === 1 ? d : ''}
+                      </div>
                     ))}
                   </div>
-                ))}
-              </div>
-              {/* Legend */}
-              <div className="flex items-center gap-2 mt-3 text-[10px] text-text-muted">
-                <span>Less</span>
-                {[0, 25, 50, 75, 100].map((v) => (
-                  <div
-                    key={v}
-                    className="w-3 h-3 rounded-sm"
-                    style={{ backgroundColor: getHeatColor(v), opacity: 0.8 }}
-                  />
-                ))}
-                <span>More</span>
-              </div>
-            </div>
-          ) : (
-            <div className="py-8 text-center">
-              <p className="text-sm text-text-muted">No attendance data yet to display heatmap.</p>
-            </div>
-          )}
-        </motion.div>
-
-        {/* Predictions */}
-        <motion.div variants={fadeUp} className="card p-4 sm:p-6 mt-6">
-          <h3 className="text-sm font-semibold text-text-secondary mb-4 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-accent" />
-            End of Semester Predictions
-          </h3>
-          {(!state.semester.start || !state.semester.end) ? (
-            <div className="py-8 text-center border border-dashed border-border rounded-xl">
-              <p className="text-sm text-text-muted mb-3">Set your semester dates in Setup to see predictions.</p>
-              <button className="px-4 py-2 bg-bg-tertiary hover:bg-bg-elevated rounded-lg text-xs font-medium transition-colors">Go to Setup</button>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {predictionData.map(data => (
-                <div key={data.id} className="p-4 rounded-xl bg-bg-tertiary flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: data.color }} />
-                      <span className="text-sm font-semibold">{data.name}</span>
-                      <span className="text-[10px] font-mono text-text-muted bg-bg-primary px-1.5 py-0.5 rounded-md border border-border">
-                        {data.remaining} classes left
-                      </span>
+                  {heatmapData.map((week, wi) => (
+                    <div key={wi} className="flex flex-col gap-1 shrink-0">
+                      {week.map((cell) => (
+                        <div
+                          key={cell.date}
+                          className="w-4 h-4 sm:w-5 sm:h-5 rounded-[3px] transition-colors"
+                          style={{
+                            backgroundColor: getHeatColor(cell.rate),
+                            opacity: cell.rate === null ? 0.2 : 0.6 + (cell.rate / 100) * 0.4,
+                          }}
+                          title={`${cell.date}: ${cell.rate !== null ? cell.rate + '%' : 'No data'}`}
+                        />
+                      ))}
                     </div>
-                    <p className="text-[11px] text-text-muted">
-                      Currently at {data.stats.percentage}%
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center gap-4 shrink-0">
-                    <div className="text-right">
-                      <p className="text-[10px] text-text-muted mb-0.5">If you bunk all</p>
-                      <p className="text-sm font-bold text-danger">{data.minPossible}%</p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-text-muted opacity-50" />
-                    <div className="text-right">
-                      <p className="text-[10px] text-text-muted mb-0.5">If you attend all</p>
-                      <p className="text-sm font-bold text-success">{data.maxPossible}%</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+                <div className="flex items-center gap-1.5 mt-4 text-[10px] font-medium text-text-muted">
+                  <span>Less</span>
+                  {[0, 50, 80, 100].map((v) => (
+                    <div
+                      key={v}
+                      className="w-3 h-3 rounded-[2px]"
+                      style={{ backgroundColor: getHeatColor(v), opacity: 0.6 + (v / 100) * 0.4 }}
+                    />
+                  ))}
+                  <span>More</span>
+                </div>
+              </div>
+            ) : (
+              <div className="empty-state">
+                <p className="text-sm text-text-muted">No attendance data yet.</p>
+              </div>
+            )}
+          </motion.div>
+
+          {/* Predictions */}
+          <motion.div variants={fadeUp} className="card p-4 sm:p-5">
+            <h3 className="section-header mb-4">
+              <Sparkles className="w-4 h-4 text-accent" />
+              Semester Forecast
+            </h3>
+            {(!state.semester.start || !state.semester.end) ? (
+              <div className="empty-state border border-dashed border-border rounded-xl">
+                <p className="text-sm text-text-muted mb-4">Set your semester dates in Setup to see end-of-semester predictions.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {predictionData.map(data => (
+                  <div key={data.id} className="p-3 rounded-lg bg-bg-tertiary border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: data.color }} />
+                        <span className="text-sm font-medium truncate">{data.name}</span>
+                        <span className="badge badge-muted shrink-0 text-[9px] py-0.5">
+                          {data.remaining} left
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-text-muted">
+                        Current: <strong className="text-text-primary">{data.stats.percentage}%</strong>
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 shrink-0 bg-bg-primary/50 p-2 rounded-md border border-border">
+                      <div className="text-center">
+                        <p className="text-[9px] font-medium text-text-muted uppercase tracking-wider mb-0.5">Worst</p>
+                        <p className={`text-sm font-bold ${data.minPossible < data.minAttendance ? 'text-danger' : 'text-warning'}`}>{data.minPossible}%</p>
+                      </div>
+                      <div className="w-px h-6 bg-border" />
+                      <div className="text-center">
+                        <p className="text-[9px] font-medium text-text-muted uppercase tracking-wider mb-0.5">Best</p>
+                        <p className="text-sm font-bold text-success">{data.maxPossible}%</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </div>
       </motion.div>
     </div>
   );

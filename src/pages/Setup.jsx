@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { v4 as uuid } from 'uuid';
-import { BookOpen, Trash2, Edit3, Download, Upload, X } from 'lucide-react';
+import { BookOpen, Trash2, Edit3, Download } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { exportData, importData } from '../utils/storage';
 import { showToast } from '../components/ui/Toast';
@@ -87,13 +87,8 @@ export default function Setup() {
   };
 
   const finishSetup = () => {
+    saveCurrentStep();
     update({
-      personalInfo,
-      courses,
-      timetable,
-      periodTimes,
-      semester,
-      holidays,
       setupComplete: true,
     });
     showToast('Setup complete! Redirecting to Dashboard...', 'success');
@@ -227,12 +222,18 @@ export default function Setup() {
     try {
       const data = await importData(file);
       refreshData();
-      setPersonalInfo(data.personalInfo || state.personalInfo);
-      setCourses(data.courses || []);
-      setTimetable(data.timetable || state.timetable);
-      setPeriodTimes(data.periodTimes || state.periodTimes);
-      setSemester(data.semester || state.semester);
-      setHolidays(data.holidays || []);
+      
+      const activeId = data.activeSemesterId || 'default';
+      const activeData = data.semesters?.[activeId] || data;
+
+      setPersonalInfo(activeData.personalInfo || state.personalInfo);
+      setCourses(activeData.courses || []);
+      setTimetable(activeData.timetable || state.timetable);
+      setPeriodTimes(activeData.periodTimes || state.periodTimes);
+      setSemester(activeData.semester || state.semester);
+      setHolidays(activeData.holidays || []);
+      setSemesterLabel(data.semesters?.[activeId]?.label || 'Semester 3');
+      
       showToast('Data imported successfully!', 'success');
     } catch (err) {
       showToast(err.message, 'error');
@@ -867,13 +868,13 @@ export default function Setup() {
               </div>
 
               {/* Data Management */}
-              <div className="card p-4 sm:p-6">
-                <h3 className="text-sm font-semibold text-text-secondary mb-1">Data Management</h3>
+              <div className="card p-4 sm:p-5">
+                <h3 className="section-header mb-1">Data Management</h3>
                 <p className="text-xs text-text-muted mb-4">
                   Export your data to create a backup, or import a previously saved backup to
                   restore your data.
                 </p>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {/* Export */}
                   <div>
                     <button
@@ -882,10 +883,10 @@ export default function Setup() {
                         exportData();
                         showToast('Data exported!', 'success');
                       }}
-                      className="w-full h-10 px-4 bg-accent hover:bg-accent-hover text-white text-sm font-medium rounded-lg transition-all duration-200 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                      className="btn btn-primary w-full"
                     >
                       <Download className="w-4 h-4" />
-                      Export Data
+                      Export Backup
                     </button>
                     <p className="text-[10px] text-text-muted mt-1.5">
                       Downloads a JSON file with all your attendance data, courses, timetable, and
@@ -898,13 +899,13 @@ export default function Setup() {
                     <label className="block text-xs font-medium text-text-muted mb-1.5">
                       Import Data
                     </label>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
                       <div className="flex-1">
                         <label
                           htmlFor="import-file"
                           className="h-10 flex items-center justify-start px-2 gap-3 bg-bg-tertiary border border-border rounded-lg cursor-pointer text-sm text-text-primary hover:bg-bg-elevated transition-all"
                         >
-                          <span className="px-3 py-1 rounded-md bg-accent text-white text-xs font-medium">
+                          <span className="badge badge-accent">
                             Choose File
                           </span>
                           <span className="truncate text-xs text-text-muted">{fileName}</span>
@@ -922,9 +923,9 @@ export default function Setup() {
                       </div>
                       <button
                         onClick={handleImport}
-                        className="h-10 px-4 bg-bg-tertiary hover:bg-bg-elevated text-text-secondary text-sm font-medium rounded-lg transition-all duration-200 active:scale-95 cursor-pointer border border-border whitespace-nowrap"
+                        className="btn btn-primary sm:w-auto w-full"
                       >
-                        Import
+                        Restore Backup
                       </button>
                     </div>
                     <p className="text-[10px] text-text-muted mt-1.5">

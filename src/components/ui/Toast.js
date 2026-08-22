@@ -1,3 +1,7 @@
+/**
+ * Toast notification system.
+ * Uses safe DOM manipulation (no innerHTML — XSS safe).
+ */
 export function showToast(message, type = 'info', duration = 3000) {
   const container = document.getElementById('toast-container');
   if (!container) return;
@@ -13,16 +17,24 @@ export function showToast(message, type = 'info', duration = 3000) {
   };
 
   const colors = {
-    success: 'color: var(--success)',
-    error: 'color: var(--danger)',
-    warning: 'color: var(--warning)',
-    info: 'color: var(--accent)',
+    success: 'var(--success)',
+    error: 'var(--danger)',
+    warning: 'var(--warning)',
+    info: 'var(--accent)',
   };
 
-  toast.innerHTML = `
-    <span style="${colors[type] || colors.info}; font-weight: 600; font-size: 16px;">${icons[type] || icons.info}</span>
-    <span>${message}</span>
-  `;
+  const iconSpan = document.createElement('span');
+  iconSpan.style.color = colors[type] || colors.info;
+  iconSpan.style.fontWeight = '600';
+  iconSpan.style.fontSize = '16px';
+  iconSpan.style.flexShrink = '0';
+  iconSpan.textContent = icons[type] || icons.info;
+
+  const textSpan = document.createElement('span');
+  textSpan.textContent = message;
+
+  toast.appendChild(iconSpan);
+  toast.appendChild(textSpan);
 
   container.appendChild(toast);
 

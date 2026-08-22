@@ -18,8 +18,8 @@ export default defineConfig(({ command }) => ({
         name: 'TryCatch75 — Attendance Tracker',
         short_name: 'TryCatch75',
         description: 'Track your college attendance effortlessly.',
-        theme_color: '#0c0c0e',
-        background_color: '#0c0c0e',
+        theme_color: '#09090b',
+        background_color: '#09090b',
         display: 'standalone',
         icons: [
           {

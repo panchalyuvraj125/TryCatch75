@@ -1,165 +1,213 @@
-import { motion } from 'framer-motion';
-import { Calculator, TrendingUp, TrendingDown, AlertTriangle, PartyPopper } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calculator, TrendingDown, AlertTriangle, PartyPopper, Target, BookOpen } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { getAttendanceForCourse, calculateSafeBunks, calculateClassesNeeded } from '../utils/storage';
 import { useNavigate } from 'react-router-dom';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
-};
-
 const stagger = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } }
 };
 
 export default function BunkCalculator() {
   const { state } = useApp();
   const navigate = useNavigate();
+  const [selectedCourseId, setSelectedCourseId] = useState(state.courses[0]?.id || '');
+  const [scenarioBunks, setScenarioBunks] = useState('');
 
-  const getStatusColor = (pct, min) => {
-    if (pct >= min + 10) return 'var(--success)';
-    if (pct >= min) return 'var(--warning)';
-    return 'var(--danger)';
-  };
+  const selectedCourse = state.courses.find(c => c.id === selectedCourseId);
+  const stats = selectedCourse ? getAttendanceForCourse(state, selectedCourse.id) : null;
+  
+  const minRequired = selectedCourse?.minAttendance || 75;
+  const safeBunks = stats ? calculateSafeBunks(stats.attended, stats.total, minRequired) : 0;
+  const classesNeeded = stats ? calculateClassesNeeded(stats.attended, stats.total, minRequired) : 0;
+
+  // Scenario projection
+  const currentPct = stats?.percentage || 0;
+  const newTotal = stats ? stats.total + (parseInt(scenarioBunks) || 0) : 0;
+  const projectedPct = stats && newTotal > 0 ? Math.round((stats.attended / newTotal) * 100) : currentPct;
+  const scenarioWarning = projectedPct < minRequired;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-      <motion.div variants={fadeUp} initial="hidden" animate="show" className="mb-8">
-        <h2 className="text-lg sm:text-xl font-semibold tracking-tight flex items-center gap-2">
-          <Calculator className="w-5 h-5" />
-          Bunk Calculator
-        </h2>
-        <p className="text-xs text-text-muted mt-1">
-          See how many classes you can safely skip — or need to attend.
-        </p>
-      </motion.div>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
+      <motion.div variants={stagger} initial="hidden" animate="show">
+        {/* Header */}
+        <motion.div variants={fadeUp} className="mb-6">
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
+            <Calculator className="w-5 h-5 text-accent" />
+            Bunk Calculator
+          </h2>
+          <p className="text-sm text-text-muted mt-0.5">
+            Plan your attendance and see how missing classes affects your percentage.
+          </p>
+        </motion.div>
 
-      {state.courses.length > 0 ? (
-        <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
-          {state.courses.map((course) => {
-            const stats = getAttendanceForCourse(state, course.id);
-            const safeBunks = calculateSafeBunks(stats.attended, stats.total, course.minAttendance);
-            const classesNeeded = calculateClassesNeeded(stats.attended, stats.total, course.minAttendance);
-            const isAbove = stats.percentage >= course.minAttendance;
-            const statusColor = getStatusColor(stats.percentage, course.minAttendance);
+        {state.courses.length === 0 ? (
+          <motion.div variants={fadeUp} className="card p-8 text-center">
+            <BookOpen className="w-8 h-8 text-text-muted mx-auto mb-3 opacity-50" />
+            <p className="text-sm text-text-muted mb-4">You need to add courses first.</p>
+            <button onClick={() => navigate('/setup')} className="btn btn-primary">
+              Go to Setup
+            </button>
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+            
+            {/* Left Column: Selector & Stats */}
+            <motion.div variants={fadeUp} className="space-y-5 sm:space-y-6">
+              
+              <div className="card p-4 sm:p-5">
+                <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
+                  Select Subject
+                </label>
+                <select
+                  value={selectedCourseId}
+                  onChange={(e) => setSelectedCourseId(e.target.value)}
+                  className="w-full h-11 text-sm bg-bg-tertiary border-border rounded-lg px-3 mb-4 focus:ring-2 focus:ring-accent/20"
+                >
+                  {state.courses.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
 
-            return (
-              <motion.div key={course.id} variants={fadeUp} className="card p-4 sm:p-5">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div
-                      className="w-3 h-3 rounded-full shrink-0"
-                      style={{ backgroundColor: course.color }}
-                    />
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold truncate">{course.name}</p>
-                      <p className="text-[10px] font-mono text-text-muted">{course.code}</p>
+                {stats && (
+                  <div className="bg-bg-tertiary rounded-xl p-4 border border-border">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium text-text-secondary">Current Attendance</span>
+                      <span className={`text-lg font-bold ${currentPct >= minRequired ? 'text-success' : 'text-danger'}`}>
+                        {currentPct}%
+                      </span>
                     </div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-lg font-bold" style={{ color: statusColor }}>
-                      {stats.percentage}%
-                    </p>
-                    <p className="text-[10px] text-text-muted">
-                      Min: {course.minAttendance}%
-                    </p>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="relative w-full h-2 bg-bg-tertiary rounded-full overflow-hidden mb-3">
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: statusColor }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(stats.percentage, 100)}%` }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
-                  />
-                  {/* Min threshold marker */}
-                  <div
-                    className="absolute top-0 h-full w-px bg-text-muted/50"
-                    style={{ left: `${course.minAttendance}%` }}
-                  />
-                </div>
-
-                {/* Stats Row */}
-                <div className="flex items-center gap-4 text-[11px] text-text-muted mb-3">
-                  <span>{stats.attended}/{stats.total} attended</span>
-                  <span>{stats.missed} missed</span>
-                </div>
-
-                {/* Bunk Result */}
-                {stats.total === 0 ? (
-                  <div className="flex items-center gap-2 p-3 rounded-lg bg-bg-tertiary">
-                    <AlertTriangle className="w-4 h-4 text-text-muted shrink-0" />
-                    <p className="text-xs text-text-muted">
-                      No classes recorded yet. Start marking attendance to see calculations.
-                    </p>
-                  </div>
-                ) : isAbove ? (
-                  <div
-                    className="flex items-center gap-2 p-3 rounded-lg"
-                    style={{ backgroundColor: 'rgba(0, 200, 83, 0.08)' }}
-                  >
-                    <PartyPopper className="w-4 h-4 shrink-0" style={{ color: 'var(--success)' }} />
-                    <div>
-                      <p className="text-xs font-semibold" style={{ color: 'var(--success)' }}>
-                        You can safely bunk {safeBunks} more {safeBunks === 1 ? 'class' : 'classes'}
-                      </p>
-                      <p className="text-[10px] text-text-muted mt-0.5">
-                        and still stay above {course.minAttendance}% attendance
-                      </p>
+                    <div className="progress-bar mb-3">
+                      <div 
+                        className="progress-fill" 
+                        style={{ 
+                          width: `${Math.min(currentPct, 100)}%`,
+                          backgroundColor: currentPct >= minRequired ? 'var(--success)' : 'var(--danger)'
+                        }}
+                      />
                     </div>
-                  </div>
-                ) : (
-                  <div
-                    className="flex items-center gap-2 p-3 rounded-lg"
-                    style={{ backgroundColor: 'rgba(255, 71, 87, 0.08)' }}
-                  >
-                    <TrendingDown className="w-4 h-4 shrink-0" style={{ color: 'var(--danger)' }} />
-                    <div>
-                      <p className="text-xs font-semibold" style={{ color: 'var(--danger)' }}>
-                        Attend {classesNeeded} consecutive {classesNeeded === 1 ? 'class' : 'classes'}
-                      </p>
-                      <p className="text-[10px] text-text-muted mt-0.5">
-                        to reach {course.minAttendance}% attendance
-                      </p>
+                    <div className="flex justify-between text-[11px] text-text-muted tabular-nums font-medium">
+                      <span>{stats.attended} Attended</span>
+                      <span>{stats.missed} Missed</span>
+                      <span>{stats.total} Total</span>
                     </div>
                   </div>
                 )}
-              </motion.div>
-            );
-          })}
+              </div>
 
-          {/* Formula Reference */}
-          <motion.div variants={fadeUp} className="card p-4 sm:p-5 mt-4">
-            <h3 className="text-xs font-semibold text-text-secondary mb-2">How it works</h3>
-            <div className="space-y-2 text-[11px] text-text-muted font-mono">
-              <p>Attendance % = (Classes Attended / Total Classes Held) × 100</p>
-              <p>Safe Bunks = classes you can skip while staying ≥ minimum %</p>
-              <p>Classes Needed = consecutive classes to attend to reach minimum %</p>
-            </div>
-          </motion.div>
-        </motion.div>
-      ) : (
-        <div className="card p-8 sm:p-12 text-center">
-          <Calculator className="w-8 h-8 text-text-muted mx-auto mb-3" />
-          <h3 className="text-base font-semibold mb-1">No courses yet</h3>
-          <p className="text-sm text-text-muted">
-            Add courses in{' '}
-            <button
-              onClick={() => navigate('/setup')}
-              className="text-accent hover:underline cursor-pointer"
-            >
-              Setup
-            </button>{' '}
-            to use the Bunk Calculator.
-          </p>
-        </div>
-      )}
+              {/* Status Card */}
+              {stats && (
+                <div className="card overflow-hidden border-0 shadow-sm relative">
+                  {currentPct >= minRequired ? (
+                    <div className="bg-success-soft border border-success/20 p-5 sm:p-6">
+                      <div className="flex items-center gap-3 mb-3 text-success">
+                        <PartyPopper className="w-6 h-6" />
+                        <h3 className="text-lg font-semibold">You're safe!</h3>
+                      </div>
+                      <p className="text-sm text-text-primary mb-1">
+                        Target is <strong>{minRequired}%</strong>.
+                      </p>
+                      <p className="text-sm text-text-secondary">
+                        You can safely bunk <strong className="text-success text-base">{safeBunks}</strong> more {safeBunks === 1 ? 'class' : 'classes'} without falling below the limit.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-danger-soft border border-danger/20 p-5 sm:p-6">
+                      <div className="flex items-center gap-3 mb-3 text-danger">
+                        <AlertTriangle className="w-6 h-6" />
+                        <h3 className="text-lg font-semibold">Critical Zone</h3>
+                      </div>
+                      <p className="text-sm text-text-primary mb-1">
+                        Target is <strong>{minRequired}%</strong>.
+                      </p>
+                      <p className="text-sm text-text-secondary">
+                        You need to attend the next <strong className="text-danger text-base">{classesNeeded}</strong> {classesNeeded === 1 ? 'class' : 'classes'} to reach the limit.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </motion.div>
+
+            {/* Right Column: Scenario Simulator */}
+            <motion.div variants={fadeUp} className="space-y-5 sm:space-y-6">
+              
+              <div className="card p-4 sm:p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Target className="w-4 h-4 text-accent" />
+                  <h3 className="text-sm font-semibold text-text-primary">What if I bunk...</h3>
+                </div>
+                
+                <div className="flex items-center gap-3 mb-5">
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={scenarioBunks}
+                    onChange={(e) => setScenarioBunks(e.target.value)}
+                    className="w-20 h-11 text-center font-semibold text-lg bg-bg-tertiary border-border rounded-lg focus:ring-2 focus:ring-accent/20"
+                  />
+                  <span className="text-sm font-medium text-text-secondary">classes?</span>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  {scenarioBunks && parseInt(scenarioBunks) > 0 ? (
+                    <motion.div
+                      key="result"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className={`p-4 rounded-xl border ${scenarioWarning ? 'bg-danger-soft border-danger/20' : 'bg-bg-tertiary border-border'}`}>
+                        <p className="text-xs text-text-secondary uppercase font-semibold tracking-wide mb-1">Projected Attendance</p>
+                        <div className="flex items-end gap-3 mb-2">
+                          <span className={`text-3xl font-bold tabular-nums tracking-tight ${scenarioWarning ? 'text-danger' : 'text-text-primary'}`}>
+                            {projectedPct}%
+                          </span>
+                          <span className="text-sm font-medium text-text-muted mb-1.5 flex items-center gap-1">
+                            <TrendingDown className="w-3.5 h-3.5" />
+                            from {currentPct}%
+                          </span>
+                        </div>
+                        {scenarioWarning ? (
+                          <p className="text-xs text-danger font-medium flex items-center gap-1.5 mt-2">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            This will drop you below {minRequired}%!
+                          </p>
+                        ) : (
+                          <p className="text-xs text-text-muted mt-2">
+                            You will still be above the {minRequired}% requirement.
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="empty"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="p-4 rounded-xl border border-border border-dashed text-center"
+                    >
+                      <p className="text-xs text-text-muted">Enter a number to see the projection</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+            </motion.div>
+            
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 }

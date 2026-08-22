@@ -260,7 +260,7 @@ export function getData() {
     let parsed = JSON.parse(raw);
     
     if (parsed.courses && !parsed.semesters) {
-      const semData = { ...parsed };
+      const semData = { ...DEFAULT_DATA, ...parsed };
       delete semData.theme;
       parsed = {
         activeSemesterId: 'default',
@@ -272,7 +272,15 @@ export function getData() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
     }
     
-    return { ...DEFAULT_GLOBAL_DATA, ...parsed };
+    // Safety merge: ensure active semester has all DEFAULT_DATA fields
+    const finalData = { ...DEFAULT_GLOBAL_DATA, ...parsed };
+    if (finalData.semesters && finalData.activeSemesterId) {
+       const activeId = finalData.activeSemesterId;
+       if (finalData.semesters[activeId]) {
+         finalData.semesters[activeId] = { ...DEFAULT_DATA, ...finalData.semesters[activeId] };
+       }
+    }
+    return finalData;
   } catch {
     return { ...DEFAULT_GLOBAL_DATA };
   }
@@ -315,7 +323,7 @@ export function importData(file) {
               ...DEFAULT_GLOBAL_DATA,
               activeSemesterId: 'default',
               semesters: {
-                'default': { id: 'default', label: 'Semester 1', ...DEFAULT_DATA, ...semData }
+                'default': { id: 'default', label: 'Semester 3', ...DEFAULT_DATA, ...semData }
               },
               theme: data.theme || 'dark'
             };
