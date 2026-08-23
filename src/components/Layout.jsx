@@ -32,7 +32,7 @@ const mobileNavItems = [
   { to: '/timetable', icon: CalendarClock, label: 'Timetable', key: 'timetable' },
   { to: '/mark', icon: PenLine, label: 'Mark', key: 'mark' },
   { to: '/analytics', icon: TrendingUp, label: 'Analytics', key: 'analytics' },
-  { to: '/setup', icon: Settings, label: 'Settings', key: 'setup' },
+  { to: '/history', icon: History, label: 'History', key: 'history' },
 ];
 
 export default function Layout({ children }) {
@@ -191,17 +191,41 @@ export default function Layout({ children }) {
           </div>
           <span className="text-sm font-semibold tracking-tight">TryCatch75</span>
         </NavLink>
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-all cursor-pointer"
-          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-        >
-          {theme === 'dark' ? (
-            <Moon className="w-5 h-5" />
-          ) : (
-            <Sun className="w-5 h-5" />
-          )}
-        </button>
+        <div className="flex items-center gap-1">
+          <NavLink
+            to="/bunk"
+            className={({ isActive }) =>
+              `p-2 rounded-lg transition-all cursor-pointer ${
+                isActive ? 'text-accent bg-accent/10' : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+              }`
+            }
+            aria-label="Calculator"
+          >
+            <BookOpen className="w-5 h-5" />
+          </NavLink>
+          <NavLink
+            to="/setup"
+            className={({ isActive }) =>
+              `p-2 rounded-lg transition-all cursor-pointer ${
+                isActive ? 'text-accent bg-accent/10' : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+              }`
+            }
+            aria-label="Settings"
+          >
+            <Settings className="w-5 h-5" />
+          </NavLink>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-all cursor-pointer"
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? (
+              <Moon className="w-5 h-5" />
+            ) : (
+              <Sun className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </header>
 
       {/* Mobile Bottom Nav */}
