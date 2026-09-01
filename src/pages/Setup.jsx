@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { v4 as uuid } from 'uuid';
 import { BookOpen, Trash2, Edit3, Download } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { exportData, importData } from '../utils/storage';
+import { exportData, importData, DEFAULT_GLOBAL_DATA } from '../utils/storage';
 import { showToast } from '../components/ui/Toast';
 import { requestNotificationPermission } from '../utils/notifications';
 
@@ -182,6 +182,16 @@ export default function Setup() {
     setPeriodTimes((prev) => prev.map((p, i) => (i === index ? { ...p, [field]: value } : p)));
   };
 
+  const applyVersion3Preset = () => {
+    const v3Data = DEFAULT_GLOBAL_DATA.semesters['demo-sem'];
+    if (v3Data) {
+      setCourses(v3Data.courses || []);
+      setTimetable(v3Data.timetable || {});
+      setPeriodTimes(v3Data.periodTimes || []);
+      showToast('Version-III (31/8/2026) Timetable loaded successfully!', 'success');
+    }
+  };
+
   const applyPreset8to5 = () => {
     setPeriodTimes([
       { start: '08:00', end: '09:00' },
@@ -193,8 +203,9 @@ export default function Setup() {
       { start: '14:00', end: '15:00' },
       { start: '15:00', end: '16:00' },
       { start: '16:00', end: '17:00' },
+      { start: '17:00', end: '18:00' },
     ]);
-    showToast('Applied 8:00 AM - 5:00 PM preset', 'success');
+    showToast('Applied 8:00 AM - 6:00 PM preset', 'success');
   };
 
   const addHoliday = () => {
@@ -541,9 +552,18 @@ export default function Setup() {
                 <h3 className="text-sm font-semibold text-text-secondary mb-1">
                   Build Your Timetable
                 </h3>
-                <p className="text-xs text-text-muted mb-4">
-                  Click on a cell to assign a course. Click again to remove it.
-                </p>
+                <div className="mb-4 p-3 bg-accent/10 border border-accent/30 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs font-semibold text-accent">Latest Timetable Available</h4>
+                    <p className="text-[11px] text-text-muted">Load official Version-III schedule (w.e.f. 31/8/2026) for S.Y.B.Tech CSE-AIML (AM2 Batch).</p>
+                  </div>
+                  <button
+                    onClick={applyVersion3Preset}
+                    className="px-3.5 py-1.5 bg-accent hover:bg-accent-hover text-white text-xs font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-sm active:scale-95"
+                  >
+                    ✨ Load Version-III Timetable
+                  </button>
+                </div>
 
                 {/* Period Times Config */}
                 <details className="mb-4">

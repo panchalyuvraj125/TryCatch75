@@ -1,13 +1,13 @@
-const STORAGE_KEY = 'trycatch75_data_v7';
+export const STORAGE_KEY = 'trycatch75_data_v11';
 
 const DEFAULT_DATA = {
   personalInfo: {
-    name: '',
-    rollNumber: '',
-    branch: '',
-    year: '',
-    semester: '',
-    section: '',
+    name: 'Yuvraj Panchal ',
+    rollNumber: 'BA43',
+    branch: 'AI & ML',
+    year: '2',
+    semester: '3',
+    section: 'AM2',
   },
   courses: [],
   timetable: {
@@ -19,31 +19,33 @@ const DEFAULT_DATA = {
     Sat: {},
   },
   periodTimes: [
-    { start: '09:00', end: '09:50' },
-    { start: '10:00', end: '10:50' },
-    { start: '11:00', end: '11:50' },
-    { start: '12:00', end: '12:50' },
-    { start: '14:00', end: '14:50' },
-    { start: '15:00', end: '15:50' },
-    { start: '16:00', end: '16:50' },
-    { start: '17:00', end: '17:50' },
+    { start: '08:00', end: '09:00' },
+    { start: '09:00', end: '10:00' },
+    { start: '10:00', end: '11:00' },
+    { start: '11:00', end: '12:00' },
+    { start: '12:00', end: '13:00' },
+    { start: '13:00', end: '14:00' },
+    { start: '14:00', end: '15:00' },
+    { start: '15:00', end: '16:00' },
+    { start: '16:00', end: '17:00' },
+    { start: '17:00', end: '18:00' },
   ],
   overrides: {},
   attendanceLog: [],
   holidays: [],
-  semester: { start: '', end: '' },
-  setupComplete: false,
+  semester: { start: '2026-08-03', end: '2026-12-15' },
+  setupComplete: true,
 };
 
-const DEFAULT_GLOBAL_DATA = {
+export const DEFAULT_GLOBAL_DATA = {
   "activeSemesterId": "demo-sem",
   "semesters": {
     "demo-sem": {
       "id": "demo-sem",
-      "label": "Demo Semester",
+      "label": "Semester 3",
       "personalInfo": {
-        "name": "Jane Doe",
-        "rollNumber": "2024CS101",
+        "name": "Yuvraj Panchal ",
+        "rollNumber": "BA43",
         "branch": "AI & ML",
         "year": "2",
         "semester": "3",
@@ -124,8 +126,8 @@ const DEFAULT_GLOBAL_DATA = {
         },
         {
           "id": "c10",
-          "code": "25AFAIMD306",
-          "name": "Multi-Disciplinary Minor Course",
+          "code": "25AF1245MD306B-TH",
+          "name": "MINOR-OOP",
           "minAttendance": 75,
           "goalAttendance": 75,
           "color": "#f43f5e"
@@ -145,92 +147,170 @@ const DEFAULT_GLOBAL_DATA = {
           "minAttendance": 75,
           "goalAttendance": 75,
           "color": "#d946ef"
+        },
+        {
+          "id": "c9f57314-fbda-4cde-8f09-356e16f7cb41",
+          "code": "25AF1245MDL306B-PR",
+          "name": "MINOR-OOPSL",
+          "minAttendance": 75,
+          "goalAttendance": 85,
+          "color": "#0070f3"
         }
       ],
       "timetable": {
         "Mon": {
-          "0": "c8",
+          "0": "c4",
           "1": "c1",
           "2": "c1",
           "3": "c2",
           "4": "c3"
         },
         "Tue": {
-          "0": "c6",
-          "1": "c6",
+          "2": "c9",
           "3": "c2",
-          "5": "c11",
-          "6": "c12",
-          "7": "c12",
-          "8": "c10"
+          "5": "c6",
+          "6": "c6",
+          "7": "c11",
+          "8": "c12",
+          "9": "c12"
         },
         "Wed": {
-          "1": "c1",
-          "2": "c12",
-          "3": "c12",
+          "2": "c9f57314-fbda-4cde-8f09-356e16f7cb41",
+          "3": "c9f57314-fbda-4cde-8f09-356e16f7cb41",
           "4": "c8",
-          "5": "c3"
+          "5": "c3",
+          "7": "c1"
         },
         "Thu": {
           "0": "c10",
-          "2": "c9",
+          "1": "c10",
+          "2": "c8",
           "3": "c5",
           "4": "c5",
           "5": "c8",
           "7": "c6",
-          "8": "c8"
+          "8": "c9"
         },
         "Fri": {
           "0": "c4",
           "1": "c7",
           "2": "c3",
           "3": "c2",
-          "4": "c4"
+          "4": "c12",
+          "5": "c12"
         },
-        "Sat": {
-          "2": "c9",
-          "3": "c9"
-        }
+        "Sat": {}
       },
       "periodTimes": [
-        {
-          "start": "08:00",
-          "end": "09:00"
-        },
-        {
-          "start": "09:00",
-          "end": "10:00"
-        },
-        {
-          "start": "10:00",
-          "end": "11:00"
-        },
-        {
-          "start": "11:00",
-          "end": "12:00"
-        },
-        {
-          "start": "12:00",
-          "end": "13:00"
-        },
-        {
-          "start": "13:00",
-          "end": "14:00"
-        },
-        {
-          "start": "14:00",
-          "end": "15:00"
-        },
-        {
-          "start": "15:00",
-          "end": "16:00"
-        },
-        {
-          "start": "16:00",
-          "end": "17:00"
-        }
+        { "start": "08:00", "end": "09:00" },
+        { "start": "09:00", "end": "10:00" },
+        { "start": "10:00", "end": "11:00" },
+        { "start": "11:00", "end": "12:00" },
+        { "start": "12:00", "end": "13:00" },
+        { "start": "13:00", "end": "14:00" },
+        { "start": "14:00", "end": "15:00" },
+        { "start": "15:00", "end": "16:00" },
+        { "start": "16:00", "end": "17:00" },
+        { "start": "17:00", "end": "18:00" }
       ],
-      "attendanceLog": [],
+      "overrides": {},
+      "attendanceLog": [
+        { "date": "2026-08-03", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-03", "courseId": "c1", "period": 2, "status": "present" },
+        { "date": "2026-08-03", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-03", "courseId": "c3", "period": 4, "status": "present" },
+        { "date": "2026-08-05", "courseId": "c4", "period": 0, "status": "present" },
+        { "date": "2026-08-05", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-05", "courseId": "c5", "period": 2, "status": "present" },
+        { "date": "2026-08-05", "courseId": "c5", "period": 3, "status": "present" },
+        { "date": "2026-08-05", "courseId": "c3", "period": 5, "status": "present" },
+        { "date": "2026-08-06", "courseId": "c12", "period": 3, "status": "present" },
+        { "date": "2026-08-06", "courseId": "c12", "period": 4, "status": "present" },
+        { "date": "2026-08-06", "courseId": "c6", "period": 5, "status": "present" },
+        { "date": "2026-08-07", "courseId": "c7", "period": 1, "status": "absent" },
+        { "date": "2026-08-07", "courseId": "c4", "period": 2, "status": "absent" },
+        { "date": "2026-08-07", "courseId": "c2", "period": 3, "status": "absent" },
+        { "date": "2026-08-07", "courseId": "c3", "period": 4, "status": "absent" },
+        { "date": "2026-08-10", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-10", "courseId": "c1", "period": 2, "status": "present" },
+        { "date": "2026-08-10", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-10", "courseId": "c3", "period": 4, "status": "present" },
+        { "date": "2026-08-11", "courseId": "c6", "period": 0, "status": "present" },
+        { "date": "2026-08-11", "courseId": "c6", "period": 1, "status": "present" },
+        { "date": "2026-08-11", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-12", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-12", "courseId": "c12", "period": 2, "status": "present" },
+        { "date": "2026-08-12", "courseId": "c12", "period": 3, "status": "present" },
+        { "date": "2026-08-12", "courseId": "c3", "period": 5, "status": "present" },
+        { "date": "2026-08-13", "courseId": "c6", "period": 6, "status": "absent" },
+        { "date": "2026-08-13", "courseId": "c8", "period": 5, "status": "present" },
+        { "date": "2026-08-13", "courseId": "c5", "period": 4, "status": "present" },
+        { "date": "2026-08-13", "courseId": "c5", "period": 3, "status": "present" },
+        { "date": "2026-08-13", "courseId": "c10", "period": 2, "status": "present" },
+        { "date": "2026-08-13", "courseId": "c10", "period": 1, "status": "present" },
+        { "date": "2026-08-14", "courseId": "c4", "period": 0, "status": "present" },
+        { "date": "2026-08-14", "courseId": "c7", "period": 1, "status": "present" },
+        { "date": "2026-08-14", "courseId": "c3", "period": 2, "status": "present" },
+        { "date": "2026-08-14", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-14", "courseId": "c4", "period": 4, "status": "present" },
+        { "date": "2026-08-17", "courseId": "c4", "period": 0, "status": "present" },
+        { "date": "2026-08-17", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-17", "courseId": "c1", "period": 2, "status": "present" },
+        { "date": "2026-08-17", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-17", "courseId": "c3", "period": 4, "status": "present" },
+        { "date": "2026-08-18", "courseId": "c6", "period": 0, "status": "absent" },
+        { "date": "2026-08-18", "courseId": "c6", "period": 1, "status": "absent" },
+        { "date": "2026-08-18", "courseId": "c2", "period": 3, "status": "absent" },
+        { "date": "2026-08-19", "courseId": "c3", "period": 0, "status": "present" },
+        { "date": "2026-08-19", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-19", "courseId": "c4", "period": 2, "status": "present" },
+        { "date": "2026-08-19", "courseId": "c8", "period": 3, "status": "present" },
+        { "date": "2026-08-20", "courseId": "c10", "period": 1, "status": "present" },
+        { "date": "2026-08-20", "courseId": "c10", "period": 2, "status": "present" },
+        { "date": "2026-08-20", "courseId": "c11", "period": 3, "status": "present" },
+        { "date": "2026-08-20", "courseId": "c8", "period": 5, "status": "present" },
+        { "date": "2026-08-20", "courseId": "c8", "period": 6, "status": "present" },
+        { "date": "2026-08-20", "courseId": "c6", "period": 7, "status": "present" },
+        { "date": "2026-08-21", "courseId": "c8", "period": 4, "status": "cancelled" },
+        { "date": "2026-08-21", "courseId": "c4", "period": 0, "status": "present" },
+        { "date": "2026-08-21", "courseId": "c7", "period": 1, "status": "present" },
+        { "date": "2026-08-21", "courseId": "c3", "period": 2, "status": "present" },
+        { "date": "2026-08-21", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-22", "courseId": "c8", "period": 0, "status": "present" },
+        { "date": "2026-08-22", "courseId": "c8", "period": 1, "status": "present" },
+        { "date": "2026-08-22", "courseId": "c9", "period": 2, "status": "present" },
+        { "date": "2026-08-22", "courseId": "c9", "period": 3, "status": "present" },
+        { "date": "2026-08-24", "courseId": "c4", "period": 0, "status": "present" },
+        { "date": "2026-08-24", "courseId": "c1", "period": 1, "status": "present" },
+        { "date": "2026-08-24", "courseId": "c1", "period": 2, "status": "present" },
+        { "date": "2026-08-24", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-24", "courseId": "c3", "period": 4, "status": "present" },
+        { "date": "2026-08-25", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-08-25", "courseId": "c6", "period": 4, "status": "present" },
+        { "date": "2026-08-25", "courseId": "c6", "period": 5, "status": "present" },
+        { "date": "2026-08-25", "courseId": "c11", "period": 6, "status": "present" },
+        { "date": "2026-08-25", "courseId": "c12", "period": 7, "status": "present" },
+        { "date": "2026-08-25", "courseId": "c12", "period": 8, "status": "present" },
+        { "date": "2026-08-27", "courseId": "c10", "period": 0, "status": "present" },
+        { "date": "2026-08-27", "courseId": "c10", "period": 1, "status": "present" },
+        { "date": "2026-08-27", "courseId": "c9", "period": 2, "status": "present" },
+        { "date": "2026-08-27", "courseId": "c6", "period": 7, "status": "present" },
+        { "date": "2026-08-27", "courseId": "c8", "period": 6, "status": "present" },
+        { "date": "2026-08-27", "courseId": "c8", "period": 5, "status": "present" },
+        { "date": "2026-08-31", "courseId": "c4", "period": 0, "status": "present" },
+        { "date": "2026-08-31", "courseId": "c1", "period": 1, "status": "absent" },
+        { "date": "2026-08-31", "courseId": "c1", "period": 2, "status": "absent" },
+        { "date": "2026-08-31", "courseId": "c2", "period": 3, "status": "absent" },
+        { "date": "2026-08-31", "courseId": "c10", "period": 4, "status": "absent" },
+        { "date": "2026-09-01", "courseId": "c11", "period": 5, "status": "cancelled" },
+        { "date": "2026-09-01", "courseId": "c12", "period": 6, "status": "cancelled" },
+        { "date": "2026-09-01", "courseId": "c12", "period": 7, "status": "cancelled" },
+        { "date": "2026-09-01", "courseId": "c2", "period": 3, "status": "present" },
+        { "date": "2026-09-01", "courseId": "c9", "period": 2, "status": "present" },
+        { "date": "2026-09-01", "courseId": "c6", "period": 1, "status": "present" },
+        { "date": "2026-09-01", "courseId": "c6", "period": 0, "status": "present" },
+        { "date": "2026-09-01", "courseId": "c2", "period": 4, "status": "present" }
+      ],
       "holidays": [
         {
           "id": "h1",
@@ -238,9 +318,14 @@ const DEFAULT_GLOBAL_DATA = {
           "label": "Independence Day"
         },
         {
-          "id": "h2",
-          "date": "2026-09-05",
-          "label": "Teacher's Day"
+          "id": "788a6137-eb5e-4a52-abe1-8cd2cc894907",
+          "date": "2026-08-26",
+          "label": "Milab-un-Nabi"
+        },
+        {
+          "id": "6cd399de-d7e1-4dfc-8241-e0060fb48c24",
+          "date": "2026-08-28",
+          "label": "Raksha Bandhan"
         }
       ],
       "semester": {
@@ -255,17 +340,23 @@ const DEFAULT_GLOBAL_DATA = {
 
 export function getData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_GLOBAL_DATA };
+    let raw = localStorage.getItem(STORAGE_KEY);
+    
+    // Auto-migrate to v10
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_GLOBAL_DATA));
+      return DEFAULT_GLOBAL_DATA;
+    }
+    
     let parsed = JSON.parse(raw);
     
     if (parsed.courses && !parsed.semesters) {
       const semData = { ...DEFAULT_DATA, ...parsed };
       delete semData.theme;
       parsed = {
-        activeSemesterId: 'default',
+        activeSemesterId: 'demo-sem',
         semesters: {
-          'default': { id: 'default', label: 'Semester 1', ...semData }
+          'demo-sem': { id: 'demo-sem', label: 'Semester 3 (Version-III)', ...semData }
         },
         theme: parsed.theme || 'dark'
       };
@@ -354,9 +445,13 @@ export function getAttendanceForCourse(data, courseId) {
     l.date <= todayStr
   );
   const total = logs.filter((l) => l.status !== 'cancelled').length;
-  const attended = logs.filter((l) => l.status === 'present').length;
+  const presentCount = logs.filter((l) => l.status === 'present').length;
+  const odCount = logs.filter((l) => l.status === 'od').length;
+  const medicalCount = logs.filter((l) => l.status === 'medical').length;
+  const attended = presentCount + odCount + medicalCount;
+  const missed = logs.filter((l) => l.status === 'absent').length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
-  return { total, attended, missed: total - attended, percentage };
+  return { total, attended, presentCount, odCount, medicalCount, missed, percentage };
 }
 
 export function getOverallAttendance(data) {
@@ -369,9 +464,13 @@ export function getOverallAttendance(data) {
     l.date <= todayStr
   );
   const total = logs.length;
-  const attended = logs.filter((l) => l.status === 'present').length;
+  const presentCount = logs.filter((l) => l.status === 'present').length;
+  const odCount = logs.filter((l) => l.status === 'od').length;
+  const medicalCount = logs.filter((l) => l.status === 'medical').length;
+  const attended = presentCount + odCount + medicalCount;
+  const missed = logs.filter((l) => l.status === 'absent').length;
   const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
-  return { total, attended, missed: total - attended, percentage };
+  return { total, attended, presentCount, odCount, medicalCount, missed, percentage };
 }
 
 export function getTodayClasses(data) {

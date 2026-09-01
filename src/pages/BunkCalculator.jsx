@@ -4,6 +4,7 @@ import { Calculator, TrendingDown, AlertTriangle, PartyPopper, Target, BookOpen 
 import { useApp } from '../context/AppContext';
 import { getAttendanceForCourse, calculateSafeBunks, calculateClassesNeeded } from '../utils/storage';
 import { useNavigate } from 'react-router-dom';
+import RiskHeatmap from '../components/RiskHeatmap';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -41,11 +42,16 @@ export default function BunkCalculator() {
         <motion.div variants={fadeUp} className="mb-6">
           <h2 className="text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
             <Calculator className="w-5 h-5 text-accent" />
-            Bunk Calculator
+            Bunk Calculator & AI Risk Heatmap
           </h2>
           <p className="text-sm text-text-muted mt-0.5">
-            Plan your attendance and see how missing classes affects your percentage.
+            Plan your attendance, visualize safe bunk dates, and project your percentages.
           </p>
+        </motion.div>
+
+        {/* Risk Heatmap Calendar */}
+        <motion.div variants={fadeUp}>
+          <RiskHeatmap />
         </motion.div>
 
         {state.courses.length === 0 ? (

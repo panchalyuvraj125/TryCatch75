@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, XCircle, MinusCircle, CalendarDays, CheckCheck, XOctagon, Undo2, Redo2, MessageSquare } from 'lucide-react';
+import { CheckCircle2, XCircle, MinusCircle, CalendarDays, CheckCheck, XOctagon, Undo2, Redo2, MessageSquare, PlusCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { getClassesForDate } from '../utils/storage';
 import { showToast } from '../components/ui/Toast';
@@ -263,6 +263,22 @@ export default function MarkAttendance() {
                   <CheckCircle2 className="w-3.5 h-3.5" />,
                   'Present',
                   'var(--success)'
+                )}
+                {statusBtn(
+                  course.id,
+                  period,
+                  'od',
+                  <CheckCheck className="w-3.5 h-3.5" />,
+                  'OD',
+                  '#0284c7'
+                )}
+                {statusBtn(
+                  course.id,
+                  period,
+                  'medical',
+                  <PlusCircle className="w-3.5 h-3.5" />,
+                  'Medical',
+                  '#8b5cf6'
                 )}
                 {statusBtn(
                   course.id,

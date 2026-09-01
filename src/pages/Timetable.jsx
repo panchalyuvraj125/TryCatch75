@@ -9,6 +9,9 @@ import {
   XCircle,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { DEFAULT_GLOBAL_DATA } from '../utils/storage';
+import { exportTimetableToICal } from '../utils/calendarExport';
+import { showToast } from '../components/ui/Toast';
 
 import {
   FULL_TIMETABLE_METADATA,
@@ -95,18 +98,51 @@ export default function Timetable() {
 
   const isToday = selectedDay === todayDay;
 
+  const applyVersion3Preset = () => {
+    const v3Sem = DEFAULT_GLOBAL_DATA.semesters['demo-sem'];
+    if (v3Sem) {
+      update({
+        courses: v3Sem.courses,
+        timetable: v3Sem.timetable,
+        periodTimes: v3Sem.periodTimes,
+        overrides: {},
+        semester: v3Sem.semester,
+      });
+      showToast('Version-III Timetable loaded successfully!', 'success');
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
       <motion.div variants={stagger} initial="hidden" animate="show">
         {/* Header */}
-        <motion.div variants={fadeUp} className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
-            <CalendarClock className="w-5 h-5 text-accent" />
-            Timetable
-          </h2>
-          <p className="text-sm text-text-muted mt-0.5">
-            S.Y.B.Tech CSE-AIML · Semester III · AM2 Batch
-          </p>
+        <motion.div variants={fadeUp} className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
+              <CalendarClock className="w-5 h-5 text-accent" />
+              Timetable
+            </h2>
+            <p className="text-sm text-text-muted mt-0.5">
+              S.Y.B.Tech CSE-AIML · Semester III · AM2 Batch (Version-III w.e.f. 31/8/2026)
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 self-start sm:self-auto">
+            <button
+              onClick={() => {
+                exportTimetableToICal(state);
+                showToast('Timetable exported for Google Calendar / iCal!', 'success');
+              }}
+              className="px-3.5 py-1.5 bg-bg-tertiary hover:bg-bg-elevated text-text-primary border border-border text-xs font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap active:scale-95 flex items-center gap-1.5"
+            >
+              📅 Export to Calendar (.ics)
+            </button>
+            <button
+              onClick={applyVersion3Preset}
+              className="px-3.5 py-1.5 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 text-xs font-medium rounded-lg transition-all cursor-pointer whitespace-nowrap active:scale-95 flex items-center gap-1.5"
+            >
+              ✨ Load Version-III Timetable
+            </button>
+          </div>
         </motion.div>
 
         {/* Day Selector */}

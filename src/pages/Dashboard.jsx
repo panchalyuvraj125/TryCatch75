@@ -25,7 +25,10 @@ import {
   calculateClassesNeeded,
 } from '../utils/storage';
 import { getNextClass, getCurrentClass, enrichClassWithMetadata, DAY_NAMES } from '../utils/timetableData';
+import { generateDailyDigestText, openWhatsAppShare } from '../utils/whatsappExporter';
+import { showToast } from '../components/ui/Toast';
 import OverrideModal from '../components/OverrideModal';
+import ShareCardModal from '../components/ShareCardModal';
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -62,6 +65,7 @@ export default function Dashboard() {
   const { state, update } = useApp();
   const navigate = useNavigate();
   const [showOverrideModal, setShowOverrideModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const overall = getOverallAttendance(state);
   const todayClasses = getTodayClasses(state);
@@ -135,11 +139,19 @@ export default function Dashboard() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
       <motion.div variants={stagger} initial="hidden" animate="show">
         {/* Greeting */}
-        <motion.div variants={fadeUp} className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">
-            {getGreeting()}{firstName ? `, ${firstName}` : ''}
-          </h2>
-          <p className="text-sm text-text-muted mt-0.5">{dateStr}</p>
+        <motion.div variants={fadeUp} className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">
+              {getGreeting()}{firstName ? `, ${firstName}` : ''}
+            </h2>
+            <p className="text-sm text-text-muted mt-0.5">{dateStr}</p>
+          </div>
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="px-3.5 py-1.5 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+          >
+            📸 Share Card
+          </button>
         </motion.div>
 
         {/* Overall Stats Row */}
@@ -280,6 +292,17 @@ export default function Dashboard() {
               Today's Classes
             </h3>
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const text = generateDailyDigestText(state);
+                  openWhatsAppShare(text);
+                  showToast('Opening WhatsApp with daily digest!', 'success');
+                }}
+                className="btn btn-sm btn-ghost text-success hover:bg-success/10 flex items-center gap-1"
+                title="Send today's agenda on WhatsApp"
+              >
+                💬 WhatsApp
+              </button>
               <button
                 onClick={() => setShowOverrideModal(true)}
                 className="btn btn-sm btn-ghost text-text-muted"
@@ -482,6 +505,11 @@ export default function Dashboard() {
         isOpen={showOverrideModal}
         onClose={() => setShowOverrideModal(false)}
         dateStr={todayISO}
+      />
+
+      <ShareCardModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
       />
     </div>
   );
