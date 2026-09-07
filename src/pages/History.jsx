@@ -9,6 +9,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { getClassesForDate } from '../utils/storage';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
@@ -38,7 +39,24 @@ export default function History() {
 
   // Filter and sort logs
   const filteredLogs = useMemo(() => {
-    let logs = [...state.attendanceLog].sort((a, b) => {
+    // Build a cache of valid (courseId, period) pairs per date
+    const scheduleCacheMap = {};
+    const getScheduleSet = (dateStr) => {
+      if (!scheduleCacheMap[dateStr]) {
+        const classes = getClassesForDate(state, dateStr);
+        const validSet = new Set(classes.map(c => `${c.course.id}::${c.period}`));
+        scheduleCacheMap[dateStr] = validSet;
+      }
+      return scheduleCacheMap[dateStr];
+    };
+
+    // Filter out orphan entries that don't match the actual schedule for that date
+    let logs = state.attendanceLog.filter(log => {
+      const validSet = getScheduleSet(log.date);
+      return validSet.has(`${log.courseId}::${log.period}`);
+    });
+
+    logs.sort((a, b) => {
       const dateComp = b.date.localeCompare(a.date);
       if (dateComp !== 0) return dateComp;
       return a.period - b.period;

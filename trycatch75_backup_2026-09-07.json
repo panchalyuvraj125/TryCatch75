@@ -125,12 +125,13 @@
           "4": "c3"
         },
         "Tue": {
+          "2": "c9",
           "3": "c2",
-          "4": "c6",
           "5": "c6",
-          "6": "c11",
-          "7": "c12",
-          "8": "c12"
+          "6": "c6",
+          "7": "c11",
+          "8": "c12",
+          "9": "c12"
         },
         "Wed": {
           "2": "c9f57314-fbda-4cde-8f09-356e16f7cb41",
@@ -142,12 +143,12 @@
         "Thu": {
           "0": "c10",
           "1": "c10",
-          "2": "c9",
+          "2": "c8",
           "3": "c5",
           "4": "c5",
           "5": "c8",
           "7": "c6",
-          "8": "c8"
+          "8": "c9"
         },
         "Fri": {
           "0": "c4",
@@ -157,10 +158,7 @@
           "4": "c12",
           "5": "c12"
         },
-        "Sat": {
-          "2": "c9",
-          "3": "c9"
-        }
+        "Sat": {}
       },
       "periodTimes": [
         {
@@ -198,167 +196,31 @@
         {
           "start": "16:00",
           "end": "17:00"
+        },
+        {
+          "start": "17:00",
+          "end": "18:00"
         }
       ],
       "overrides": {
-        "2026-08-03": {
+        "2026-09-02": {
           "0": null,
-          "1": "c1",
-          "2": "c1",
-          "3": "c2",
-          "4": "c3"
-        },
-        "2026-08-04": {
-          "0": null,
-          "1": null,
-          "3": null,
-          "5": null,
-          "6": null,
-          "7": null,
-          "8": null
-        },
-        "2026-08-05": {
-          "0": "c4",
-          "1": "c1",
+          "1": "c3",
           "2": "c5",
           "3": "c5",
-          "4": null,
-          "5": "c3"
-        },
-        "2026-08-06": {
-          "0": null,
-          "2": null,
-          "3": "c12",
-          "4": "c12",
-          "5": "c6",
-          "7": null,
-          "8": null
-        },
-        "2026-08-07": {
-          "0": null,
-          "1": "c7",
-          "2": "c4",
-          "3": "c2",
-          "4": "c3"
-        },
-        "2026-08-08": {
-          "2": null,
-          "3": null
-        },
-        "2026-08-10": {
-          "0": null,
-          "1": "c1",
-          "2": "c1",
-          "3": "c2",
-          "4": "c3"
-        },
-        "2026-08-11": {
-          "0": "c6",
-          "1": "c6",
-          "3": "c2",
+          "4": "c8",
           "5": null,
-          "6": null,
-          "7": null,
-          "8": null
+          "7": "c1"
         },
-        "2026-08-12": {
-          "1": "c1",
-          "2": "c12",
-          "3": "c12",
-          "4": null,
-          "5": "c3"
-        },
-        "2026-08-13": {
-          "0": null,
-          "1": "c10",
-          "2": "c10",
-          "3": "c5",
-          "4": "c5",
-          "5": "c8",
-          "6": "c6",
-          "7": null,
-          "8": null
-        },
-        "2026-08-17": {
-          "0": "c4",
-          "1": "c1",
-          "2": "c1",
-          "3": "c2",
-          "4": "c3"
-        },
-        "2026-08-18": {
-          "0": "c6",
-          "1": "c6",
-          "3": "c2",
-          "5": null,
-          "6": null,
-          "7": null,
-          "8": null
-        },
-        "2026-08-19": {
-          "0": "c3",
-          "1": "c1",
-          "2": "c4",
-          "3": "c8",
-          "4": null,
-          "5": null
-        },
-        "2026-08-20": {
-          "0": null,
-          "1": "c10",
-          "2": "c10",
-          "3": "c11",
-          "4": null,
-          "5": "c8",
-          "6": "c8",
-          "7": "c6",
-          "8": null
-        },
-        "2026-08-21": {
-          "0": "c4",
-          "1": "c7",
-          "2": "c3",
-          "3": "c2",
-          "4": null
-        },
-        "2026-08-22": {
-          "0": "c8",
-          "1": "c8",
-          "2": "c9",
-          "3": "c9"
-        },
-        "2026-08-27": {
+        "2026-09-03": {
           "0": "c10",
           "1": "c10",
-          "2": "c9",
-          "3": null,
-          "4": null,
+          "2": "c8",
+          "3": "c12",
+          "4": "c12",
           "5": "c8",
-          "6": "c8",
           "7": "c6",
-          "8": null
-        },
-        "2026-08-29": {
-          "2": null,
-          "3": null
-        },
-        "2026-08-31": {
-          "0": "c4",
-          "1": "c1",
-          "2": "c1",
-          "3": "c2",
-          "4": "c10"
-        },
-        "2026-09-01": {
-          "0": "c6",
-          "1": "c6",
-          "2": "c9",
-          "3": "c2",
-          "4": "c2",
-          "5": "c11",
-          "6": "c12",
-          "7": "c12",
-          "8": null
+          "8": "c9"
         }
       },
       "attendanceLog": [
@@ -929,6 +791,223 @@
         {
           "date": "2026-09-01",
           "courseId": "c2",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c3",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c4",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c4",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c8",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c1",
+          "period": 7,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c10",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c10",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c8",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c8",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c6",
+          "period": 7,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c9",
+          "period": 8,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c6",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c11",
+          "period": 7,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c12",
+          "period": 9,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c5",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c5",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c7",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c3",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c12",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c6",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c6",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c11",
+          "period": 7,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c12",
+          "period": 8,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c12",
+          "period": 9,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c12",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c2",
+          "period": 3,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c3",
           "period": 4,
           "status": "present"
         }

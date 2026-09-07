@@ -1,4 +1,4 @@
-export const STORAGE_KEY = 'trycatch75_data_v11';
+export const STORAGE_KEY = 'trycatch75_data_v13';
 
 const DEFAULT_DATA = {
   personalInfo: {
@@ -41,8 +41,6 @@ export const DEFAULT_GLOBAL_DATA = {
   "activeSemesterId": "demo-sem",
   "semesters": {
     "demo-sem": {
-      "id": "demo-sem",
-      "label": "Semester 3",
       "personalInfo": {
         "name": "Yuvraj Panchal ",
         "rollNumber": "BA43",
@@ -202,114 +200,856 @@ export const DEFAULT_GLOBAL_DATA = {
         "Sat": {}
       },
       "periodTimes": [
-        { "start": "08:00", "end": "09:00" },
-        { "start": "09:00", "end": "10:00" },
-        { "start": "10:00", "end": "11:00" },
-        { "start": "11:00", "end": "12:00" },
-        { "start": "12:00", "end": "13:00" },
-        { "start": "13:00", "end": "14:00" },
-        { "start": "14:00", "end": "15:00" },
-        { "start": "15:00", "end": "16:00" },
-        { "start": "16:00", "end": "17:00" },
-        { "start": "17:00", "end": "18:00" }
+        {
+          "start": "08:00",
+          "end": "09:00"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00"
+        },
+        {
+          "start": "10:00",
+          "end": "11:00"
+        },
+        {
+          "start": "11:00",
+          "end": "12:00"
+        },
+        {
+          "start": "12:00",
+          "end": "13:00"
+        },
+        {
+          "start": "13:00",
+          "end": "14:00"
+        },
+        {
+          "start": "14:00",
+          "end": "15:00"
+        },
+        {
+          "start": "15:00",
+          "end": "16:00"
+        },
+        {
+          "start": "16:00",
+          "end": "17:00"
+        },
+        {
+          "start": "17:00",
+          "end": "18:00"
+        }
       ],
-      "overrides": {},
+      "overrides": {
+        "2026-09-02": {
+          "0": null,
+          "1": "c3",
+          "2": "c5",
+          "3": "c5",
+          "4": "c8",
+          "5": null,
+          "7": "c1"
+        },
+        "2026-09-03": {
+          "0": "c10",
+          "1": "c10",
+          "2": "c8",
+          "3": "c12",
+          "4": "c12",
+          "5": "c8",
+          "7": "c6",
+          "8": "c9"
+        }
+      },
       "attendanceLog": [
-        { "date": "2026-08-03", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-03", "courseId": "c1", "period": 2, "status": "present" },
-        { "date": "2026-08-03", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-03", "courseId": "c3", "period": 4, "status": "present" },
-        { "date": "2026-08-05", "courseId": "c4", "period": 0, "status": "present" },
-        { "date": "2026-08-05", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-05", "courseId": "c5", "period": 2, "status": "present" },
-        { "date": "2026-08-05", "courseId": "c5", "period": 3, "status": "present" },
-        { "date": "2026-08-05", "courseId": "c3", "period": 5, "status": "present" },
-        { "date": "2026-08-06", "courseId": "c12", "period": 3, "status": "present" },
-        { "date": "2026-08-06", "courseId": "c12", "period": 4, "status": "present" },
-        { "date": "2026-08-06", "courseId": "c6", "period": 5, "status": "present" },
-        { "date": "2026-08-07", "courseId": "c7", "period": 1, "status": "absent" },
-        { "date": "2026-08-07", "courseId": "c4", "period": 2, "status": "absent" },
-        { "date": "2026-08-07", "courseId": "c2", "period": 3, "status": "absent" },
-        { "date": "2026-08-07", "courseId": "c3", "period": 4, "status": "absent" },
-        { "date": "2026-08-10", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-10", "courseId": "c1", "period": 2, "status": "present" },
-        { "date": "2026-08-10", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-10", "courseId": "c3", "period": 4, "status": "present" },
-        { "date": "2026-08-11", "courseId": "c6", "period": 0, "status": "present" },
-        { "date": "2026-08-11", "courseId": "c6", "period": 1, "status": "present" },
-        { "date": "2026-08-11", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-12", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-12", "courseId": "c12", "period": 2, "status": "present" },
-        { "date": "2026-08-12", "courseId": "c12", "period": 3, "status": "present" },
-        { "date": "2026-08-12", "courseId": "c3", "period": 5, "status": "present" },
-        { "date": "2026-08-13", "courseId": "c6", "period": 6, "status": "absent" },
-        { "date": "2026-08-13", "courseId": "c8", "period": 5, "status": "present" },
-        { "date": "2026-08-13", "courseId": "c5", "period": 4, "status": "present" },
-        { "date": "2026-08-13", "courseId": "c5", "period": 3, "status": "present" },
-        { "date": "2026-08-13", "courseId": "c10", "period": 2, "status": "present" },
-        { "date": "2026-08-13", "courseId": "c10", "period": 1, "status": "present" },
-        { "date": "2026-08-14", "courseId": "c4", "period": 0, "status": "present" },
-        { "date": "2026-08-14", "courseId": "c7", "period": 1, "status": "present" },
-        { "date": "2026-08-14", "courseId": "c3", "period": 2, "status": "present" },
-        { "date": "2026-08-14", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-14", "courseId": "c4", "period": 4, "status": "present" },
-        { "date": "2026-08-17", "courseId": "c4", "period": 0, "status": "present" },
-        { "date": "2026-08-17", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-17", "courseId": "c1", "period": 2, "status": "present" },
-        { "date": "2026-08-17", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-17", "courseId": "c3", "period": 4, "status": "present" },
-        { "date": "2026-08-18", "courseId": "c6", "period": 0, "status": "absent" },
-        { "date": "2026-08-18", "courseId": "c6", "period": 1, "status": "absent" },
-        { "date": "2026-08-18", "courseId": "c2", "period": 3, "status": "absent" },
-        { "date": "2026-08-19", "courseId": "c3", "period": 0, "status": "present" },
-        { "date": "2026-08-19", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-19", "courseId": "c4", "period": 2, "status": "present" },
-        { "date": "2026-08-19", "courseId": "c8", "period": 3, "status": "present" },
-        { "date": "2026-08-20", "courseId": "c10", "period": 1, "status": "present" },
-        { "date": "2026-08-20", "courseId": "c10", "period": 2, "status": "present" },
-        { "date": "2026-08-20", "courseId": "c11", "period": 3, "status": "present" },
-        { "date": "2026-08-20", "courseId": "c8", "period": 5, "status": "present" },
-        { "date": "2026-08-20", "courseId": "c8", "period": 6, "status": "present" },
-        { "date": "2026-08-20", "courseId": "c6", "period": 7, "status": "present" },
-        { "date": "2026-08-21", "courseId": "c8", "period": 4, "status": "cancelled" },
-        { "date": "2026-08-21", "courseId": "c4", "period": 0, "status": "present" },
-        { "date": "2026-08-21", "courseId": "c7", "period": 1, "status": "present" },
-        { "date": "2026-08-21", "courseId": "c3", "period": 2, "status": "present" },
-        { "date": "2026-08-21", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-22", "courseId": "c8", "period": 0, "status": "present" },
-        { "date": "2026-08-22", "courseId": "c8", "period": 1, "status": "present" },
-        { "date": "2026-08-22", "courseId": "c9", "period": 2, "status": "present" },
-        { "date": "2026-08-22", "courseId": "c9", "period": 3, "status": "present" },
-        { "date": "2026-08-24", "courseId": "c4", "period": 0, "status": "present" },
-        { "date": "2026-08-24", "courseId": "c1", "period": 1, "status": "present" },
-        { "date": "2026-08-24", "courseId": "c1", "period": 2, "status": "present" },
-        { "date": "2026-08-24", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-24", "courseId": "c3", "period": 4, "status": "present" },
-        { "date": "2026-08-25", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-08-25", "courseId": "c6", "period": 4, "status": "present" },
-        { "date": "2026-08-25", "courseId": "c6", "period": 5, "status": "present" },
-        { "date": "2026-08-25", "courseId": "c11", "period": 6, "status": "present" },
-        { "date": "2026-08-25", "courseId": "c12", "period": 7, "status": "present" },
-        { "date": "2026-08-25", "courseId": "c12", "period": 8, "status": "present" },
-        { "date": "2026-08-27", "courseId": "c10", "period": 0, "status": "present" },
-        { "date": "2026-08-27", "courseId": "c10", "period": 1, "status": "present" },
-        { "date": "2026-08-27", "courseId": "c9", "period": 2, "status": "present" },
-        { "date": "2026-08-27", "courseId": "c6", "period": 7, "status": "present" },
-        { "date": "2026-08-27", "courseId": "c8", "period": 6, "status": "present" },
-        { "date": "2026-08-27", "courseId": "c8", "period": 5, "status": "present" },
-        { "date": "2026-08-31", "courseId": "c4", "period": 0, "status": "present" },
-        { "date": "2026-08-31", "courseId": "c1", "period": 1, "status": "absent" },
-        { "date": "2026-08-31", "courseId": "c1", "period": 2, "status": "absent" },
-        { "date": "2026-08-31", "courseId": "c2", "period": 3, "status": "absent" },
-        { "date": "2026-08-31", "courseId": "c10", "period": 4, "status": "absent" },
-        { "date": "2026-09-01", "courseId": "c11", "period": 5, "status": "cancelled" },
-        { "date": "2026-09-01", "courseId": "c12", "period": 6, "status": "cancelled" },
-        { "date": "2026-09-01", "courseId": "c12", "period": 7, "status": "cancelled" },
-        { "date": "2026-09-01", "courseId": "c2", "period": 3, "status": "present" },
-        { "date": "2026-09-01", "courseId": "c9", "period": 2, "status": "present" },
-        { "date": "2026-09-01", "courseId": "c6", "period": 1, "status": "present" },
-        { "date": "2026-09-01", "courseId": "c6", "period": 0, "status": "present" },
-        { "date": "2026-09-01", "courseId": "c2", "period": 4, "status": "present" }
+        {
+          "date": "2026-08-03",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-03",
+          "courseId": "c3",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c5",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c5",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-05",
+          "courseId": "c3",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-06",
+          "courseId": "c6",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c7",
+          "period": 1,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c4",
+          "period": 2,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c2",
+          "period": 3,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-07",
+          "courseId": "c3",
+          "period": 4,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-10",
+          "courseId": "c3",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c6",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c6",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-11",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c12",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-12",
+          "courseId": "c3",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c6",
+          "period": 6,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c8",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c5",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c5",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c10",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-13",
+          "courseId": "c10",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-14",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-14",
+          "courseId": "c7",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-14",
+          "courseId": "c3",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-14",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-14",
+          "courseId": "c4",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-17",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-17",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-17",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-17",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-17",
+          "courseId": "c3",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-18",
+          "courseId": "c6",
+          "period": 0,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-18",
+          "courseId": "c6",
+          "period": 1,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-18",
+          "courseId": "c2",
+          "period": 3,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-19",
+          "courseId": "c3",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-19",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-19",
+          "courseId": "c4",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-19",
+          "courseId": "c8",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-20",
+          "courseId": "c10",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-20",
+          "courseId": "c10",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-20",
+          "courseId": "c11",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-20",
+          "courseId": "c8",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-20",
+          "courseId": "c8",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-20",
+          "courseId": "c6",
+          "period": 7,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-21",
+          "courseId": "c8",
+          "period": 4,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-08-21",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-21",
+          "courseId": "c7",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-21",
+          "courseId": "c3",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-21",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-22",
+          "courseId": "c8",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-22",
+          "courseId": "c8",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-22",
+          "courseId": "c9",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-22",
+          "courseId": "c9",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-24",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-24",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-24",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-24",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-24",
+          "courseId": "c3",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c6",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c6",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c11",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c12",
+          "period": 7,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c12",
+          "period": 8,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-27",
+          "courseId": "c10",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-27",
+          "courseId": "c10",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-27",
+          "courseId": "c9",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-27",
+          "courseId": "c6",
+          "period": 7,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-27",
+          "courseId": "c8",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-27",
+          "courseId": "c8",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-31",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-31",
+          "courseId": "c1",
+          "period": 1,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-31",
+          "courseId": "c1",
+          "period": 2,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-31",
+          "courseId": "c2",
+          "period": 3,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-31",
+          "courseId": "c10",
+          "period": 4,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c11",
+          "period": 5,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c12",
+          "period": 6,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c12",
+          "period": 7,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c9",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c6",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c6",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c2",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c3",
+          "period": 1,
+          "status": "present",
+          "note": ""
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c4",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c4",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c8",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c1",
+          "period": 7,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c10",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c10",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c8",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c8",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c6",
+          "period": 7,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-03",
+          "courseId": "c9",
+          "period": 8,
+          "status": "absent"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c6",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c11",
+          "period": 7,
+          "status": "present"
+        },
+        {
+          "date": "2026-08-25",
+          "courseId": "c12",
+          "period": 9,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c5",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c5",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c7",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c3",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c2",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c12",
+          "period": 4,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-04",
+          "courseId": "c12",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c6",
+          "period": 5,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c6",
+          "period": 6,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c11",
+          "period": 7,
+          "status": "absent"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c12",
+          "period": 8,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-01",
+          "courseId": "c12",
+          "period": 9,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c12",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-02",
+          "courseId": "c12",
+          "period": 3,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c4",
+          "period": 0,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c1",
+          "period": 1,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c1",
+          "period": 2,
+          "status": "present"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c2",
+          "period": 3,
+          "status": "cancelled"
+        },
+        {
+          "date": "2026-09-07",
+          "courseId": "c3",
+          "period": 4,
+          "status": "present"
+        }
       ],
       "holidays": [
         {
@@ -332,7 +1072,9 @@ export const DEFAULT_GLOBAL_DATA = {
         "start": "2026-08-03",
         "end": "2026-12-15"
       },
-      "setupComplete": true
+      "setupComplete": true,
+      "id": "demo-sem",
+      "label": "Semester 3"
     }
   },
   "theme": "dark"
@@ -435,11 +1177,31 @@ export function importData(file) {
   });
 }
 
+/**
+ * Filters out orphan/phantom attendance log entries that don't match
+ * the actual schedule (timetable + overrides) for their date.
+ */
+function getValidLogs(data) {
+  const scheduleCache = {};
+  const getScheduleSet = (dateStr) => {
+    if (!scheduleCache[dateStr]) {
+      const classes = getClassesForDate(data, dateStr);
+      scheduleCache[dateStr] = new Set(classes.map(c => `${c.course.id}::${c.period}`));
+    }
+    return scheduleCache[dateStr];
+  };
+
+  return data.attendanceLog.filter(log => {
+    const validSet = getScheduleSet(log.date);
+    return validSet.has(`${log.courseId}::${log.period}`);
+  });
+}
+
 export function getAttendanceForCourse(data, courseId) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const startStr = data.semester?.start || '1970-01-01';
 
-  const logs = data.attendanceLog.filter((l) => 
+  const logs = getValidLogs(data).filter((l) => 
     l.courseId === courseId &&
     l.date >= startStr &&
     l.date <= todayStr
@@ -458,7 +1220,7 @@ export function getOverallAttendance(data) {
   const todayStr = new Date().toISOString().slice(0, 10);
   const startStr = data.semester?.start || '1970-01-01';
 
-  const logs = data.attendanceLog.filter((l) => 
+  const logs = getValidLogs(data).filter((l) => 
     l.status !== 'cancelled' &&
     l.date >= startStr &&
     l.date <= todayStr
