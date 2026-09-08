@@ -1,4 +1,4 @@
-export const STORAGE_KEY = 'trycatch75_data_v13';
+export const STORAGE_KEY = 'trycatch75_data_v14';
 
 const DEFAULT_DATA = {
   personalInfo: {
